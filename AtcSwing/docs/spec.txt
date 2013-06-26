@@ -1,0 +1,38 @@
+$Id: spec.txt,v 1.2 2008/02/15 18:06:42 marco Exp $
+
+Display
+
+Visualizzazione radar:
+
+	-	Aeri
+	-	Piste
+	-	Radio fari
+	-	Rotte di raccordo
+	-	Rotte esterne
+	
+Visualizzazione lista aerei:
+
+Commandi
+	-	Cambio rotta (destinazione)
+	-	Cambio altitudine (destinazione)
+	-	Autorizzazione atterraggio (pista)
+	-	Attesa
+
+range massimo del radar = 100 nm
+larghezza del campo randar = 200nm
+intervallo tra steps = 1 sec.
+tempo massimo di attraversamento = 200 sec.
+distanza massima per step = 200 nm / 200 sec * 1 sec=1 nm
+range di uscita=2 nm;
+range di collisione= 4nm;
+velocità massima di salita= 3000 / 5 = 600 fps
+altitudine massima per step= 600 * 1 = 600
+cicli attesa nuova entrata = 4nm / (1nm / 2) * 4 = 32
+probabilità massima di entrata = 1 / 32 * #entrate
+freq entrata massima = 1 / 32 * #entrate / 1sec = 8 aerei/min
+# medio di aerei presenti = 10
+tempo permanenza medio = 200 sec
+freq media di entrata = 10 / 200sec = 0.05 aerei/sec = 3 aerei/min
+probabilità media di entrata = 0.05 * 1sec = 0.05
+
+

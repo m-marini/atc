@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: atc-handler.xml,v 1.4 2008/03/01 21:18:06 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+	<import resource="lrx-map.xml" />
+	<import resource="lin-map.xml" />
+	<import resource="ffm-map.xml" />
+	<import resource="par-map.xml" />
+	<import resource="lon-map.xml" />
+
+	<bean id="radarMap" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="lrx" />
+				<ref bean="ffm" />
+				<ref bean="lon" />
+				<ref bean="lin" />
+				<ref bean="par" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<alias name="lin" alias="defaultMap" />
+
+	<bean id="atcHandlerTemplate"
+		class="org.mmarini.atc.sim.DefaultHandler" singleton="false">
+		<property name="hits" ref="hits" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="radarPainter" ref="radarPainter" />
+	</bean>
+
+	<bean id="hits" class="org.mmarini.atc.sim.Hits" />
+
+	<bean id="sessionFactory"
+		class="org.mmarini.atc.sim.SessionFactory">
+		<property name="radarMap" ref="radarMap" />
+		<property name="profileMap">
+			<map>
+				<entry key="training" value-ref="trainingProfile" />
+				<entry key="easy" value-ref="easyProfile" />
+				<entry key="medium" value-ref="mediumProfile" />
+				<entry key="difficult" value-ref="difficultProfile" />
+				<entry key="hard" value-ref="hardProfile" />
+			</map>
+		</property>
+		<lookup-method name="createSessionTemplate"
+			bean="sessionTemplate" />
+	</bean>
+
+	<bean id="trainingProfile"
+		class="org.mmarini.atc.sim.GameProfile">
+		<property name="id" value="training" />
+		<property name="newPlaneProbability" value="0.02" />
+		<property name="maxPlane" value="1" />
+	</bean>
+
+	<bean id="easyProfile" class="org.mmarini.atc.sim.GameProfile">
+		<property name="id" value="easy" />
+		<property name="newPlaneProbability" value="0.02" />
+		<property name="maxPlane" value="3" />
+	</bean>
+
+	<bean id="mediumProfile" class="org.mmarini.atc.sim.GameProfile">
+		<property name="id" value="medium" />
+		<property name="newPlaneProbability" value="0.04" />
+		<property name="maxPlane" value="5" />
+	</bean>
+
+	<bean id="difficultProfile"
+		class="org.mmarini.atc.sim.GameProfile">
+		<property name="id" value="difficult" />
+		<property name="newPlaneProbability" value="0.1" />
+		<property name="maxPlane" value="7" />
+	</bean>
+
+	<bean id="hardProfile" class="org.mmarini.atc.sim.GameProfile">
+		<property name="id" value="hard" />
+		<property name="newPlaneProbability" value="0.1" />
+		<property name="maxPlane" value="10" />
+	</bean>
+
+	<bean id="planeMessageDispatcher"
+		class="org.mmarini.atc.sim.PlaneMessageDispatcher"
+		singleton="false">
+	</bean>
+
+	<bean id="sessionTemplate" class="org.mmarini.atc.sim.AtcSession"
+		singleton="false">
+		<property name="messageDispatcher" ref="planeMessageDispatcher" />
+		<property name="planeFactory" ref="planeFactory" />
+	</bean>
+
+	<bean id="planeFactory" class="org.mmarini.atc.sim.PlaneFactory"
+		singleton="false">
+		<property name="templateList">
+			<list>
+				<ref bean="jetPlane" />
+				<ref bean="littlePlane" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="jetPlane" class="org.mmarini.atc.sim.PlaneModel">
+		<property name="classId" value="J" />
+		<property name="lowSpeed" value="0.25" />
+		<property name="highSpeed" value="0.8" />
+		<property name="VSpeed" value="300" />
+	</bean>
+
+	<bean id="littlePlane" class="org.mmarini.atc.sim.PlaneModel">
+		<property name="classId" value="A" />
+		<property name="lowSpeed" value="0.2" />
+		<property name="highSpeed" value="0.5" />
+		<property name="VSpeed" value="150" />
+	</bean>
+
+	<bean id="entryConnectionColor" class="java.awt.Color">
+		<!-- 
+			<constructor-arg value="0x606060" />
+		-->
+		<constructor-arg value="0x8f551d" />
+	</bean>
+
+	<bean id="landRouteColor" class="java.awt.Color">
+		<constructor-arg value="0x797429" />
+	</bean>
+	<bean id="landConnctionColor" class="java.awt.Color">
+		<constructor-arg value="0x004000" />
+	</bean>
+	<bean id="takeoffColor" class="java.awt.Color">
+		<constructor-arg value="0x306060" />
+	</bean>
+	<bean id="connectionColor" class="java.awt.Color">
+		<constructor-arg value="0x36200b" />
+	</bean>
+
+	<bean id="radarPainter" class="org.mmarini.atc.sim.RadarPainter"
+		init-method="init" singleton="false">
+		<property name="checkpointIconName"
+			value="classpath:/images/beacon.png" />
+		<property name="runwayIconName"
+			value="classpath:/images/runway.png" />
+		<property name="exitIconName"
+			value="classpath:/images/entry.png" />
+		<property name="exitColor" ref="color280" />
+		<property name="runwayColor" ref="color040" />
+		<property name="defaultRouteColor" ref="connectionColor" />
+		<property name="routeColorMap">
+			<map>
+				<entry key="entry" value-ref="entryConnectionColor" />
+				<entry key="land" value-ref="landRouteColor" />
+				<entry key="landConnection"
+					value-ref="landConnctionColor" />
+				<entry key="takeoff" value-ref="takeoffColor" />
+			</map>
+		</property>
+		<property name="planePainter">
+			<list>
+				<ref bean="planePainter040" />
+				<ref bean="planePainter080" />
+				<ref bean="planePainter120" />
+				<ref bean="planePainter160" />
+				<ref bean="planePainter200" />
+				<ref bean="planePainter240" />
+				<ref bean="planePainter280" />
+				<ref bean="planePainter320" />
+				<ref bean="planePainter360" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="planePainter040" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-040.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-040.png" />
+		<property name="color" ref="color040" />
+	</bean>
+
+	<bean id="planePainter080" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-080.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-080.png" />
+		<property name="color" ref="color080" />
+	</bean>
+
+	<bean id="planePainter120" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-120.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-120.png" />
+		<property name="color" ref="color120" />
+	</bean>
+
+	<bean id="planePainter160" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-160.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-160.png" />
+		<property name="color" ref="color160" />
+	</bean>
+
+	<bean id="planePainter200" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-200.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-200.png" />
+		<property name="color" ref="color200" />
+	</bean>
+
+	<bean id="planePainter240" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-240.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-240.png" />
+		<property name="color" ref="color240" />
+	</bean>
+
+	<bean id="planePainter280" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-280.png " />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-280.png" />
+		<property name="color" ref="color280" />
+	</bean>
+
+	<bean id="planePainter320" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-320.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-320.png" />
+		<property name="color" ref="color320" />
+	</bean>
+
+	<bean id="planePainter360" class="org.mmarini.atc.sim.PlanePainter"
+		init-method="init">
+		<property name="jetIconResource"
+			value="classpath:/images/jet-360.png" />
+		<property name="planeIconResource"
+			value="classpath:/images/plane-360.png" />
+		<property name="color" ref="color360" />
+	</bean>
+
+	<bean id="color040" class="java.awt.Color">
+		<constructor-arg index="0" value="0xeceacc" />
+	</bean>
+	<bean id="color080" class="java.awt.Color">
+		<constructor-arg index="0" value="0x8de5e8" />
+	</bean>
+	<bean id="color120" class="java.awt.Color">
+		<constructor-arg index="0" value="0x60d750" />
+	</bean>
+	<bean id="color160" class="java.awt.Color">
+		<constructor-arg index="0" value="0x2b21e9" />
+	</bean>
+	<bean id="color200" class="java.awt.Color">
+		<constructor-arg index="0" value="0xe95ada" />
+	</bean>
+	<bean id="color240" class="java.awt.Color">
+		<constructor-arg index="0" value="0xe98b30" />
+	</bean>
+	<bean id="color280" class="java.awt.Color">
+		<constructor-arg value="0xea332a" />
+	</bean>
+	<bean id="color320" class="java.awt.Color">
+		<constructor-arg value="0xeee450" />
+	</bean>
+	<bean id="color360" class="java.awt.Color">
+		<constructor-arg value="0xaead97" />
+	</bean>
+</beans>

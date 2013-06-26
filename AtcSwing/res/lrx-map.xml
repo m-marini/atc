@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: lrx-map.xml,v 1.3 2008/02/27 14:55:53 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+
+	<bean id="lrx" class="org.mmarini.atc.sim.RadarMap"
+		init-method="init">
+		<property name="id" value="LRX" />
+		<property name="name" value="Lamarx (Demo)" />
+		<property name="exitList">
+			<list>
+				<ref bean="lrx-e0" />
+				<ref bean="lrx-e1" />
+				<ref bean="lrx-e2" />
+				<ref bean="lrx-e3" />
+				<ref bean="lrx-e4" />
+			</list>
+		</property>
+		<property name="runwayList">
+			<list>
+				<ref bean="lrx-l1" />
+				<ref bean="lrx-l12" />
+				<ref bean="lrx-l19" />
+				<ref bean="lrx-l30" />
+			</list>
+		</property>
+		<property name="beaconList">
+			<list>
+				<ref bean="lrx-lw" />
+				<ref bean="lrx-ln" />
+				<ref bean="lrx-lrx" />
+				<ref bean="lrx-ls" />
+			</list>
+		</property>
+		<property name="routeList">
+			<list>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e0" />
+					<property name="location1" ref="lrx-lw" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e0" />
+					<property name="location1" ref="lrx-ln" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e0" />
+					<property name="location1" ref="lrx-ls" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e1" />
+					<property name="location1" ref="lrx-ln" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e1" />
+					<property name="location1" ref="lrx-lw" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e1" />
+					<property name="location1" ref="lrx-ls" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e1" />
+					<property name="location1" ref="lrx-lrx" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e2" />
+					<property name="location1" ref="lrx-ls" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e2" />
+					<property name="location1" ref="lrx-ln" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e2" />
+					<property name="location1" ref="lrx-lw" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e2" />
+					<property name="location1" ref="lrx-lrx" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e3" />
+					<property name="location1" ref="lrx-ls" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e3" />
+					<property name="location1" ref="lrx-ln" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e3" />
+					<property name="location1" ref="lrx-lrx" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e4" />
+					<property name="location1" ref="lrx-lrx" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e4" />
+					<property name="location1" ref="lrx-ln" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e4" />
+					<property name="location1" ref="lrx-ls" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-e4" />
+					<property name="location1" ref="lrx-lw" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-lrx" />
+					<property name="location1" ref="lrx-ls" />
+
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-lrx" />
+					<property name="location1" ref="lrx-ln" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-lrx" />
+					<property name="location1" ref="lrx-lw" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-ln" />
+					<property name="location1" ref="lrx-lw" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lrx-ls" />
+					<property name="location1" ref="lrx-lw" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="lrx-e0" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="E0" />
+		<property name="alignment" value="NW" />
+		<property name="course" value="120" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-86.6" />
+				<property name="y" value="50" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-e1" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="E1" />
+		<property name="alignment" value="N" />
+		<property name="course" value="176" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="0" />
+				<property name="y" value="100" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-e2" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="E2" />
+		<property name="alignment" value="SW" />
+		<property name="course" value="53" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-64.3" />
+				<property name="y" value="-76.7" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-e3" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="E3" />
+		<property name="alignment" value="S" />
+		<property name="course" value="340" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="17.4" />
+				<property name="y" value="-98.5" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-e4" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="E4" />
+		<property name="course" value="270" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="100" />
+				<property name="y" value="0" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-lw" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="LW" />
+		<property name="alignment" value="W" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-22.5" />
+				<property name="y" value="13" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-ls" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="LS" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-6.6" />
+				<property name="y" value="-33.6" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-ln" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="LN" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="4.5" />
+				<property name="y" value="25.6" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-lrx" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="LRX" />
+		<property name="alignment" value="SE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="0" />
+				<property name="y" value="0" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-l1" class="org.mmarini.atc.sim.DefaultRunway">
+		<property name="id" value="L1" />
+		<property name="alignment" value="E" />
+		<property name="course" value="10" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="2.3" />
+				<property name="y" value="12.8" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-l12" class="org.mmarini.atc.sim.DefaultRunway">
+		<property name="id" value="L12" />
+		<property name="alignment" value="N" />
+		<property name="course" value="120" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-11.3" />
+				<property name="y" value="6.5" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-l19" class="org.mmarini.atc.sim.DefaultRunway">
+		<property name="id" value="L19" />
+		<property name="alignment" value="W" />
+		<property name="course" value="190" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="2.8" />
+				<property name="y" value="15.8" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lrx-l30" class="org.mmarini.atc.sim.DefaultRunway">
+		<property name="id" value="L30" />
+		<property name="alignment" value="S" />
+		<property name="course" value="300" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-8.7" />
+				<property name="y" value="5" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

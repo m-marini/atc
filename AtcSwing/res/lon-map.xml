@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: lon-map.xml,v 1.2 2008/02/27 14:55:53 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+
+	<bean id="lon" class="org.mmarini.atc.sim.RadarMap"
+		init-method="init">
+		<property name="id" value="LON" />
+		<property name="name" value="London (UK)" />
+		<property name="exitList">
+			<list>
+				<ref bean="lon-bcn" />
+				<ref bean="lon-dcs" />
+				<ref bean="lon-dpe" />
+				<ref bean="lon-gur" />
+				<ref bean="lon-lnd" />
+				<ref bean="lon-nik" />
+			</list>
+		</property>
+		<property name="runwayList">
+			<list>
+				<ref bean="lon-08r" />
+				<ref bean="lon-26" />
+				<ref bean="lon-27l" />
+			</list>
+		</property>
+		<property name="beaconList">
+			<list>
+				<ref bean="lon-big" />
+				<ref bean="lon-bky" />
+				<ref bean="lon-bnn" />
+				<ref bean="lon-cln" />
+				<ref bean="lon-cpt" />
+				<ref bean="lon-dty" />
+				<ref bean="lon-gy" />
+				<ref bean="lon-lut" />
+				<ref bean="lon-may" />
+				<ref bean="lon-mid" />
+				<ref bean="lon-hon" />
+				<ref bean="lon-oe" />
+				<ref bean="lon-sam" />
+				<ref bean="lon-sfd" />
+				<ref bean="lon-wod" />
+			</list>
+		</property>
+		<property name="routeList">
+			<list>
+				<!--
+					Entry Routes
+				-->
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-nik" />
+					<property name="location1" ref="lon-cln" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-dcs" />
+					<property name="location1" ref="lon-hon" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-bcn" />
+					<property name="location1" ref="lon-cpt" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-lnd" />
+					<property name="location1" ref="lon-sam" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-dpe" />
+					<property name="location1" ref="lon-sfd" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-gur" />
+					<property name="location1" ref="lon-mid" />
+					<property name="type" value="entry" />
+				</bean>
+
+				<!--
+					Connection Routes
+				-->
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cpt" />
+					<property name="location1" ref="lon-hon" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cpt" />
+					<property name="location1" ref="lon-wod" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cpt" />
+					<property name="location1" ref="lon-mid" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cpt" />
+					<property name="location1" ref="lon-sam" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-wod" />
+					<property name="location1" ref="lon-dty" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-wod" />
+					<property name="location1" ref="lon-mid" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-hon" />
+					<property name="location1" ref="lon-dty" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cln" />
+					<property name="location1" ref="lon-dty" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-cln" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-sfd" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-hon" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-sam" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-dty" />
+					<property name="location1" ref="lon-bky" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cln" />
+					<property name="location1" ref="lon-bky" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-sfd" />
+					<property name="location1" ref="lon-bky" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-bky" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cpt" />
+					<property name="location1" ref="lon-bky" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cln" />
+					<property name="location1" ref="lon-may" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cln" />
+					<property name="location1" ref="lon-big" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-sfd" />
+					<property name="location1" ref="lon-big" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-may" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-mid" />
+					<property name="location1" ref="lon-big" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-cpt" />
+					<property name="location1" ref="lon-bnn" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-dty" />
+					<property name="location1" ref="lon-bnn" />
+					<property name="type" value="landConnection" />
+				</bean>
+
+				<!-- 
+					Approach Routes
+				-->
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-big" />
+					<property name="location1" ref="lon-oe" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-bnn" />
+					<property name="location1" ref="lon-oe" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-27l" />
+					<property name="location1" ref="lon-oe" />
+					<property name="type" value="land" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-08r" />
+					<property name="location1" ref="lon-gy" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-may" />
+					<property name="location1" ref="lon-gy" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-lut" />
+					<property name="location1" ref="lon-bky" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lon-lut" />
+					<property name="location1" ref="lon-26" />
+					<property name="type" value="land" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 
+		Entries
+	-->
+	<bean id="lon-dpe" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="DPE" />
+		<property name="alignment" value="SE" />
+		<property name="course" value="326" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="66.6" />
+				<property name="y" value="-74.6" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-nik" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="NIK" />
+		<property name="alignment" value="E" />
+		<property name="course" value="294" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="93.3" />
+				<property name="y" value="35.9" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-dcs" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="DCS" />
+		<property name="alignment" value="N" />
+		<property name="course" value="163" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-42.9" />
+				<property name="y" value="90.3" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-bcn" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="BCN" />
+		<property name="alignment" value="W" />
+		<property name="course" value="106" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-89.1" />
+				<property name="y" value="45.4" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-lnd" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="LND" />
+		<property name="alignment" value="W" />
+		<property name="course" value="80" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-98.3" />
+				<property name="y" value="-18.4" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-gur" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="GUR" />
+		<property name="alignment" value="SW" />
+		<property name="course" value="45" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-70.7" />
+				<property name="y" value="-70.7" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 
+		Radio Beams
+	-->
+	<bean id="lon-mid" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="MID" />
+		<property name="alignment" value="S" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="0" />
+				<property name="y" value="0" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-bky" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="BKY" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="25.9" />
+				<property name="y" value="56.2" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-big" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="BIG" />
+		<property name="alignment" value="E" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="24.9" />
+				<property name="y" value="16.6" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-bnn" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="BNN" />
+		<property name="alignment" value="E" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="2.8" />
+				<property name="y" value="40.3" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-wod" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="WOD" />
+		<property name="alignment" value="E" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-9.6" />
+				<property name="y" value="24" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-cpt" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="CPT" />
+		<property name="alignment" value="SW" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-22.4" />
+				<property name="y" value="26.3" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-cln" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="CLN" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="66.9" />
+				<property name="y" value="47.7" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-dty" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="DTY" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-18.4" />
+				<property name="y" value="67.7" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-hon" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="HON" />
+		<property name="alignment" value="W" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-39.2" />
+				<property name="y" value="78.2" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-sam" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="SAM" />
+		<property name="alignment" value="S" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-27.2" />
+				<property name="y" value="-5.9" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-sfd" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="SFD" />
+		<property name="alignment" value="SW" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="28.3" />
+				<property name="y" value="-17.6" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-may" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="MAY" />
+		<property name="alignment" value="SE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="28" />
+				<property name="y" value="-2.2" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-oe" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="OE" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="21.1" />
+				<property name="y" value="24.1" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-gy" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="GY" />
+		<property name="alignment" value="N" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="7.4" />
+				<property name="y" value="4" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-lut" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="LUT" />
+		<property name="alignment" value="N" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="18.9" />
+				<property name="y" value="51.5" />
+			</bean>
+		</property>
+	</bean>
+
+	<!--
+		Runways
+	-->
+	<bean id="lon-27l" class="org.mmarini.atc.sim.DefaultRunway">
+		<!-- Heathrow -->
+		<property name="id" value="27L" />
+		<property name="alignment" value="N" />
+		<property name="course" value="275" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="6.2" />
+				<property name="y" value="25.4" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-08r" class="org.mmarini.atc.sim.DefaultRunway">
+		<!-- Gatwick -->
+		<property name="id" value="08R" />
+		<property name="alignment" value="E" />
+		<property name="course" value="82" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="15.8" />
+				<property name="y" value="5.2" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="lon-26" class="org.mmarini.atc.sim.DefaultRunway">
+		<!-- Luton -->
+		<property name="id" value="26" />
+		<property name="alignment" value="W" />
+		<property name="course" value="259" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="10.1" />
+				<property name="y" value="49.7" />
+			</bean>
+		</property>
+	</bean>
+</beans>

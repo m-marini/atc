@@ -1,0 +1,2 @@
+Main-class: org.mmarini.atc.swing.GameFrame
+Class-Path: commons-beanutils.jar commons-collections.jar commons-digester-1.7.jar commons-logging.jar log4j-1.2.7.jar spring.jar cglib-nodep-2.1_3.jar

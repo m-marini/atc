@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: lin-map.xml,v 1.3 2008/02/27 14:55:53 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+
+	<bean id="lin" class="org.mmarini.atc.sim.RadarMap"
+		init-method="init">
+		<property name="id" value="LIN" />
+		<property name="name" value="Milan (Italy)" />
+		<property name="exitList">
+			<list>
+				<ref bean="lin-alb" />
+				<ref bean="lin-boa" />
+				<ref bean="lin-bzo" />
+				<ref bean="lin-dj" />
+				<ref bean="lin-elb" />
+				<ref bean="lin-frz" />
+				<ref bean="lin-lsa" />
+				<ref bean="lin-pis" />
+				<ref bean="lin-vic" />
+				<ref bean="lin-zue" />
+			</list>
+		</property>
+		<property name="runwayList">
+			<list>
+				<ref bean="lin-36r" />
+			</list>
+		</property>
+		<property name="beaconList">
+			<list>
+				<ref bean="lin-cod" />
+				<ref bean="lin-gen" />
+				<ref bean="lin-lin" />
+				<ref bean="lin-par" />
+				<ref bean="lin-srn" />
+				<ref bean="lin-top" />
+				<ref bean="lin-tzo" />
+				<ref bean="lin-vog" />
+			</list>
+		</property>
+		<property name="routeList">
+			<list>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-36r" />
+					<property name="location1" ref="lin-lin" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-vog" />
+					<property name="location1" ref="lin-lin" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-cod" />
+					<property name="location1" ref="lin-lin" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-srn" />
+					<property name="location1" ref="lin-lin" />
+					<property name="type" value="land" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-tzo" />
+					<property name="location1" ref="lin-36r" />
+					<property name="type" value="takeoff" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-vog" />
+					<property name="location1" ref="lin-gen" />
+					<property name="type" value="landConnection" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-srn" />
+					<property name="location1" ref="lin-gen" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-top" />
+					<property name="location1" ref="lin-gen" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-frz" />
+					<property name="location1" ref="lin-gen" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-boa" />
+					<property name="location1" ref="lin-gen" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-dj" />
+					<property name="location1" ref="lin-gen" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-dj" />
+					<property name="location1" ref="lin-top" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-alb" />
+					<property name="location1" ref="lin-top" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-elb" />
+					<property name="location1" ref="lin-top" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-frz" />
+					<property name="location1" ref="lin-top" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-srn" />
+					<property name="location1" ref="lin-vog" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-alb" />
+					<property name="location1" ref="lin-vog" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-tzo" />
+					<property name="location1" ref="lin-vog" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-srn" />
+					<property name="location1" ref="lin-par" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-tzo" />
+					<property name="location1" ref="lin-par" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-cod" />
+					<property name="location1" ref="lin-tzo" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-vic" />
+					<property name="location1" ref="lin-tzo" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-zue" />
+					<property name="location1" ref="lin-tzo" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-cod" />
+					<property name="location1" ref="lin-par" />
+					<property name="type" value="landConnection" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-top" />
+					<property name="location1" ref="lin-vog" />
+					<property name="type" value="landConnection" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-bzo" />
+					<property name="location1" ref="lin-tzo" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-boa" />
+					<property name="location1" ref="lin-tzo" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-srn" />
+					<property name="location1" ref="lin-tzo" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-lsa" />
+					<property name="location1" ref="lin-srn" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-bzo" />
+					<property name="location1" ref="lin-srn" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-vic" />
+					<property name="location1" ref="lin-srn" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-zue" />
+					<property name="location1" ref="lin-srn" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-boa" />
+					<property name="location1" ref="lin-srn" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-dj" />
+					<property name="location1" ref="lin-srn" />
+					<property name="type" value="entry" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-lsa" />
+					<property name="location1" ref="lin-top" />
+					<property name="type" value="entry" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-alb" />
+					<property name="location1" ref="lin-gen" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-elb" />
+					<property name="location1" ref="lin-gen" />
+					<property name="type" value="entry" />
+				</bean>
+
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-frz" />
+					<property name="location1" ref="lin-par" />
+					<property name="type" value="entry" />
+				</bean>
+				<bean class="org.mmarini.atc.sim.Route">
+					<property name="location0" ref="lin-pis" />
+					<property name="location1" ref="lin-par" />
+					<property name="type" value="entry" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="lin-vic" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="VIC" />
+		<property name="course" value="271" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="99.6" />
+				<property name="y" value="9.2" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-dj" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="DJ" />
+		<property name="alignment" value="NW" />
+		<property name="course" value="124" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-81" />
+				<property name="y" value="58.6" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-elb" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="ELB" />
+		<property name="alignment" value="S" />
+		<property name="course" value="332" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="11.7" />
+				<property name="y" value="-99.3" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-alb" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="ALB" />
+		<property name="alignment" value="SW" />
+		<property name="course" value="62" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-51.9" />
+				<property name="y" value="-85.5" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-zue" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="ZUE" />
+		<property name="alignment" value="N" />
+		<property name="course" value="178" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-13.7" />
+				<property name="y" value="99.1" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-frz" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="FRZ" />
+		<property name="alignment" value="SE" />
+		<property name="course" value="328" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="65.9" />
+				<property name="y" value="-75.2" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-pis" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="PIS" />
+		<property name="alignment" value="SE" />
+		<property name="course" value="358" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="44.6" />
+				<property name="y" value="-89.5" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-bzo" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="BZO" />
+		<property name="alignment" value="NE" />
+		<property name="course" value="245" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="83.5" />
+				<property name="y" value="55" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-boa" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="BOA" />
+		<property name="alignment" value="SE" />
+		<property name="course" value="305" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="83.6" />
+				<property name="y" value="-54.9" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-lsa" class="org.mmarini.atc.sim.DefaultGateway">
+		<property name="id" value="LSA" />
+		<property name="alignment" value="W" />
+		<property name="course" value="115" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-99.1" />
+				<property name="y" value="-13.6" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-lin" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="LIN" />
+		<property name="alignment" value="SE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="0.7" />
+				<property name="y" value="-14" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-vog" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="VOG" />
+		<property name="alignment" value="NW" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-12.8" />
+				<property name="y" value="-29.8" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-cod" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="COD" />
+		<property name="alignment" value="SE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="11.2" />
+				<property name="y" value="-14.1" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-srn" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="SRN" />
+		<property name="alignment" value="W" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-10.6" />
+				<property name="y" value="11.2" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-tzo" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="TZO" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="9.8" />
+				<property name="y" value="5.9" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-gen" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="GEN" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-8.1" />
+				<property name="y" value="-62.2" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-par" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="PAR" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="42.9" />
+				<property name="y" value="-38.3" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-top" class="org.mmarini.atc.sim.DefaultLocation">
+		<property name="id" value="TOP" />
+		<property name="alignment" value="NE" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="-59.5" />
+				<property name="y" value="-32.1" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="lin-36r" class="org.mmarini.atc.sim.DefaultRunway">
+		<property name="id" value="36R" />
+		<property name="alignment" value="W" />
+		<property name="course" value="357" />
+		<property name="position">
+			<bean class="org.mmarini.atc.sim.Position">
+				<property name="x" value="0" />
+				<property name="y" value="0" />
+			</bean>
+		</property>
+	</bean>
+</beans>

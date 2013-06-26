@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<!-- $Id: swing-beans.xml,v 1.4 2008/03/01 21:20:13 marco Exp $ -->
+<beans>
+	<bean class="org.mmarini.atc.swing.GameFrame"
+		init-method="init">
+		<property name="atcPane" ref="atcPane" />
+		<property name="menuPane" ref="menuPane" />
+		<property name="atcClock" ref="atcClock" />
+		<property name="endGamePane" ref="endGamePane" />
+		<property name="helpPane" ref="helpPane" />
+		<property name="logPane" ref="logPane" />
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="menuListener">
+			<list>
+				<ref bean="locationPane" />
+				<ref bean="runwayPane" />
+				<ref bean="conditionPane" />
+			</list>
+		</property>
+	</bean>
+
+	<alias name="org.mmarini.atc.swing.GameFrame" alias="gameFrame" />
+
+	<bean id="helpPane" class="org.mmarini.atc.swing.HelpPane"
+		init-method="init">
+		<property name="resource" value="/help/index.html" />
+	</bean>
+
+	<bean id="endGamePane" class="org.mmarini.atc.swing.EndGamePane"
+		init-method="init">
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="userOptions" ref="userOptionsHandler" />
+		<property name="hitsRefreshable" ref="hitsPane" />
+	</bean>
+
+	<bean id="userOptionsHandler"
+		class="org.mmarini.atc.xml.UserOptionsHandler" init-method="init">
+		<property name="optionsFilename" value=".atc.jar" />
+		<property name="ruleResource" value="/options-rules-0.0.1.xml" />
+		<property name="atcHandler" ref="atcHandler" />
+	</bean>
+
+	<bean id="menuPane" class="org.mmarini.atc.swing.MenuPane"
+		init-method="init">
+		<property name="hitsPane" ref="hitsPane" />
+		<property name="menuPaneListener" ref="gameFrame" />
+		<property name="atcHandler" ref="atcHandler" />
+	</bean>
+
+	<bean id="hitsPane" class="org.mmarini.atc.swing.HitsPane"
+		init-method="init" depends-on="userOptionsHandler">
+		<property name="hitsTableModel" ref="hitsTableModel" />
+	</bean>
+
+	<bean id="hitsTableModel"
+		class="org.mmarini.atc.swing.HitsTableModel" init-method="refresh"
+		depends-on="userOptionsHandler">
+		<property name="atcHandler" ref="atcHandler" />
+	</bean>
+
+	<bean id="radadMapList"
+		class="org.mmarini.atc.swing.RadarMapModel"
+		init-method="refresh">
+		<property name="atcHandler" ref="atcHandler" />
+	</bean>
+
+	<bean id="atcPane" class="org.mmarini.atc.swing.AtcFrame"
+		init-method="init">
+		<property name="radarPane" ref="radarPane" />
+		<property name="planePane" ref="leftPane" />
+		<property name="commandPane" ref="commandController" />
+	</bean>
+
+	<bean id="player" class="org.mmarini.atc.sound.Player"
+		init-method="init">
+		<property name="bufferedPlayer" ref="samplePlayer" />
+	</bean>
+
+	<bean id="samplePlayer"
+		class="org.mmarini.atc.sound.BufferedPlayer">
+		<property name="gain" value="-10" />
+	</bean>
+
+	<bean id="logPane" class="org.mmarini.atc.swing.LogPane"
+		init-method="init">
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="rows" value="10" />
+		<property name="player" ref="player" />
+	</bean>
+
+	<bean id="commandController"
+		class="org.mmarini.atc.swing.DefaultCommandController"
+		init-method="init">
+		<property name="endGameIconResource" value="/images/exit.png" />
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="planeButtonPane" ref="planeButtonPane" />
+		<property name="commandPane" ref="commandPane" />
+		<property name="flightLevelPane" ref="flightPane" />
+		<property name="runwayPane" ref="runwayPane" />
+		<property name="conditionPane" ref="conditionPane" />
+		<property name="locationPane" ref="locationPane" />
+		<property name="player" ref="player" />
+		<property name="gameListener" ref="gameFrame" />
+	</bean>
+
+	<bean id="infoText" class="javax.swing.JTextField">
+		<property name="editable" value="false" />
+	</bean>
+
+	<bean id="planeButtonPane"
+		class="org.mmarini.atc.swing.PlaneButtonPane"
+		init-method="init">
+		<property name="defaultButtonResource"
+			value="/images/button.png" />
+		<property name="disabledDefaultButtonResource"
+			value="/images/disabledButton.png" />
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="commandController" ref="commandController" />
+		<property name="rows" value="10" />
+		<property name="columns" value="1" />
+	</bean>
+
+	<bean id="conditionPane"
+		class="org.mmarini.atc.swing.ConditionPane" init-method="init">
+		<property name="defaultButtonResource"
+			value="/images/button.png" />
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="cancelButtonResource"
+			value="/images/cancel.png" />
+		<property name="commandController" ref="commandController" />
+	</bean>
+
+	<bean id="locationPane"
+		class="org.mmarini.atc.swing.LocationPane" init-method="init">
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="defaultButtonResource"
+			value="/images/button.png" />
+		<property name="cancelButtonResource"
+			value="/images/cancel.png" />
+		<property name="commandController" ref="commandController" />
+	</bean>
+
+	<bean id="runwayPane" class="org.mmarini.atc.swing.RunwayPane"
+		init-method="init">
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="defaultButtonResource"
+			value="/images/button.png" />
+		<property name="cancelButtonResource"
+			value="/images/cancel.png" />
+		<property name="commandController" ref="commandController" />
+	</bean>
+
+	<bean id="flightPane"
+		class="org.mmarini.atc.swing.FlightLevelPane"
+		init-method="init">
+		<property name="cancelButtonResource"
+			value="/images/cancel.png" />
+		<property name="commandController" ref="commandController" />
+		<property name="buttonResource">
+			<list>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl360Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl320Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl280Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl240Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl200Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl160Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl120Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl080Button.png" />
+				</bean>
+				<bean
+					class="org.springframework.core.io.ClassPathResource">
+					<constructor-arg value="/images/fl040Button.png" />
+				</bean>
+			</list>
+		</property>
+		<property name="buttonColor">
+			<list>
+				<ref bean="color360" />
+				<ref bean="color320" />
+				<ref bean="color280" />
+				<ref bean="color240" />
+				<ref bean="color200" />
+				<ref bean="color160" />
+				<ref bean="color120" />
+				<ref bean="color080" />
+				<ref bean="color040" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="commandPane" class="org.mmarini.atc.swing.CommandPane"
+		init-method="init">
+		<property name="commandController" ref="commandController" />
+		<property name="defaultButtonResource"
+			value="/images/button.png" />
+		<property name="cancelButtonResource"
+			value="/images/cancel.png" />
+	</bean>
+
+	<bean id="radarPane" class="org.mmarini.atc.swing.RadarPane"
+		init-method="init">
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="doubleBuffered" value="true" />
+	</bean>
+
+
+	<bean id="leftPane" class="org.mmarini.atc.swing.LeftPane"
+		init-method="init">
+		<property name="planePane" ref="planePane" />
+		<property name="logPane" ref="logPane" />
+	</bean>
+
+	<bean id="planePane" class="org.mmarini.atc.swing.PlanePane"
+		init-method="init">
+		<property name="atcHandler" ref="atcHandler" />
+	</bean>
+
+	<bean id="planeTablePane"
+		class="org.mmarini.atc.swing.PlaneTablePane" init-method="init">
+		<property name="planeTableModel" ref="planeTableModel" />
+	</bean>
+
+	<bean id="planeTableModel"
+		class="org.mmarini.atc.swing.PlaneTableModel">
+		<property name="atcHandler" ref="atcHandler" />
+	</bean>
+
+	<bean id="atcClock" class="org.mmarini.atc.swing.AtcClock"
+		init-method="init">
+		<property name="interval" value="1000" />
+		<property name="atcHandler" ref="atcHandler" />
+		<property name="gameListener" ref="gameFrame" />
+		<property name="refreshableList">
+			<list>
+				<ref bean="radarPane" />
+				<ref bean="planeTableModel" />
+				<ref bean="planeButtonPane" />
+				<ref bean="logPane" />
+				<ref bean="planePane" />
+			</list>
+		</property>
+	</bean>
+	<!-- 
+		<bean id="handlerSingleton"
+		class="org.springframework.aop.target.CommonsPoolTargetSource">
+		<property name="targetBeanName" ref="actHandlerTemplate" />
+		<property name="maxSize" value="1" />
+		</bean>
+	-->
+	<bean id="atcHandler"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="atcHandlerTemplate" />
+	</bean>
+</beans>
