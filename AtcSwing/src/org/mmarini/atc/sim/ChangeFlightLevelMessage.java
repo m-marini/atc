@@ -11,32 +11,34 @@ package org.mmarini.atc.sim;
 
 /**
  * @author marco.marini@mmarini.org
- * @version $Id: ChangeFlightLevelMessage.java,v 1.2 2008/02/15 18:06:58 marco Exp $
+ * @version $Id: ChangeFlightLevelMessage.java,v 1.2 2008/02/15 18:06:58 marco
+ *          Exp $
  * 
  */
 public class ChangeFlightLevelMessage extends AbstractMessage {
-    private String flightLevelId;
+	private String flightLevelId;
 
-    /**
-         * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
-         */
-    public void apply(MessageVisitor visitor) {
-	visitor.visit(this);
-    }
+	/**
+	 * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
+	 */
+	@Override
+	public void apply(MessageVisitor visitor) {
+		visitor.visit(this);
+	}
 
-    /**
-         * @return the flightLevelId
-         */
-    public String getFlightLevelId() {
-	return flightLevelId;
-    }
+	/**
+	 * @return the flightLevelId
+	 */
+	public String getFlightLevelId() {
+		return flightLevelId;
+	}
 
-    /**
-         * @param flightLevelId
-         *                the flightLevelId to set
-         */
-    public void setFlightLevelId(String flightLevelId) {
-	this.flightLevelId = flightLevelId;
-    }
+	/**
+	 * @param flightLevelId
+	 *            the flightLevelId to set
+	 */
+	public void setFlightLevelId(String flightLevelId) {
+		this.flightLevelId = flightLevelId;
+	}
 
 }

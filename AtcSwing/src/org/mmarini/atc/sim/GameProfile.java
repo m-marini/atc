@@ -22,18 +22,11 @@ public class GameProfile {
 	private String id;
 
 	/**
-	 * @return the newPlaneProbability
+	 * 
+	 * @return
 	 */
-	public double getNewPlaneProbability() {
-		return newPlaneProbability;
-	}
-
-	/**
-	 * @param newPlaneProbability
-	 *            the newPlaneProbability to set
-	 */
-	public void setNewPlaneProbability(double newPlaneProbability) {
-		this.newPlaneProbability = newPlaneProbability;
+	public String getId() {
+		return id;
 	}
 
 	/**
@@ -41,6 +34,21 @@ public class GameProfile {
 	 */
 	public int getMaxPlane() {
 		return maxPlane;
+	}
+
+	/**
+	 * @return the newPlaneProbability
+	 */
+	public double getNewPlaneProbability() {
+		return newPlaneProbability;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**
@@ -52,19 +60,11 @@ public class GameProfile {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @param newPlaneProbability
+	 *            the newPlaneProbability to set
 	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setNewPlaneProbability(double newPlaneProbability) {
+		this.newPlaneProbability = newPlaneProbability;
 	}
 
 }

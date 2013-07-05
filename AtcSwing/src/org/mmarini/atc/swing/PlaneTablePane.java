@@ -25,40 +25,40 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PlaneTablePane extends JPanel {
 
-    private static Log log = LogFactory.getLog(PlaneTablePane.class);
+	private static Log log = LogFactory.getLog(PlaneTablePane.class);
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private PlaneTableModel planeTableModel;
+	private PlaneTableModel planeTableModel;
 
-    /**
+	/**
+	 * @return the planeTableModel
+	 */
+	private PlaneTableModel getPlaneTableModel() {
+		return planeTableModel;
+	}
+
+	/**
          * 
          * 
          */
-    public void init() {
-	log.debug("init");
-	PlaneTableModel model = getPlaneTableModel();
-	JTable table = new JTable(model);
-	JScrollPane scrollPane = new JScrollPane(table);
-	setLayout(new BorderLayout());
-	add(scrollPane, BorderLayout.CENTER);
-    }
+	public void init() {
+		log.debug("init");
+		PlaneTableModel model = getPlaneTableModel();
+		JTable table = new JTable(model);
+		JScrollPane scrollPane = new JScrollPane(table);
+		setLayout(new BorderLayout());
+		add(scrollPane, BorderLayout.CENTER);
+	}
 
-    /**
-         * @return the planeTableModel
-         */
-    private PlaneTableModel getPlaneTableModel() {
-	return planeTableModel;
-    }
-
-    /**
-         * @param planeTableModel
-         *                the planeTableModel to set
-         */
-    public void setPlaneTableModel(PlaneTableModel planeListModel) {
-	this.planeTableModel = planeListModel;
-    }
+	/**
+	 * @param planeTableModel
+	 *            the planeTableModel to set
+	 */
+	public void setPlaneTableModel(PlaneTableModel planeListModel) {
+		this.planeTableModel = planeListModel;
+	}
 }

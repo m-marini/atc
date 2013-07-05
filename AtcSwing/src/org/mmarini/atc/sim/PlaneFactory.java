@@ -18,81 +18,81 @@ import java.util.Random;
  * 
  */
 public class PlaneFactory {
-    private List<PlaneModel> templateList;
+	private List<PlaneModel> templateList;
 
-    private int count;
+	private int count;
 
-    private Random random = new Random();
+	private Random random = new Random();
 
-    /**
-         * 
-         * @return
-         */
-    public Plane createPlane() {
-	int ct = getCount();
-	String id = String.valueOf((char) ('A' + (ct % 26))) + ct / 26;
-	ct = ct + 1;
-	setCount(ct);
-	PlaneModel model = selectModel();
-	DefaultPlane plane = new DefaultPlane();
-	plane.setId(id);
-	plane.setModel(model);
-	return plane;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public Plane createPlane() {
+		int ct = getCount();
+		String id = String.valueOf((char) ('A' + (ct % 26))) + ct / 26;
+		ct = ct + 1;
+		setCount(ct);
+		PlaneModel model = selectModel();
+		DefaultPlane plane = new DefaultPlane();
+		plane.setId(id);
+		plane.setModel(model);
+		return plane;
+	}
 
-    /**
-         * 
-         * @return
-         */
-    private PlaneModel selectModel() {
-	List<PlaneModel> list = getTemplateList();
-	int idx = getRandom().nextInt(list.size());
-	return list.get(idx);
-    }
+	/**
+	 * @return the count
+	 */
+	private int getCount() {
+		return count;
+	}
 
-    /**
-         * @return the templateList
-         */
-    private List<PlaneModel> getTemplateList() {
-	return templateList;
-    }
+	/**
+	 * @return the random
+	 */
+	private Random getRandom() {
+		return random;
+	}
 
-    /**
-         * @param templateList
-         *                the templateList to set
-         */
-    public void setTemplateList(List<PlaneModel> planeTemplateList) {
-	this.templateList = planeTemplateList;
-    }
+	/**
+	 * @return the templateList
+	 */
+	private List<PlaneModel> getTemplateList() {
+		return templateList;
+	}
 
-    /**
-         * @return the random
-         */
-    private Random getRandom() {
-	return random;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	private PlaneModel selectModel() {
+		List<PlaneModel> list = getTemplateList();
+		int idx = getRandom().nextInt(list.size());
+		return list.get(idx);
+	}
 
-    /**
-         * @param random
-         *                the random to set
-         */
-    public void setRandom(Random random) {
-	this.random = random;
-    }
+	/**
+	 * @param count
+	 *            the count to set
+	 */
+	private void setCount(int count) {
+		this.count = count;
+	}
 
-    /**
-         * @return the count
-         */
-    private int getCount() {
-	return count;
-    }
+	/**
+	 * @param random
+	 *            the random to set
+	 */
+	public void setRandom(Random random) {
+		this.random = random;
+	}
 
-    /**
-         * @param count
-         *                the count to set
-         */
-    private void setCount(int count) {
-	this.count = count;
-    }
+	/**
+	 * @param templateList
+	 *            the templateList to set
+	 */
+	public void setTemplateList(List<PlaneModel> planeTemplateList) {
+		this.templateList = planeTemplateList;
+	}
 
 }

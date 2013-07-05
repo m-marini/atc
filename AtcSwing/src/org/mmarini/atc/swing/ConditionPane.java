@@ -29,121 +29,124 @@ import org.mmarini.atc.sim.Location;
  * 
  */
 public class ConditionPane extends AbstractCommandPane implements Refreshable,
-	ActionListener {
-    /**
+		ActionListener {
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private AtcHandler atcHandler;
+	private AtcHandler atcHandler;
 
-    private JButton immediateBtn = new JButton();
+	private JButton immediateBtn = new JButton();
 
-    /**
+	/**
+         * 
+         */
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		String locationId = event.getActionCommand();
+		getCommandController().notifyLocationSelection(locationId);
+	}
+
+	/**
+	 * @return the atcHandler
+	 */
+	private AtcHandler getAtcHandler() {
+		return atcHandler;
+	}
+
+	/**
+	 * @return the immediateBtn
+	 */
+	private JButton getImmediateBtn() {
+		return immediateBtn;
+	}
+
+	/**
          * 
          * 
          */
-    public void init() {
-	super.init("Condition");
-	JButton btn = createDefaultButton("Immediate");
-	setImmediateBtn(btn);
-	btn.addActionListener(new ActionListener() {
+	public void init() {
+		super.init("Condition");
+		JButton btn = createDefaultButton("Immediate");
+		setImmediateBtn(btn);
+		btn.addActionListener(new ActionListener() {
 
-	    public void actionPerformed(ActionEvent arg0) {
-		getCommandController().notifyLocationSelection(null);
-	    }
-	});
-	refresh();
-    }
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				getCommandController().notifyLocationSelection(null);
+			}
+		});
+		refresh();
+	}
 
-    /**
+	/**
          * 
          * 
          */
-    public void refresh() {
-	List<Location> locationList = getAtcHandler().retrieveMapLocations();
-	removeAll();
-	GridBagLayout gbl = new GridBagLayout();
-	setLayout(gbl);
-	GridBagConstraints gbc = new GridBagConstraints();
-	gbc.gridx = 0;
-	gbc.gridy = 0;
-	gbc.gridwidth = 2;
-	gbc.anchor = GridBagConstraints.WEST;
-	gbc.weightx = 1;
-	gbc.insets = new Insets(1, 1, 1, 1);
-	JButton btn = getCancelBtn();
-	gbl.setConstraints(btn, gbc);
-	add(btn);
-	++gbc.gridy;
-	btn = getImmediateBtn();
-	gbl.setConstraints(btn, gbc);
-	add(btn);
-	int y = ++gbc.gridy;
-	int n = 0;
-	if (locationList != null) {
-	    n = locationList.size();
-	    gbc.gridwidth = 1;
-	    for (int i = 0; i < n; ++i) {
-		if (i == (n + 1) / 2) {
-		    gbc.gridx = 1;
-		    gbc.gridy = y;
-		}
-		Location location = locationList.get(i);
-		String id = location.getId();
-		btn = createDefaultButton(id);
-		btn.setActionCommand(id);
-		btn.addActionListener(this);
+	@Override
+	public void refresh() {
+		List<Location> locationList = getAtcHandler().retrieveMapLocations();
+		removeAll();
+		GridBagLayout gbl = new GridBagLayout();
+		setLayout(gbl);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.weightx = 1;
+		gbc.insets = new Insets(1, 1, 1, 1);
+		JButton btn = getCancelBtn();
 		gbl.setConstraints(btn, gbc);
 		add(btn);
 		++gbc.gridy;
-	    }
+		btn = getImmediateBtn();
+		gbl.setConstraints(btn, gbc);
+		add(btn);
+		int y = ++gbc.gridy;
+		int n = 0;
+		if (locationList != null) {
+			n = locationList.size();
+			gbc.gridwidth = 1;
+			for (int i = 0; i < n; ++i) {
+				if (i == (n + 1) / 2) {
+					gbc.gridx = 1;
+					gbc.gridy = y;
+				}
+				Location location = locationList.get(i);
+				String id = location.getId();
+				btn = createDefaultButton(id);
+				btn.setActionCommand(id);
+				btn.addActionListener(this);
+				gbl.setConstraints(btn, gbc);
+				add(btn);
+				++gbc.gridy;
+			}
+		}
+		JPanel cmp = new JPanel();
+		cmp.setBackground(Color.BLACK);
+		gbc.gridx = 0;
+		gbc.gridy = y + (n + 1) / 2;
+		gbc.gridwidth = 2;
+		gbc.weighty = 1;
+		gbl.setConstraints(cmp, gbc);
+		add(cmp);
 	}
-	JPanel cmp = new JPanel();
-	cmp.setBackground(Color.BLACK);
-	gbc.gridx = 0;
-	gbc.gridy = y + (n + 1) / 2;
-	gbc.gridwidth = 2;
-	gbc.weighty = 1;
-	gbl.setConstraints(cmp, gbc);
-	add(cmp);
-    }
 
-    /**
-         * 
-         */
-    public void actionPerformed(ActionEvent event) {
-	String locationId = event.getActionCommand();
-	getCommandController().notifyLocationSelection(locationId);
-    }
+	/**
+	 * @param atcHandler
+	 *            the atcHandler to set
+	 */
+	public void setAtcHandler(AtcHandler atcHandler) {
+		this.atcHandler = atcHandler;
+	}
 
-    /**
-         * @return the atcHandler
-         */
-    private AtcHandler getAtcHandler() {
-	return atcHandler;
-    }
-
-    /**
-         * @param atcHandler
-         *                the atcHandler to set
-         */
-    public void setAtcHandler(AtcHandler atcHandler) {
-	this.atcHandler = atcHandler;
-    }
-
-    /**
-         * @return the immediateBtn
-         */
-    private JButton getImmediateBtn() {
-	return immediateBtn;
-    }
-
-    /**
-         * @param immediateBtn
-         *                the immediateBtn to set
-         */
-    private void setImmediateBtn(JButton immediateBtn) {
-	this.immediateBtn = immediateBtn;
-    }
+	/**
+	 * @param immediateBtn
+	 *            the immediateBtn to set
+	 */
+	private void setImmediateBtn(JButton immediateBtn) {
+		this.immediateBtn = immediateBtn;
+	}
 }

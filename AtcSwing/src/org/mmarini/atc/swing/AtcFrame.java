@@ -16,6 +16,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,85 +28,84 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AtcFrame extends JFrame {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private static Log log = LogFactory.getLog(AtcFrame.class);
+	private static Log log = LogFactory.getLog(AtcFrame.class);
 
-    private JComponent radarPane;
+	private JComponent radarPane;
 
-    private JComponent planePane;
+	private JComponent planePane;
 
-    private JComponent commandPane;
+	private JComponent commandPane;
 
-    /**
-         * Initialization method of the frame.
-         * <p>
-         * It creates the content of the frame, locates, sizes and shows the
-         * frame.
-         * </p>
-         * 
-         */
-    public void init() {
-	log.debug("init"); //$NON-NLS-1$
-	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-	setTitle("Air Trafic Controller");
-	setResizable(false);
-	Container cp = getContentPane();
-	cp.setLayout(new BorderLayout());
-	cp.add(getRadarPane(), BorderLayout.CENTER);
-	cp.add(getPlanePane(), BorderLayout.WEST);
-	cp.add(getCommandPane(), BorderLayout.EAST);
-	pack();
-	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-	Dimension size = screen;
-	log.debug("size " + size);
-	setSize(new Dimension(size));
-	setLocation((screen.width - size.width) / 2,
-		(screen.height - size.height) / 2);
-    }
+	/**
+	 * @return the commandPane
+	 */
+	public JComponent getCommandPane() {
+		return commandPane;
+	}
 
-    /**
-         * @return the radarPane
-         */
-    private JComponent getRadarPane() {
-	return radarPane;
-    }
+	/**
+	 * @return the planePane
+	 */
+	private JComponent getPlanePane() {
+		return planePane;
+	}
 
-    /**
-         * @param radarPane
-         *                the radarPane to set
-         */
-    public void setRadarPane(JComponent radarPane) {
-	this.radarPane = radarPane;
-    }
+	/**
+	 * @return the radarPane
+	 */
+	private JComponent getRadarPane() {
+		return radarPane;
+	}
 
-    /**
-         * @return the planePane
-         */
-    private JComponent getPlanePane() {
-	return planePane;
-    }
+	/**
+	 * Initialization method of the frame.
+	 * <p>
+	 * It creates the content of the frame, locates, sizes and shows the frame.
+	 * </p>
+	 * 
+	 */
+	public void init() {
+		log.debug("init"); //$NON-NLS-1$
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setTitle("Air Trafic Controller");
+		setResizable(false);
+		Container cp = getContentPane();
+		cp.setLayout(new BorderLayout());
+		cp.add(getRadarPane(), BorderLayout.CENTER);
+		cp.add(getPlanePane(), BorderLayout.WEST);
+		cp.add(getCommandPane(), BorderLayout.EAST);
+		pack();
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension size = screen;
+		log.debug("size " + size);
+		setSize(new Dimension(size));
+		setLocation((screen.width - size.width) / 2,
+				(screen.height - size.height) / 2);
+	}
 
-    /**
-         * @param planePane
-         *                the planePane to set
-         */
-    public void setPlanePane(JComponent planePane) {
-	this.planePane = planePane;
-    }
+	/**
+	 * @param commandPane
+	 *            the commandPane to set
+	 */
+	public void setCommandPane(JComponent commandPane) {
+		this.commandPane = commandPane;
+	}
 
-    /**
-         * @return the commandPane
-         */
-    public JComponent getCommandPane() {
-	return commandPane;
-    }
+	/**
+	 * @param planePane
+	 *            the planePane to set
+	 */
+	public void setPlanePane(JComponent planePane) {
+		this.planePane = planePane;
+	}
 
-    /**
-         * @param commandPane
-         *                the commandPane to set
-         */
-    public void setCommandPane(JComponent commandPane) {
-	this.commandPane = commandPane;
-    }
+	/**
+	 * @param radarPane
+	 *            the radarPane to set
+	 */
+	public void setRadarPane(JComponent radarPane) {
+		this.radarPane = radarPane;
+	}
 }

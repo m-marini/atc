@@ -33,149 +33,152 @@ import org.mmarini.atc.sound.Player;
  * 
  */
 public class LogPane extends JPanel implements MessageConsumer, Refreshable,
-	UIAtcConstants, Logger {
-    private static Log log = LogFactory.getLog(LogPane.class);
+		UIAtcConstants, Logger {
+	private static Log log = LogFactory.getLog(LogPane.class);
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Player player;
+	private Player player;
 
-    private AtcHandler atcHandler;
+	private AtcHandler atcHandler;
 
-    private JTextArea area = new JTextArea();
+	private JTextArea area = new JTextArea();
 
-    private LogTextMessageFormat format = new LogTextMessageFormat(this);
+	private LogTextMessageFormat format = new LogTextMessageFormat(this);
 
-    /**
+	/**
          * 
          * 
          */
-    public void init() {
-	JTextArea area = getArea();
-	area.setEditable(false);
-	area.setBackground(Color.BLACK);
-	area.setForeground(Color.GREEN);
-	area.setFont(ATC_FONT);
-	setLayout(new BorderLayout());
-	add(area, BorderLayout.CENTER);
-    }
-
-    /**
-         * 
-         * @param rows
-         */
-    public void setRows(int rows) {
-	getArea().setRows(rows);
-    }
-
-    /**
-         * @see org.mmarini.atc.swing.Refreshable#refresh()
-         */
-    public void refresh() {
-	getAtcHandler().retrieveMessages((MessageConsumer) this);
-    }
-
-    /**
-         * 
-         * @param message
-         */
-    public void consume(Message message) {
-	getFormat().consume(message);
-	getPlayer().play(message);
-    }
-
-    /**
-         * @param text
-         */
-    public void log(String text) {
-	JTextArea area = getArea();
-	int rows = area.getRows();
-	if (area.getLineCount() >= rows) {
-	    int start;
-	    try {
-		start = area.getLineStartOffset(0);
-		int end = area.getLineEndOffset(0);
-		area.replaceRange(null, start, end);
-	    } catch (BadLocationException e) {
-		log.error(e.getMessage(), e);
-		area.setText(e.getMessage());
-		println();
-	    }
+	public void clear() {
+		getArea().setText("");
 	}
-	println(MessageFormat.format("{0,time} {1}", new Object[] { new Date(),
-		text }));
-    }
 
-    /**
-         * @param text
-         */
-    private void println(String text) {
-	JTextArea area = getArea();
-	area.append(text);
-	println();
-    }
+	/**
+	 * 
+	 * @param message
+	 */
+	@Override
+	public void consume(Message message) {
+		getFormat().consume(message);
+		getPlayer().play(message);
+	}
 
-    /**
-         * 
-         */
-    private void println() {
-	JTextArea area = getArea();
-	area.append(System.getProperty("line.separator"));
-    }
+	/**
+	 * @return the area
+	 */
+	private JTextArea getArea() {
+		return area;
+	}
 
-    /**
-         * @return the atcHandler
-         */
-    private AtcHandler getAtcHandler() {
-	return atcHandler;
-    }
+	/**
+	 * @return the atcHandler
+	 */
+	private AtcHandler getAtcHandler() {
+		return atcHandler;
+	}
 
-    /**
-         * @param atcHandler
-         *                the atcHandler to set
-         */
-    public void setAtcHandler(AtcHandler atcHandler) {
-	this.atcHandler = atcHandler;
-    }
+	/**
+	 * @return the format
+	 */
+	private LogTextMessageFormat getFormat() {
+		return format;
+	}
 
-    /**
-         * @return the area
-         */
-    private JTextArea getArea() {
-	return area;
-    }
+	/**
+	 * @return the player
+	 */
+	private Player getPlayer() {
+		return player;
+	}
 
-    /**
-         * @return the player
-         */
-    private Player getPlayer() {
-	return player;
-    }
-
-    /**
-         * @param player
-         *                the player to set
-         */
-    public void setPlayer(Player player) {
-	this.player = player;
-    }
-
-    /**
-         * @return the format
-         */
-    private LogTextMessageFormat getFormat() {
-	return format;
-    }
-
-    /**
+	/**
          * 
          * 
          */
-    public void clear() {
-	getArea().setText("");
-    }
+	public void init() {
+		JTextArea area = getArea();
+		area.setEditable(false);
+		area.setBackground(Color.BLACK);
+		area.setForeground(Color.GREEN);
+		area.setFont(ATC_FONT);
+		setLayout(new BorderLayout());
+		add(area, BorderLayout.CENTER);
+	}
+
+	/**
+	 * @param text
+	 */
+	@Override
+	public void log(String text) {
+		JTextArea area = getArea();
+		int rows = area.getRows();
+		if (area.getLineCount() >= rows) {
+			int start;
+			try {
+				start = area.getLineStartOffset(0);
+				int end = area.getLineEndOffset(0);
+				area.replaceRange(null, start, end);
+			} catch (BadLocationException e) {
+				log.error(e.getMessage(), e);
+				area.setText(e.getMessage());
+				println();
+			}
+		}
+		println(MessageFormat.format("{0,time} {1}", new Object[] { new Date(),
+				text }));
+	}
+
+	/**
+         * 
+         */
+	private void println() {
+		JTextArea area = getArea();
+		area.append(System.getProperty("line.separator"));
+	}
+
+	/**
+	 * @param text
+	 */
+	private void println(String text) {
+		JTextArea area = getArea();
+		area.append(text);
+		println();
+	}
+
+	/**
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
+	@Override
+	public void refresh() {
+		getAtcHandler().retrieveMessages((MessageConsumer) this);
+	}
+
+	/**
+	 * @param atcHandler
+	 *            the atcHandler to set
+	 */
+	public void setAtcHandler(AtcHandler atcHandler) {
+		this.atcHandler = atcHandler;
+	}
+
+	/**
+	 * @param player
+	 *            the player to set
+	 */
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	/**
+	 * 
+	 * @param rows
+	 */
+	public void setRows(int rows) {
+		getArea().setRows(rows);
+	}
 
 }

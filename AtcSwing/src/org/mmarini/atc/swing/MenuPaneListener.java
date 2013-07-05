@@ -16,23 +16,23 @@ package org.mmarini.atc.swing;
  */
 public interface MenuPaneListener {
 
-    /**
+	/**
          * 
-         * @param string
-         * @param f
+         * 
          */
-    public abstract void startNewGame(String string, String id);
+	public abstract void exitGame();
 
-    /**
+	/**
          * 
          * 
          */
-    public abstract void exitGame();
+	public abstract void openHelp();
 
-    /**
-         * 
-         * 
-         */
-    public abstract void openHelp();
+	/**
+	 * 
+	 * @param string
+	 * @param f
+	 */
+	public abstract void startNewGame(String string, String id);
 
 }

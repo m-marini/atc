@@ -15,33 +15,33 @@ package org.mmarini.atc.swing;
  * 
  */
 public interface CommandController {
-    /**
+	/**
          * 
-         * @param planeId
+         * 
          */
-    public abstract void notifyPlaneSelection(String planeId);
+	public abstract void cancel();
 
-    /**
-         * 
-         * @param commandId
-         */
-    public abstract void notifyCommandSelection(String commandId);
+	/**
+	 * 
+	 * @param commandId
+	 */
+	public abstract void notifyCommandSelection(String commandId);
 
-    /**
-         * 
-         * @param locationId
-         */
-    public abstract void notifyLocationSelection(String locationId);
+	/**
+	 * 
+	 * @param flightLevel
+	 */
+	public abstract void notifyFlightLevelSelection(String flightLevel);
 
-    /**
-         * 
-         * @param flightLevel
-         */
-    public abstract void notifyFlightLevelSelection(String flightLevel);
+	/**
+	 * 
+	 * @param locationId
+	 */
+	public abstract void notifyLocationSelection(String locationId);
 
-    /**
-         * 
-         * 
-         */
-    public abstract void cancel();
+	/**
+	 * 
+	 * @param planeId
+	 */
+	public abstract void notifyPlaneSelection(String planeId);
 }

@@ -15,10 +15,10 @@ package org.mmarini.atc.swing;
  * 
  */
 public interface GameListener {
-    /**
+	/**
          * 
          * 
          */
-    public abstract void endGame();
+	public abstract void endGame();
 
 }

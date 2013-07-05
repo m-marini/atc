@@ -19,144 +19,144 @@ import java.util.List;
  * 
  */
 public interface AtcHandler extends MessageConsumer {
-    /**
-         * 
-         * @param consumer
-         */
-    public void retrieveMessages(MessageConsumer consumer);
+	/**
+	 * 
+	 * @return
+	 */
+	public GameRecord createRecord();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract List<Location> retrieveMapLocations();
+	/**
+	 * 
+	 * @param radarMap
+	 * @param profile
+	 */
+	public void createSession(String radarMap, String profile);
 
-    /**
-         * 
-         * @return
-         */
-    public abstract List<Route> retrieveRoutes();
+	/**
+	 * 
+	 * @return
+	 */
+	public int getCollisionCount();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract List<Plane> retrievePlanes();
+	/**
+	 * 
+	 * @return
+	 */
+	public int getCrashCount();
 
-    /**
-         * 
-         * 
-         */
-    public abstract void updateSession();
+	/**
+	 * 
+	 * @return
+	 */
+	public int getIterationCount();
 
-    /**
-         * Retrieve the radar map list
-         * 
-         * @return the list
-         */
-    public abstract List<RadarMap> retrieveRadarMap();
+	/**
+	 * 
+	 * @return
+	 */
+	public double getNewPlaneProbability();
 
-    /**
-         * 
-         * @param radarMap
-         * @param profile
-         */
-    public void createSession(String radarMap, String profile);
+	/**
+	 * 
+	 * @return
+	 */
+	public int getSafeExit();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract List<Gateway> retrieveRunways();
+	/**
+	 * 
+	 * @return
+	 */
+	public int getWrongExitCount();
 
-    /**
-         * 
-         * @return
-         */
-    public int getCrashCount();
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isBetter();
 
-    /**
-         * 
-         * @return
-         */
-    public int getCollisionCount();
+	/**
+	 * 
+	 * @param gr
+	 * @param size
+	 */
+	public void paintRadar(Graphics gr, Dimension size);
 
-    /**
+	/**
          * 
-         * @return
+         * 
          */
-    public int getWrongExitCount();
+	public void register(String recordId);
 
-    /**
-         * 
-         * @return
-         */
-    public int getSafeExit();
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Location> retrieveBeacons();
 
-    /**
-         * 
-         * @return
-         */
-    public double getNewPlaneProbability();
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Gateway> retrieveExits();
 
-    /**
-         * 
-         * @return
-         */
-    public int getIterationCount();
+	/**
+	 * 
+	 * @return
+	 */
+	public Hits retrieveHits();
 
-    /**
-         * 
-         * @param gr
-         * @param size
-         */
-    public void paintRadar(Graphics gr, Dimension size);
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<Location> retrieveMapLocations();
 
-    /**
-         * 
-         * @param logger
-         */
-    public void retrieveMessages(Logger logger);
+	/**
+	 * 
+	 * @param logger
+	 */
+	public void retrieveMessages(Logger logger);
 
-    /**
-         * 
-         * @return
-         */
-    public GameRecord createRecord();
+	/**
+	 * 
+	 * @param consumer
+	 */
+	public void retrieveMessages(MessageConsumer consumer);
 
-    /**
-         * 
-         * @return
-         */
-    public boolean isBetter();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<Plane> retrievePlanes();
 
-    /**
-         * 
-         * 
-         */
-    public void register(String recordId);
+	/**
+	 * Retrieve the radar map list
+	 * 
+	 * @return the list
+	 */
+	public abstract List<RadarMap> retrieveRadarMap();
 
-    /**
-         * 
-         * @return
-         */
-    public Hits retrieveHits();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<Route> retrieveRoutes();
 
-    /**
-         * 
-         * @param memento
-         */
-    public void storeHits(HitsMemento memento);
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<Gateway> retrieveRunways();
 
-    /**
-         * 
-         * @return
-         */
-    public List<Location> retrieveBeacons();
+	/**
+	 * 
+	 * @param memento
+	 */
+	public void storeHits(HitsMemento memento);
 
-    /**
+	/**
          * 
-         * @return
+         * 
          */
-    public List<Gateway> retrieveExits();
+	public abstract void updateSession();
 }

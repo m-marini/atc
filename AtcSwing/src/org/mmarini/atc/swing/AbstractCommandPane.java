@@ -15,12 +15,12 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
@@ -35,217 +35,218 @@ import org.springframework.core.io.Resource;
  * 
  */
 public abstract class AbstractCommandPane extends JPanel {
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8513765146483956118L;
 
 	private static Log log = LogFactory.getLog(AbstractCommandPane.class);
 
-    private CommandController commandController;
+	private CommandController commandController;
 
-    private JButton cancelBtn;
+	private JButton cancelBtn;
 
-    private Resource cancelButtonResource;
+	private Resource cancelButtonResource;
 
-    private Resource defaultButtonResource;
+	private Resource defaultButtonResource;
 
-    private Icon defaultButtonIcon;
+	private Icon defaultButtonIcon;
 
-    private Icon disabledDefaultButtonIcon;
+	private Icon disabledDefaultButtonIcon;
 
-    private Resource disabledDefaultButtonResource;
+	private Resource disabledDefaultButtonResource;
 
-    /**
+	/**
          * 
-         * @param title
          */
-    protected void init(String title) {
-	setBackground(Color.BLACK);
-	setForeground(Color.GREEN);
-	Border bord = BorderFactory.createEmptyBorder();
-	TitledBorder border = BorderFactory.createTitledBorder(bord, title);
-	border.setTitleColor(Color.GREEN);
-	setBorder(border);
-
-	JButton btn = createButton("");
-	setCancelBtn(btn);
-	btn.addActionListener(new ActionListener() {
-
-	    public void actionPerformed(ActionEvent arg0) {
-		getCommandController().cancel();
-	    }
-
-	});
-	Icon icon = createIcon(getCancelButtonResource());
-	if (icon != null) {
-	    btn.setIcon(icon);
-	    btn.setHorizontalTextPosition(AbstractButton.RIGHT);
+	public void actionPerformed(ActionEvent event) {
+		String locationId = event.getActionCommand();
+		getCommandController().notifyLocationSelection(locationId);
 	}
-	icon = createIcon(getDefaultButtonResource());
-	setDefaultButtonIcon(icon);
-	icon = createIcon(getDisabledDefaultButtonResource());
-	setDisabledDefaultButtonIcon(icon);
-    }
 
-    /**
-         * 
-         * @param resource
-         * @return
-         */
-    protected Icon createIcon(Resource resource) {
-	try {
-	    if (resource != null) {
-		URL url = resource.getURL();
-		if (url != null) {
-		    return new ImageIcon(url);
+	/**
+	 * @param label
+	 * @return
+	 */
+	protected JButton createButton(String label) {
+		JButton btn = new AtcButton();
+		btn.setText(label);
+		return btn;
+	}
+
+	/**
+	 * @param label
+	 * @return
+	 */
+	protected JButton createDefaultButton(String label) {
+		JButton btn = createButton(label);
+		Icon icon = getDefaultButtonIcon();
+		if (icon != null) {
+			btn.setIcon(icon);
+			btn.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
-	    }
-	} catch (IOException e) {
-	    log.error(e.getMessage(), e);
+		icon = getDisabledDefaultButtonIcon();
+		if (icon != null) {
+			btn.setDisabledIcon(icon);
+		}
+		return btn;
 	}
-	return null;
-    }
 
-    /**
-         * 
-         */
-    public void actionPerformed(ActionEvent event) {
-	String locationId = event.getActionCommand();
-	getCommandController().notifyLocationSelection(locationId);
-    }
-
-    /**
-         * @return the commandController
-         */
-    protected CommandController getCommandController() {
-	return commandController;
-    }
-
-    /**
-         * @param commandController
-         *                the commandController to set
-         */
-    public void setCommandController(CommandController commandController) {
-	this.commandController = commandController;
-    }
-
-    /**
-         * @return the cancelBtn
-         */
-    protected JButton getCancelBtn() {
-	return cancelBtn;
-    }
-
-    /**
-         * @param label
-         * @return
-         */
-    protected JButton createButton(String label) {
-	JButton btn = new AtcButton();
-	btn.setText(label);
-	return btn;
-    }
-
-    /**
-         * @param label
-         * @return
-         */
-    protected JButton createDefaultButton(String label) {
-	JButton btn = createButton(label);
-	Icon icon = getDefaultButtonIcon();
-	if (icon != null) {
-	    btn.setIcon(icon);
-	    btn.setHorizontalTextPosition(AbstractButton.RIGHT);
+	/**
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	protected Icon createIcon(Resource resource) {
+		try {
+			if (resource != null) {
+				URL url = resource.getURL();
+				if (url != null) {
+					return new ImageIcon(url);
+				}
+			}
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
 	}
-	icon = getDisabledDefaultButtonIcon();
-	if (icon != null) {
-	    btn.setDisabledIcon(icon);
+
+	/**
+	 * @return the cancelBtn
+	 */
+	protected JButton getCancelBtn() {
+		return cancelBtn;
 	}
-	return btn;
-    }
 
-    /**
-         * @param cancelBtn
-         *                the cancelBtn to set
-         */
-    private void setCancelBtn(JButton cancelBtn) {
-	this.cancelBtn = cancelBtn;
-    }
+	/**
+	 * @return the cancelButtonResource
+	 */
+	private Resource getCancelButtonResource() {
+		return cancelButtonResource;
+	}
 
-    /**
-         * @return the cancelButtonResource
-         */
-    private Resource getCancelButtonResource() {
-	return cancelButtonResource;
-    }
+	/**
+	 * @return the commandController
+	 */
+	protected CommandController getCommandController() {
+		return commandController;
+	}
 
-    /**
-         * @param cancelButtonResource
-         *                the cancelButtonResource to set
-         */
-    public void setCancelButtonResource(Resource buttonResource) {
-	this.cancelButtonResource = buttonResource;
-    }
+	/**
+	 * @return the defaultButtonIcon
+	 */
+	protected Icon getDefaultButtonIcon() {
+		return defaultButtonIcon;
+	}
 
-    /**
-         * @return the defaultButtonIcon
-         */
-    protected Icon getDefaultButtonIcon() {
-	return defaultButtonIcon;
-    }
+	/**
+	 * @return the defaultButtonResource
+	 */
+	private Resource getDefaultButtonResource() {
+		return defaultButtonResource;
+	}
 
-    /**
-         * @param defaultButtonIcon
-         *                the defaultButtonIcon to set
-         */
-    private void setDefaultButtonIcon(Icon defaultButtonIcon) {
-	this.defaultButtonIcon = defaultButtonIcon;
-    }
+	/**
+	 * @return the disabledDefaultButtonIcon
+	 */
+	private Icon getDisabledDefaultButtonIcon() {
+		return disabledDefaultButtonIcon;
+	}
 
-    /**
-         * @return the defaultButtonResource
-         */
-    private Resource getDefaultButtonResource() {
-	return defaultButtonResource;
-    }
+	/**
+	 * @return the disabledDefaultButtonResource
+	 */
+	private Resource getDisabledDefaultButtonResource() {
+		return disabledDefaultButtonResource;
+	}
 
-    /**
-         * @param defaultButtonResource
-         *                the defaultButtonResource to set
-         */
-    public void setDefaultButtonResource(Resource defaultButtonResource) {
-	this.defaultButtonResource = defaultButtonResource;
-    }
+	/**
+	 * 
+	 * @param title
+	 */
+	protected void init(String title) {
+		setBackground(Color.BLACK);
+		setForeground(Color.GREEN);
+		Border bord = BorderFactory.createEmptyBorder();
+		TitledBorder border = BorderFactory.createTitledBorder(bord, title);
+		border.setTitleColor(Color.GREEN);
+		setBorder(border);
 
-    /**
-         * @return the disabledDefaultButtonResource
-         */
-    private Resource getDisabledDefaultButtonResource() {
-	return disabledDefaultButtonResource;
-    }
+		JButton btn = createButton("");
+		setCancelBtn(btn);
+		btn.addActionListener(new ActionListener() {
 
-    /**
-         * @param disabledDefaultButtonResource
-         *                the disabledDefaultButtonResource to set
-         */
-    public void setDisabledDefaultButtonResource(
-	    Resource disabledDefaultButtonResource) {
-	this.disabledDefaultButtonResource = disabledDefaultButtonResource;
-    }
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				getCommandController().cancel();
+			}
 
-    /**
-         * @return the disabledDefaultButtonIcon
-         */
-    private Icon getDisabledDefaultButtonIcon() {
-	return disabledDefaultButtonIcon;
-    }
+		});
+		Icon icon = createIcon(getCancelButtonResource());
+		if (icon != null) {
+			btn.setIcon(icon);
+			btn.setHorizontalTextPosition(SwingConstants.RIGHT);
+		}
+		icon = createIcon(getDefaultButtonResource());
+		setDefaultButtonIcon(icon);
+		icon = createIcon(getDisabledDefaultButtonResource());
+		setDisabledDefaultButtonIcon(icon);
+	}
 
-    /**
-         * @param disabledDefaultButtonIcon
-         *                the disabledDefaultButtonIcon to set
-         */
-    private void setDisabledDefaultButtonIcon(Icon disabledDefaultButtonIcon) {
-	this.disabledDefaultButtonIcon = disabledDefaultButtonIcon;
-    }
+	/**
+	 * @param cancelBtn
+	 *            the cancelBtn to set
+	 */
+	private void setCancelBtn(JButton cancelBtn) {
+		this.cancelBtn = cancelBtn;
+	}
+
+	/**
+	 * @param cancelButtonResource
+	 *            the cancelButtonResource to set
+	 */
+	public void setCancelButtonResource(Resource buttonResource) {
+		this.cancelButtonResource = buttonResource;
+	}
+
+	/**
+	 * @param commandController
+	 *            the commandController to set
+	 */
+	public void setCommandController(CommandController commandController) {
+		this.commandController = commandController;
+	}
+
+	/**
+	 * @param defaultButtonIcon
+	 *            the defaultButtonIcon to set
+	 */
+	private void setDefaultButtonIcon(Icon defaultButtonIcon) {
+		this.defaultButtonIcon = defaultButtonIcon;
+	}
+
+	/**
+	 * @param defaultButtonResource
+	 *            the defaultButtonResource to set
+	 */
+	public void setDefaultButtonResource(Resource defaultButtonResource) {
+		this.defaultButtonResource = defaultButtonResource;
+	}
+
+	/**
+	 * @param disabledDefaultButtonIcon
+	 *            the disabledDefaultButtonIcon to set
+	 */
+	private void setDisabledDefaultButtonIcon(Icon disabledDefaultButtonIcon) {
+		this.disabledDefaultButtonIcon = disabledDefaultButtonIcon;
+	}
+
+	/**
+	 * @param disabledDefaultButtonResource
+	 *            the disabledDefaultButtonResource to set
+	 */
+	public void setDisabledDefaultButtonResource(
+			Resource disabledDefaultButtonResource) {
+		this.disabledDefaultButtonResource = disabledDefaultButtonResource;
+	}
 }

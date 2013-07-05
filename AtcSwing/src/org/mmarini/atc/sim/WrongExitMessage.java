@@ -16,18 +16,19 @@ package org.mmarini.atc.sim;
  */
 public class WrongExitMessage extends AbstractMessage implements Message {
 
-    /**
-         * @param planeId
-         */
-    public WrongExitMessage(String planeId) {
-	super(planeId);
-    }
+	/**
+	 * @param planeId
+	 */
+	public WrongExitMessage(String planeId) {
+		super(planeId);
+	}
 
-    /**
-         * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
-         */
-    public void apply(MessageVisitor visitor) {
-	visitor.visit(this);
-    }
+	/**
+	 * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
+	 */
+	@Override
+	public void apply(MessageVisitor visitor) {
+		visitor.visit(this);
+	}
 
 }

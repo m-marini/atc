@@ -17,21 +17,21 @@ import java.util.List;
  * 
  */
 public class HitsMemento {
-    private List<GameRecord> table;
+	private List<GameRecord> table;
 
-    /**
-         * @return the table
-         */
-    public List<GameRecord> getTable() {
-	return table;
-    }
+	/**
+	 * @return the table
+	 */
+	public List<GameRecord> getTable() {
+		return table;
+	}
 
-    /**
-         * @param table
-         *                the table to set
-         */
-    public void setTable(List<GameRecord> table) {
-	this.table = table;
-    }
+	/**
+	 * @param table
+	 *            the table to set
+	 */
+	public void setTable(List<GameRecord> table) {
+		this.table = table;
+	}
 
 }

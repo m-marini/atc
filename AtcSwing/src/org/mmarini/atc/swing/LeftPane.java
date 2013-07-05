@@ -26,58 +26,58 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LeftPane extends JPanel {
 
-    private static Log log = LogFactory.getLog(LeftPane.class);
+	private static Log log = LogFactory.getLog(LeftPane.class);
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private JComponent planePane;
+	private JComponent planePane;
 
-    private JComponent logPane;
+	private JComponent logPane;
 
-    /**
+	/**
+	 * @return the logPane
+	 */
+	private JComponent getLogPane() {
+		return logPane;
+	}
+
+	/**
+	 * @return the planePane
+	 */
+	private JComponent getPlanePane() {
+		return planePane;
+	}
+
+	/**
          * 
          * 
          */
-    public void init() {
-	log.debug("init");
-	setPreferredSize(new Dimension(200, 10));
-	setLayout(new BorderLayout());
-	add(getPlanePane(), BorderLayout.CENTER);
-	JComponent logPane = getLogPane();
-	JScrollPane scrollPane1 = new JScrollPane(logPane);
-	add(scrollPane1, BorderLayout.SOUTH);
-    }
+	public void init() {
+		log.debug("init");
+		setPreferredSize(new Dimension(200, 10));
+		setLayout(new BorderLayout());
+		add(getPlanePane(), BorderLayout.CENTER);
+		JComponent logPane = getLogPane();
+		JScrollPane scrollPane1 = new JScrollPane(logPane);
+		add(scrollPane1, BorderLayout.SOUTH);
+	}
 
-    /**
-         * @return the logPane
-         */
-    private JComponent getLogPane() {
-	return logPane;
-    }
+	/**
+	 * @param logPane
+	 *            the logPane to set
+	 */
+	public void setLogPane(JComponent logPane) {
+		this.logPane = logPane;
+	}
 
-    /**
-         * @param logPane
-         *                the logPane to set
-         */
-    public void setLogPane(JComponent logPane) {
-	this.logPane = logPane;
-    }
-
-    /**
-         * @return the planePane
-         */
-    private JComponent getPlanePane() {
-	return planePane;
-    }
-
-    /**
-         * @param planePane
-         *                the planePane to set
-         */
-    public void setPlanePane(JComponent planePane) {
-	this.planePane = planePane;
-    }
+	/**
+	 * @param planePane
+	 *            the planePane to set
+	 */
+	public void setPlanePane(JComponent planePane) {
+		this.planePane = planePane;
+	}
 }

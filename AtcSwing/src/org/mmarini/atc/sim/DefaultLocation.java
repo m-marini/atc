@@ -15,81 +15,85 @@ package org.mmarini.atc.sim;
  * 
  */
 public class DefaultLocation implements Location, AtcConstants {
-    private String id = String.valueOf(System.identityHashCode(this));
+	private String id = String.valueOf(System.identityHashCode(this));
 
-    private Position position = new Position();
+	private Position position = new Position();
 
-    private String alignment = EAST;
+	private String alignment = EAST;
 
-    /**
-         * @return the id
-         */
-    public String getId() {
-	return id;
-    }
+	/**
+	 * @return the alignment
+	 */
+	@Override
+	public String getAlignment() {
+		return alignment;
+	}
 
-    /**
-         * @param id
-         *                the id to set
-         */
-    public void setId(String id) {
-	this.id = id;
-    }
+	/**
+	 * @return the id
+	 */
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    /**
-         * @param position
-         * @return
-         */
-    protected boolean isInRange(Position position) {
-	return getPosition().isInRange(position, INRANGE_DISTANCE);
-    }
+	/**
+	 * @return the position
+	 */
+	@Override
+	public Position getPosition() {
+		return position;
+	}
 
-    /**
-         * @return the position
-         */
-    public Position getPosition() {
-	return position;
-    }
+	/**
+	 * @param position
+	 * @return
+	 */
+	protected boolean isInRange(Position position) {
+		return getPosition().isInRange(position, INRANGE_DISTANCE);
+	}
 
-    /**
-         * @param position
-         *                the position to set
-         */
-    public void setPosition(Position position) {
-	getPosition().setPosition(position);
-    }
+	/**
+	 * @param alignment
+	 *            the alignment to set
+	 */
+	public void setAlignment(String alignment) {
+		this.alignment = alignment;
+	}
 
-    /**
-         * @see java.lang.Object#toString()
-         */
-    @Override
-    public String toString() {
-	StringBuffer bfr = new StringBuffer();
-	bfr.append(getClass().getName());
-	bfr.append("(");
-	bfr.append(getId());
-	bfr.append(")");
-	return bfr.toString();
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
+	/**
+	 * @param position
+	 *            the position to set
+	 */
+	public void setPosition(Position position) {
+		getPosition().setPosition(position);
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuffer bfr = new StringBuffer();
+		bfr.append(getClass().getName());
+		bfr.append("(");
+		bfr.append(getId());
+		bfr.append(")");
+		return bfr.toString();
+	}
+
+	/**
          * 
          */
-    public void update() {
-    }
-
-    /**
-         * @return the alignment
-         */
-    public String getAlignment() {
-	return alignment;
-    }
-
-    /**
-         * @param alignment
-         *                the alignment to set
-         */
-    public void setAlignment(String alignment) {
-	this.alignment = alignment;
-    }
+	@Override
+	public void update() {
+	}
 }

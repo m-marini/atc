@@ -16,33 +16,33 @@ package org.mmarini.atc.sim;
  */
 public abstract class AbstractMessage implements Message {
 
-    private String planeId;
+	private String planeId;
 
-    /**
+	/**
          * 
          */
-    public AbstractMessage() {
-    }
+	public AbstractMessage() {
+	}
 
-    /**
-         * @param planeId
-         */
-    public AbstractMessage(String planeId) {
-	this.planeId = planeId;
-    }
+	/**
+	 * @param planeId
+	 */
+	public AbstractMessage(String planeId) {
+		this.planeId = planeId;
+	}
 
-    /**
-         * @return the planeId
-         */
-    public String getPlaneId() {
-	return planeId;
-    }
+	/**
+	 * @return the planeId
+	 */
+	public String getPlaneId() {
+		return planeId;
+	}
 
-    /**
-         * @param planeId
-         *                the planeId to set
-         */
-    public void setPlaneId(String planeId) {
-	this.planeId = planeId;
-    }
+	/**
+	 * @param planeId
+	 *            the planeId to set
+	 */
+	public void setPlaneId(String planeId) {
+		this.planeId = planeId;
+	}
 }

@@ -16,11 +16,12 @@ package org.mmarini.atc.sim;
  */
 public class HoldMessage extends AbstractConditionMessage {
 
-    /**
-         * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
-         */
-    public void apply(MessageVisitor visitor) {
-	visitor.visit(this);
-    }
+	/**
+	 * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
+	 */
+	@Override
+	public void apply(MessageVisitor visitor) {
+		visitor.visit(this);
+	}
 
 }

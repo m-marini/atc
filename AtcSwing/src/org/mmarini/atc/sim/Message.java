@@ -15,9 +15,9 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface Message {
-    /**
-         * 
-         * @param visitor
-         */
-    public void apply(MessageVisitor visitor);
+	/**
+	 * 
+	 * @param visitor
+	 */
+	public void apply(MessageVisitor visitor);
 }

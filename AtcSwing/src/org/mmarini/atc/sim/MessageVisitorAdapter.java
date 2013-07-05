@@ -17,75 +17,87 @@ package org.mmarini.atc.sim;
  */
 public class MessageVisitorAdapter implements MessageVisitor {
 
-    /**
-         * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.TurnToMessage)
-         */
-    public void visit(TurnToMessage message) {
-    }
+	/**
+	 * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.ChangeFlightLevelMessage)
+	 */
+	@Override
+	public void visit(ChangeFlightLevelMessage message) {
+	}
 
-    /**
-         * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.ClearToLandMessage)
-         */
-    public void visit(ClearToLandMessage message) {
-    }
+	/**
+	 * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.ClearToLandMessage)
+	 */
+	@Override
+	public void visit(ClearToLandMessage message) {
+	}
 
-    /**
-         * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.ChangeFlightLevelMessage)
-         */
-    public void visit(ChangeFlightLevelMessage message) {
-    }
-
-    /**
-         * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.HoldMessage)
-         */
-    public void visit(HoldMessage message) {
-    }
-
-    /**
+	/**
          * 
          */
-    public void visit(InfoMessage message) {
-    }
+	@Override
+	public void visit(CollisionMessage message) {
+	}
 
-    /**
+	/**
          * 
          */
-    public void visit(CollisionMessage message) {
-    }
+	@Override
+	public void visit(CrashedMessage message) {
+	}
 
-    /**
+	/**
          * 
          */
-    public void visit(WrongExitMessage message) {
-    }
+	@Override
+	public void visit(EnteredMessage message) {
+	}
 
-    /**
+	/**
+	 * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.HoldMessage)
+	 */
+	@Override
+	public void visit(HoldMessage message) {
+	}
+
+	/**
          * 
          */
-    public void visit(RightExitMessage message) {
-    }
+	@Override
+	public void visit(InfoMessage message) {
+	}
 
-    /**
+	/**
          * 
          */
-    public void visit(CrashedMessage message) {
-    }
+	@Override
+	public void visit(LandedMessage message) {
+	}
 
-    /**
+	/**
          * 
          */
-    public void visit(LandedMessage message) {
-    }
+	@Override
+	public void visit(RightExitMessage message) {
+	}
 
-    /**
+	/**
+	 * @see org.mmarini.atc.sim.MessageVisitor#visit(org.mmarini.atc.sim.TurnToMessage)
+	 */
+	@Override
+	public void visit(TurnToMessage message) {
+	}
+
+	/**
          * 
          */
-    public void visit(WrongRunwayMessage message) {
-    }
+	@Override
+	public void visit(WrongExitMessage message) {
+	}
 
-    /**
+	/**
          * 
          */
-    public void visit(EnteredMessage message) {
-    }
+	@Override
+	public void visit(WrongRunwayMessage message) {
+	}
 }

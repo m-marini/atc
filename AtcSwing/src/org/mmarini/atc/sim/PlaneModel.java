@@ -15,70 +15,72 @@ package org.mmarini.atc.sim;
  * 
  */
 public class PlaneModel {
-    private String classId;
+	private String classId;
 
-    private float lowSpeed;
+	private float lowSpeed;
 
-    private float highSpeed;
+	private float highSpeed;
 
-    private int vSpeed;
+	private int vSpeed;
 
-    /**
-         * @return the lowSpeed
-         */
-    public float getLowSpeed() {
-	return lowSpeed;
-    }
+	/**
+	 * @return the classId
+	 */
+	public String getClassId() {
+		return classId;
+	}
 
-    /**
-         * @param lowSpeed
-         *                the lowSpeed to set
-         */
-    public void setLowSpeed(float speed) {
-	this.lowSpeed = speed;
-    }
+	/**
+	 * @return the highSpeed
+	 */
+	public float getHighSpeed() {
+		return highSpeed;
+	}
 
-    /**
-         * @return the vSpeed
-         */
-    public int getVSpeed() {
-	return vSpeed;
-    }
+	/**
+	 * @return the lowSpeed
+	 */
+	public float getLowSpeed() {
+		return lowSpeed;
+	}
 
-    /**
-         * @param lowSpeed
-         *                the vSpeed to set
-         */
-    public void setVSpeed(int speed) {
-	vSpeed = speed;
-    }
+	/**
+	 * @return the vSpeed
+	 */
+	public int getVSpeed() {
+		return vSpeed;
+	}
 
-    /**
-     * @return the classId
-     */
-    public String getClassId() {
-        return classId;
-    }
+	/**
+	 * @param classId
+	 *            the classId to set
+	 */
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
 
-    /**
-     * @param classId the classId to set
-     */
-    public void setClassId(String classId) {
-        this.classId = classId;
-    }
+	/**
+	 * @param highSpeed
+	 *            the highSpeed to set
+	 */
+	public void setHighSpeed(float highSpeed) {
+		this.highSpeed = highSpeed;
+	}
 
-    /**
-     * @return the highSpeed
-     */
-    public float getHighSpeed() {
-        return highSpeed;
-    }
+	/**
+	 * @param lowSpeed
+	 *            the lowSpeed to set
+	 */
+	public void setLowSpeed(float speed) {
+		this.lowSpeed = speed;
+	}
 
-    /**
-     * @param highSpeed the highSpeed to set
-     */
-    public void setHighSpeed(float highSpeed) {
-        this.highSpeed = highSpeed;
-    }
+	/**
+	 * @param lowSpeed
+	 *            the vSpeed to set
+	 */
+	public void setVSpeed(int speed) {
+		vSpeed = speed;
+	}
 
 }

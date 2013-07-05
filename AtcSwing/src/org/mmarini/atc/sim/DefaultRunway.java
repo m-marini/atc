@@ -16,66 +16,70 @@ package org.mmarini.atc.sim;
  */
 public class DefaultRunway extends DefaultLocation implements Gateway {
 
-    private static final int HEADING_LAND_RANGE = 5;
+	private static final int HEADING_LAND_RANGE = 5;
 
-    private int course;
+	private int course;
 
-    /**
+	/**
+	 * @return the course
+	 */
+	@Override
+	public int getCourse() {
+		return course;
+	}
+
+	/**
+	 * 
+	 * @param route
+	 * @return
+	 */
+	private int hdgDifference(int route) {
+		int diff = route - getCourse();
+		if (diff > 180)
+			diff -= 360;
+		if (diff < -180)
+			diff += 360;
+		return diff;
+	}
+
+	/**
          * 
          */
-    public void initPlane(Plane plane) {
-	plane.setAltitude(0);
-	plane.setHeading(getCourse());
-	plane.setPosition(getPosition());
-	plane.setRunway(this);
-	plane.setHoldingStatus();
-    }
+	@Override
+	public void initPlane(Plane plane) {
+		plane.setAltitude(0);
+		plane.setHeading(getCourse());
+		plane.setPosition(getPosition());
+		plane.setRunway(this);
+		plane.setHoldingStatus();
+	}
 
-    /**
+	/**
          * 
          */
-    public boolean isBusy() {
-	return false;
-    }
+	@Override
+	public boolean isBusy() {
+		return false;
+	}
 
-    /**
+	/**
          * 
          */
-    public boolean isCorrectExit(Plane plane) {
-	if (plane.getAltitude() != 0)
-	    return false;
-	int diff = Math.abs(hdgDifference(plane.getHeading()));
-	if (diff > HEADING_LAND_RANGE)
-	    return false;
-	return true;
-    }
+	@Override
+	public boolean isCorrectExit(Plane plane) {
+		if (plane.getAltitude() != 0)
+			return false;
+		int diff = Math.abs(hdgDifference(plane.getHeading()));
+		if (diff > HEADING_LAND_RANGE)
+			return false;
+		return true;
+	}
 
-    /**
-         * 
-         * @param route
-         * @return
-         */
-    private int hdgDifference(int route) {
-	int diff = route - getCourse();
-	if (diff > 180)
-	    diff -= 360;
-	if (diff < -180)
-	    diff += 360;
-	return diff;
-    }
-
-    /**
-         * @return the course
-         */
-    public int getCourse() {
-	return course;
-    }
-
-    /**
-         * @param course
-         *                the course to set
-         */
-    public void setCourse(int course) {
-	this.course = course;
-    }
+	/**
+	 * @param course
+	 *            the course to set
+	 */
+	public void setCourse(int course) {
+		this.course = course;
+	}
 }

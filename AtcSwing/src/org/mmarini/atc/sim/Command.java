@@ -15,10 +15,10 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface Command {
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean apply();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean apply();
 
 }

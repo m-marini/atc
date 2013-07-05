@@ -15,9 +15,9 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface Logger {
-    /**
-         * 
-         * @param message
-         */
-    public void log(String message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public void log(String message);
 }

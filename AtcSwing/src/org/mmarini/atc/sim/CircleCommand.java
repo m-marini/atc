@@ -15,26 +15,28 @@ package org.mmarini.atc.sim;
  * 
  */
 public class CircleCommand extends AbstractPlaneCommand {
-    /**
-         * 
-         * @param plane
-         */
-    public CircleCommand(DefaultPlane plane) {
-	super(plane);
-    }
+	/**
+	 * 
+	 * @param plane
+	 */
+	public CircleCommand(DefaultPlane plane) {
+		super(plane);
+	}
 
-    /**
-         * @see org.mmarini.atc.sim.PlaneCommand#apply()
-         */
-    public void apply() {
-	getPlane().circle();
-    }
+	/**
+	 * @see org.mmarini.atc.sim.PlaneCommand#apply()
+	 */
+	@Override
+	public void apply() {
+		getPlane().circle();
+	}
 
-    /**
+	/**
          * 
          */
-    public String getStatusMessage() {
-	return "circle at {0}";
-    }
+	@Override
+	public String getStatusMessage() {
+		return "circle at {0}";
+	}
 
 }

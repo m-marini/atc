@@ -17,14 +17,14 @@ import java.awt.Font;
  * 
  */
 public interface UIAtcConstants {
-    public static final Font ATC_FONT = Font.decode("Dialog PLAIN 11");
+	public static final Font ATC_FONT = Font.decode("Dialog PLAIN 11");
 
-    public static final String HOLD_COMMAND = "Hold";
+	public static final String HOLD_COMMAND = "Hold";
 
-    public static final String LAND_COMMAND = "Land";
+	public static final String LAND_COMMAND = "Land";
 
-    public static final String FLIGHT_LEVEL_COMMAND = "FlightLevel";
+	public static final String FLIGHT_LEVEL_COMMAND = "FlightLevel";
 
-    public static final String TURN_COMMAND = "Turn";
+	public static final String TURN_COMMAND = "Turn";
 
 }

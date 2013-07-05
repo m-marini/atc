@@ -15,28 +15,29 @@ package org.mmarini.atc.sim;
  * 
  */
 public class ClearToLandMessage extends AbstractMessage {
-    private String locationId;
+	private String locationId;
 
-    /**
-         * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
-         */
-    public void apply(MessageVisitor visitor) {
-	visitor.visit(this);
-    }
+	/**
+	 * @see org.mmarini.atc.sim.Message#apply(org.mmarini.atc.sim.MessageVisitor)
+	 */
+	@Override
+	public void apply(MessageVisitor visitor) {
+		visitor.visit(this);
+	}
 
-    /**
-         * @return the locationId
-         */
-    public String getLocationId() {
-	return locationId;
-    }
+	/**
+	 * @return the locationId
+	 */
+	public String getLocationId() {
+		return locationId;
+	}
 
-    /**
-         * @param locationId
-         *                the locationId to set
-         */
-    public void setLocationId(String locationId) {
-	this.locationId = locationId;
-    }
+	/**
+	 * @param locationId
+	 *            the locationId to set
+	 */
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
+	}
 
 }

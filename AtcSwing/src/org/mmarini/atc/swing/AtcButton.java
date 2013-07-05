@@ -13,7 +13,7 @@ import java.awt.Color;
 import java.awt.Insets;
 
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
 
 /**
  * @author marco.marini@mmarini.org
@@ -22,20 +22,20 @@ import javax.swing.SwingUtilities;
  */
 public class AtcButton extends JButton {
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
          * 
          */
-    public AtcButton() {
-	setHorizontalTextPosition(SwingUtilities.RIGHT);
-	setBackground(Color.BLACK);
-	setForeground(Color.GREEN);
-	setBorderPainted(false);
-	setMargin(new Insets(1, 1, 1, 1));
-    }
+	public AtcButton() {
+		setHorizontalTextPosition(SwingConstants.RIGHT);
+		setBackground(Color.BLACK);
+		setForeground(Color.GREEN);
+		setBorderPainted(false);
+		setMargin(new Insets(1, 1, 1, 1));
+	}
 
 }

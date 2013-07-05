@@ -48,203 +48,204 @@ import org.xml.sax.SAXException;
  */
 public class UserOptionsHandler implements XmlConstants {
 
-    private static final String ZIP_ENTRY_NAME = "options.xml";
+	private static final String ZIP_ENTRY_NAME = "options.xml";
 
-    private static Log log = LogFactory.getLog(UserOptionsHandler.class);
+	private static Log log = LogFactory.getLog(UserOptionsHandler.class);
 
-    private String optionsFilename;
+	private String optionsFilename;
 
-    private UserOptions userOptions = new UserOptions();
+	private UserOptions userOptions = new UserOptions();
 
-    private Resource ruleResource;
+	private Resource ruleResource;
 
-    private AtcHandler atcHandler;
+	private AtcHandler atcHandler;
 
-    /**
-         * 
-         * 
-         */
-    public void init() {
-	load();
-	HitsMemento memento = getHits();
-	getAtcHandler().storeHits(memento);
-    }
-
-    /**
-         * 
-         * @return
-         */
-    public HitsMemento getHits() {
-	HitsMemento memento = new HitsMemento();
-	memento.setTable(getUserOptions().getHits());
-	return memento;
-    }
-
-    /**
-         * 
-         * @param memento
-         */
-    public void setHits(HitsMemento memento) {
-	getUserOptions().setHits(memento.getTable());
-	store();
-    }
-
-    /**
-         * 
-         * 
-         */
-    private void load() {
-	try {
-	    String optFilename = createFilename();
-	    JarFile file = new JarFile(optFilename);
-	    InputStream is = file.getInputStream(new ZipEntry(ZIP_ENTRY_NAME));
-	    load(is);
-	} catch (Exception e) {
-	    log.error(e.getMessage(), e);
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	private Digester createDigester() throws IOException {
+		URL url = getRuleResource().getURL();
+		Digester digester = DigesterLoader.createDigester(url);
+		digester.setNamespaceAware(true);
+		return digester;
 	}
-    }
 
-    /**
-         * 
-         * @param is
-         * @throws IOException
-         * @throws SAXException
-         */
-    private void load(InputStream is) throws IOException, SAXException {
-	Digester digester = createDigester();
-	UserOptions userOptions = (UserOptions) digester.parse(is);
-	if (userOptions == null) {
-	    throw new SAXException("Options not found");
+	/**
+	 * @return
+	 * @throws ParserConfigurationException
+	 * 
+	 */
+	private Document createDocument() throws ParserConfigurationException {
+		Document doc = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder().newDocument();
+		Element elem = getUserOptions().createElement(doc);
+		doc.appendChild(elem);
+		return doc;
 	}
-	setUserOptions(userOptions);
-    }
 
-    /**
-         * 
-         * @return
-         * @throws IOException
-         */
-    private Digester createDigester() throws IOException {
-	URL url = getRuleResource().getURL();
-	Digester digester = DigesterLoader.createDigester(url);
-	digester.setNamespaceAware(true);
-	return digester;
-    }
-
-    /**
-         * 
-         * 
-         */
-    private void store() {
-	try {
-	    String optFilename = createFilename();
-	    FileOutputStream fos = new FileOutputStream(optFilename);
-	    JarOutputStream jos = new JarOutputStream(fos);
-	    jos.putNextEntry(new ZipEntry(ZIP_ENTRY_NAME));
-	    writeXml(jos);
-	    jos.closeEntry();
-	    jos.close();
-	} catch (Exception e) {
-	    log.error(e.getMessage(), e);
+	/**
+	 * @return
+	 */
+	private String createFilename() {
+		String userHome = System.getProperty("user.home");
+		String optFilename = userHome + File.separator + getOptionsFilename();
+		return optFilename;
 	}
-    }
 
-    /**
-         * @return
-         */
-    private String createFilename() {
-	String userHome = System.getProperty("user.home");
-	String optFilename = userHome + File.separator + getOptionsFilename();
-	return optFilename;
-    }
+	/**
+	 * @return the atcHandler
+	 */
+	private AtcHandler getAtcHandler() {
+		return atcHandler;
+	}
 
-    /**
+	/**
+	 * 
+	 * @return
+	 */
+	public HitsMemento getHits() {
+		HitsMemento memento = new HitsMemento();
+		memento.setTable(getUserOptions().getHits());
+		return memento;
+	}
+
+	/**
+	 * @return the optionsFilename
+	 */
+	private String getOptionsFilename() {
+		return optionsFilename;
+	}
+
+	/**
+	 * @return the ruleResource
+	 */
+	private Resource getRuleResource() {
+		return ruleResource;
+	}
+
+	/**
+	 * @return the userOptions
+	 */
+	private UserOptions getUserOptions() {
+		return userOptions;
+	}
+
+	/**
          * 
-         * @param stream
-         * @throws ParserConfigurationException
-         * @throws TransformerFactoryConfigurationError
-         * @throws TransformerException
-         */
-    private void writeXml(OutputStream stream)
-	    throws ParserConfigurationException,
-	    TransformerFactoryConfigurationError, TransformerException {
-	Document doc = createDocument();
-	Result result = new StreamResult(stream);
-	Source source = new DOMSource(doc);
-	Transformer trans = TransformerFactory.newInstance().newTransformer();
-	trans.transform(source, result);
-    }
-
-    /**
-         * @return
-         * @throws ParserConfigurationException
          * 
          */
-    private Document createDocument() throws ParserConfigurationException {
-	Document doc = DocumentBuilderFactory.newInstance()
-		.newDocumentBuilder().newDocument();
-	Element elem = getUserOptions().createElement(doc);
-	doc.appendChild(elem);
-	return doc;
-    }
+	public void init() {
+		load();
+		HitsMemento memento = getHits();
+		getAtcHandler().storeHits(memento);
+	}
 
-    /**
-         * @return the optionsFilename
+	/**
+         * 
+         * 
          */
-    private String getOptionsFilename() {
-	return optionsFilename;
-    }
+	private void load() {
+		try {
+			String optFilename = createFilename();
+			JarFile file = new JarFile(optFilename);
+			InputStream is = file.getInputStream(new ZipEntry(ZIP_ENTRY_NAME));
+			load(is);
+			file.close();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
 
-    /**
-         * @param optionsFilename
-         *                the optionsFilename to set
-         */
-    public void setOptionsFilename(String optionsFilename) {
-	this.optionsFilename = optionsFilename;
-    }
+	/**
+	 * 
+	 * @param is
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private void load(InputStream is) throws IOException, SAXException {
+		Digester digester = createDigester();
+		UserOptions userOptions = (UserOptions) digester.parse(is);
+		if (userOptions == null) {
+			throw new SAXException("Options not found");
+		}
+		setUserOptions(userOptions);
+	}
 
-    /**
-         * @return the userOptions
-         */
-    private UserOptions getUserOptions() {
-	return userOptions;
-    }
+	/**
+	 * @param atcHandler
+	 *            the atcHandler to set
+	 */
+	public void setAtcHandler(AtcHandler atcHandler) {
+		this.atcHandler = atcHandler;
+	}
 
-    /**
-         * @param userOptions
-         *                the userOptions to set
-         */
-    private void setUserOptions(UserOptions userOptions) {
-	this.userOptions = userOptions;
-    }
+	/**
+	 * 
+	 * @param memento
+	 */
+	public void setHits(HitsMemento memento) {
+		getUserOptions().setHits(memento.getTable());
+		store();
+	}
 
-    /**
-         * @return the ruleResource
-         */
-    private Resource getRuleResource() {
-	return ruleResource;
-    }
+	/**
+	 * @param optionsFilename
+	 *            the optionsFilename to set
+	 */
+	public void setOptionsFilename(String optionsFilename) {
+		this.optionsFilename = optionsFilename;
+	}
 
-    /**
-         * @param ruleResource
-         *                the ruleResource to set
-         */
-    public void setRuleResource(Resource resource) {
-	this.ruleResource = resource;
-    }
+	/**
+	 * @param ruleResource
+	 *            the ruleResource to set
+	 */
+	public void setRuleResource(Resource resource) {
+		this.ruleResource = resource;
+	}
 
-    /**
-         * @return the atcHandler
-         */
-    private AtcHandler getAtcHandler() {
-	return atcHandler;
-    }
+	/**
+	 * @param userOptions
+	 *            the userOptions to set
+	 */
+	private void setUserOptions(UserOptions userOptions) {
+		this.userOptions = userOptions;
+	}
 
-    /**
-         * @param atcHandler
-         *                the atcHandler to set
+	/**
+         * 
+         * 
          */
-    public void setAtcHandler(AtcHandler atcHandler) {
-	this.atcHandler = atcHandler;
-    }
+	private void store() {
+		try {
+			String optFilename = createFilename();
+			FileOutputStream fos = new FileOutputStream(optFilename);
+			JarOutputStream jos = new JarOutputStream(fos);
+			jos.putNextEntry(new ZipEntry(ZIP_ENTRY_NAME));
+			writeXml(jos);
+			jos.closeEntry();
+			jos.close();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param stream
+	 * @throws ParserConfigurationException
+	 * @throws TransformerFactoryConfigurationError
+	 * @throws TransformerException
+	 */
+	private void writeXml(OutputStream stream)
+			throws ParserConfigurationException,
+			TransformerFactoryConfigurationError, TransformerException {
+		Document doc = createDocument();
+		Result result = new StreamResult(stream);
+		Source source = new DOMSource(doc);
+		Transformer trans = TransformerFactory.newInstance().newTransformer();
+		trans.transform(source, result);
+	}
 }

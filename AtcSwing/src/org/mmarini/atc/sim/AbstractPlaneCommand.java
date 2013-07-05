@@ -15,20 +15,20 @@ package org.mmarini.atc.sim;
  * @version $Id: AbstractPlaneCommand.java,v 1.2 2008/02/15 18:06:58 marco Exp $
  */
 public abstract class AbstractPlaneCommand implements PlaneCommand {
-    private DefaultPlane plane;
+	private DefaultPlane plane;
 
-    /**
-         * 
-         * @param plane
-         */
-    protected AbstractPlaneCommand(DefaultPlane plane) {
-	this.plane = plane;
-    }
+	/**
+	 * 
+	 * @param plane
+	 */
+	protected AbstractPlaneCommand(DefaultPlane plane) {
+		this.plane = plane;
+	}
 
-    /**
-         * @return the plane
-         */
-    protected DefaultPlane getPlane() {
-	return plane;
-    }
+	/**
+	 * @return the plane
+	 */
+	protected DefaultPlane getPlane() {
+		return plane;
+	}
 }

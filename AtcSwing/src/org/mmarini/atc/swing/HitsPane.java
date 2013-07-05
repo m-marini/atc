@@ -23,50 +23,51 @@ import javax.swing.JTable;
  */
 public class HitsPane extends JPanel implements Refreshable {
 
-    public static final Dimension SIZE = new Dimension(500, 195);
+	public static final Dimension SIZE = new Dimension(500, 195);
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private HitsTableModel hitsTableModel;
+	private HitsTableModel hitsTableModel;
 
-    /**
+	/**
+	 * @return the hitsTableModel
+	 */
+	private HitsTableModel getHitsTableModel() {
+		return hitsTableModel;
+	}
+
+	/**
          * 
          * 
          */
-    public void init() {
-	HitsTableModel model = getHitsTableModel();
-	JTable table = new JTable(model);
-	JScrollPane scrollPane = new JScrollPane(table);
-	table.setPreferredScrollableViewportSize(SIZE);
-	table.setCellSelectionEnabled(false);
-	table.setShowHorizontalLines(false);
-	table.setShowVerticalLines(false);
-	setLayout(new BorderLayout());
-	add(scrollPane, BorderLayout.CENTER);
-    }
+	public void init() {
+		HitsTableModel model = getHitsTableModel();
+		JTable table = new JTable(model);
+		JScrollPane scrollPane = new JScrollPane(table);
+		table.setPreferredScrollableViewportSize(SIZE);
+		table.setCellSelectionEnabled(false);
+		table.setShowHorizontalLines(false);
+		table.setShowVerticalLines(false);
+		setLayout(new BorderLayout());
+		add(scrollPane, BorderLayout.CENTER);
+	}
 
-    /**
-         * @return the hitsTableModel
-         */
-    private HitsTableModel getHitsTableModel() {
-	return hitsTableModel;
-    }
-
-    /**
-         * @param hitsTableModel
-         *                the hitsTableModel to set
-         */
-    public void setHitsTableModel(HitsTableModel hitsTableModel) {
-	this.hitsTableModel = hitsTableModel;
-    }
-
-    /**
+	/**
          * 
          */
-    public void refresh() {
-	getHitsTableModel().refresh();
-    }
+	@Override
+	public void refresh() {
+		getHitsTableModel().refresh();
+	}
+
+	/**
+	 * @param hitsTableModel
+	 *            the hitsTableModel to set
+	 */
+	public void setHitsTableModel(HitsTableModel hitsTableModel) {
+		this.hitsTableModel = hitsTableModel;
+	}
 }

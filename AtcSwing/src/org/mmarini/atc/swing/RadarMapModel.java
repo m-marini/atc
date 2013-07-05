@@ -22,139 +22,144 @@ import org.mmarini.atc.sim.RadarMap;
  * @version $Id: RadarMapModel.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class RadarMapModel extends AbstractListModel implements ComboBoxModel,
-	Refreshable {
+public class RadarMapModel extends AbstractListModel<String> implements
+		ComboBoxModel<String>, Refreshable {
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private AtcHandler atcHandler;
+	private AtcHandler atcHandler;
 
-    private List<RadarMap> list;
+	private List<RadarMap> list;
 
-    private int selectedIndex;
+	private int selectedIndex;
 
-    /**
-         * 
-         * 
-         */
-    public void refresh() {
-	List<RadarMap> list = getAtcHandler().retrieveRadarMap();
-	setList(list);
-    }
-
-    /**
-         * @see javax.swing.ListModel#getElementAt(int)
-         */
-    public Object getElementAt(int n) {
-	RadarMap map = list.get(n);
-	return map.getId() + " - " + map.getName();
-    }
-
-    /**
-         * @see javax.swing.ListModel#getSize()
-         */
-    public int getSize() {
-	return list.size();
-    }
-
-    /**
-         * @return the atcHandler
-         */
-    private AtcHandler getAtcHandler() {
-	return atcHandler;
-    }
-
-    /**
-         * @param atcHandler
-         *                the atcHandler to set
-         */
-    public void setAtcHandler(AtcHandler atcHandler) {
-	this.atcHandler = atcHandler;
-    }
-
-    /**
-         * @return the list
-         */
-    private List<RadarMap> getList() {
-	return list;
-    }
-
-    /**
-         * @param list
-         *                the list to set
-         */
-    private void setList(List<RadarMap> list) {
-	List<RadarMap> old = getList();
-	int no = 0;
-	if (old != null) {
-	    no = old.size();
+	/**
+	 * @return the atcHandler
+	 */
+	private AtcHandler getAtcHandler() {
+		return atcHandler;
 	}
-	this.list = list;
-	int n = list.size();
-	if (n > no) {
-	    if (no > 0) {
-		fireContentsChanged(this, 0, no - 1);
-	    }
-	    fireIntervalAdded(this, no, n - 1);
-	} else {
-	    if (n > 0) {
-		fireContentsChanged(this, 0, n - 1);
-	    }
-	    if (n < no) {
-		fireIntervalRemoved(this, n, no - 1);
-	    }
+
+	/**
+	 * @see javax.swing.ListModel#getElementAt(int)
+	 */
+	@Override
+	public String getElementAt(int n) {
+		RadarMap map = list.get(n);
+		return map.getId() + " - " + map.getName();
 	}
-    }
 
-    /**
-         * 
-         */
-    public Object getSelectedItem() {
-	int idx = getSelectedIndex();
-	if (idx < 0)
-	    return null;
-	return getElementAt(idx);
-    }
-
-    /**
-         * 
-         * @return
-         */
-    public String getSelectedId() {
-	return getList().get(getSelectedIndex()).getId();
-    }
-
-    /**
-         * 
-         */
-    public void setSelectedItem(Object item) {
-	int idx = -1;
-	List<RadarMap> list = getList();
-	int n = list.size();
-	for (int i = 0; i < n; ++i) {
-	    if (getElementAt(i).equals(item)) {
-		idx = i;
-		break;
-	    }
+	/**
+	 * @return the list
+	 */
+	private List<RadarMap> getList() {
+		return list;
 	}
-	setSelectedIndex(idx);
-    }
 
-    /**
-         * @return the selectedIndex
-         */
-    public int getSelectedIndex() {
-	return selectedIndex;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public String getSelectedId() {
+		return getList().get(getSelectedIndex()).getId();
+	}
 
-    /**
-         * @param selectedIndex
-         *                the selectedIndex to set
+	/**
+	 * @return the selectedIndex
+	 */
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
+
+	/**
+         * 
          */
-    public void setSelectedIndex(int selectedIndex) {
-	this.selectedIndex = selectedIndex;
-    }
+	@Override
+	public Object getSelectedItem() {
+		int idx = getSelectedIndex();
+		if (idx < 0)
+			return null;
+		return getElementAt(idx);
+	}
+
+	/**
+	 * @see javax.swing.ListModel#getSize()
+	 */
+	@Override
+	public int getSize() {
+		return list.size();
+	}
+
+	/**
+         * 
+         * 
+         */
+	@Override
+	public void refresh() {
+		List<RadarMap> list = getAtcHandler().retrieveRadarMap();
+		setList(list);
+	}
+
+	/**
+	 * @param atcHandler
+	 *            the atcHandler to set
+	 */
+	public void setAtcHandler(AtcHandler atcHandler) {
+		this.atcHandler = atcHandler;
+	}
+
+	/**
+	 * @param list
+	 *            the list to set
+	 */
+	private void setList(List<RadarMap> list) {
+		List<RadarMap> old = getList();
+		int no = 0;
+		if (old != null) {
+			no = old.size();
+		}
+		this.list = list;
+		int n = list.size();
+		if (n > no) {
+			if (no > 0) {
+				fireContentsChanged(this, 0, no - 1);
+			}
+			fireIntervalAdded(this, no, n - 1);
+		} else {
+			if (n > 0) {
+				fireContentsChanged(this, 0, n - 1);
+			}
+			if (n < no) {
+				fireIntervalRemoved(this, n, no - 1);
+			}
+		}
+	}
+
+	/**
+	 * @param selectedIndex
+	 *            the selectedIndex to set
+	 */
+	public void setSelectedIndex(int selectedIndex) {
+		this.selectedIndex = selectedIndex;
+	}
+
+	/**
+         * 
+         */
+	@Override
+	public void setSelectedItem(Object item) {
+		int idx = -1;
+		List<RadarMap> list = getList();
+		int n = list.size();
+		for (int i = 0; i < n; ++i) {
+			if (getElementAt(i).equals(item)) {
+				idx = i;
+				break;
+			}
+		}
+		setSelectedIndex(idx);
+	}
 }

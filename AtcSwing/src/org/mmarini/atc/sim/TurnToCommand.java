@@ -15,36 +15,38 @@ package org.mmarini.atc.sim;
  * 
  */
 public class TurnToCommand extends AbstractPlaneCommand {
-    private Location location;
+	private Location location;
 
-    /**
-         * @param plane
-         * @param location
-         */
-    public TurnToCommand(DefaultPlane plane, Location location) {
-	super(plane);
-	this.location = location;
-    }
+	/**
+	 * @param plane
+	 * @param location
+	 */
+	public TurnToCommand(DefaultPlane plane, Location location) {
+		super(plane);
+		this.location = location;
+	}
 
-    /**
-         * @see org.mmarini.atc.sim.PlaneCommand#apply()
-         */
-    public void apply() {
-	getPlane().turnTo(getLocation());
-    }
+	/**
+	 * @see org.mmarini.atc.sim.PlaneCommand#apply()
+	 */
+	@Override
+	public void apply() {
+		getPlane().turnTo(getLocation());
+	}
 
-    /**
-         * @return the location
-         */
-    public Location getLocation() {
-	return location;
-    }
+	/**
+	 * @return the location
+	 */
+	public Location getLocation() {
+		return location;
+	}
 
-    /**
+	/**
          * 
          */
-    public String getStatusMessage() {
-	return "turn to " + getLocation().getId() + " at {0}";
-    }
+	@Override
+	public String getStatusMessage() {
+		return "turn to " + getLocation().getId() + " at {0}";
+	}
 
 }

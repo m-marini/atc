@@ -15,15 +15,15 @@ package org.mmarini.atc.sim;
  * @version $Id: PlaneCommand.java,v 1.2 2008/02/15 18:06:58 marco Exp $
  */
 public interface PlaneCommand {
-    /**
+	/**
          * 
          * 
          */
-    public abstract void apply();
+	public abstract void apply();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract String getStatusMessage();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getStatusMessage();
 }

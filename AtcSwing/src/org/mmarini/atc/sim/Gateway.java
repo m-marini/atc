@@ -15,29 +15,29 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface Gateway extends Location {
-    /**
-         * 
-         * @param plane
-         * @return
-         */
-    public abstract void initPlane(Plane plane);
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract int getCourse();
 
-    /**
-         * 
-         * @param plane
-         * @return
-         */
-    public abstract boolean isCorrectExit(Plane plane);
+	/**
+	 * 
+	 * @param plane
+	 * @return
+	 */
+	public abstract void initPlane(Plane plane);
 
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean isBusy();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean isBusy();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract int getCourse();
+	/**
+	 * 
+	 * @param plane
+	 * @return
+	 */
+	public abstract boolean isCorrectExit(Plane plane);
 }

@@ -15,27 +15,27 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface Location {
-    /**
-         * 
-         * @return
-         */
-    public abstract String getId();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getAlignment();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract Position getPosition();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getId();
 
-    /**
-         * 
-         * @return
-         */
-    public abstract String getAlignment();
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract Position getPosition();
 
-    /**
+	/**
          * 
          * 
          */
-    public abstract void update();
+	public abstract void update();
 }

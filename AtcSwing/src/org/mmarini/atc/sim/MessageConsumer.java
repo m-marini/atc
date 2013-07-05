@@ -15,9 +15,9 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface MessageConsumer {
-    /**
-         * 
-         * @param message
-         */
-    public void consume(Message message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public void consume(Message message);
 }

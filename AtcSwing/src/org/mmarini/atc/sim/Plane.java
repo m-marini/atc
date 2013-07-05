@@ -15,186 +15,186 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface Plane {
-    /**
+	/**
+	 * 
+	 * @param location
+	 */
+	public abstract void applyCircle(Location location);
+
+	/**
+	 * 
+	 * @param flightLevelId
+	 */
+	public abstract void applyFlightLevel(String flightLevelId);
+
+	/**
+	 * 
+	 * @param location
+	 * @param condition
+	 */
+	public abstract void applyTurnTo(Location location, Location condition);
+
+	/**
+	 * 
+	 * @param plane1
+	 * @return
+	 */
+	public abstract boolean collidesWith(Plane plane1);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract int getAltitude();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getClassId();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract Gateway getDestination();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getDestinationId();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getFlightLevelId();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract int getHeading();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getId();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract Position getPosition();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract int getSpeed();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String getStatus();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean isCorrectExit();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean isCrashed();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean isExit();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean isHeld();
+
+	/**
+	 * 
+	 * @param position
+	 * @return
+	 */
+	public abstract boolean isInRoute(Position position);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract boolean isLanded();
+
+	/**
+	 * 
+	 * @param location
+	 */
+	public abstract void landTo(Gateway location);
+
+	/**
+	 * 
+	 * @param altitude
+	 */
+	public abstract void setAltitude(int altitude);
+
+	/**
+	 * 
+	 * @param destination
+	 */
+	public abstract void setDestination(Gateway destination);
+
+	/**
+	 * 
+	 * @param entry_altitude
+	 */
+	public abstract void setExpectedAltitude(int entry_altitude);
+
+	/**
          * 
          * 
          */
-    public abstract void update();
+	public abstract void setFlyingStatus();
 
-    /**
-         * 
-         * @param plane1
-         * @return
-         */
-    public abstract boolean collidesWith(Plane plane1);
+	/**
+	 * 
+	 * @param course
+	 */
+	public abstract void setHeading(int course);
 
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean isExit();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean isCorrectExit();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean isLanded();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean isCrashed();
-
-    /**
-         * 
-         * @param destination
-         */
-    public abstract void setDestination(Gateway destination);
-
-    /**
-         * 
-         * @param altitude
-         */
-    public abstract void setAltitude(int altitude);
-
-    /**
-         * 
-         * @param course
-         */
-    public abstract void setHeading(int course);
-
-    /**
-         * 
-         * @param position
-         */
-    public abstract void setPosition(Position position);
-
-    /**
-         * 
-         * @return
-         */
-    public abstract int getAltitude();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract Position getPosition();
-
-    /**
+	/**
          * 
          * 
          */
-    public abstract void setFlyingStatus();
+	public abstract void setHoldingStatus();
 
-    /**
+	/**
+	 * 
+	 * @param position
+	 */
+	public abstract void setPosition(Position position);
+
+	/**
+	 * 
+	 * @param runway
+	 */
+	public abstract void setRunway(Gateway runway);
+
+	/**
          * 
          * 
          */
-    public abstract void setHoldingStatus();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract int getHeading();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract String getId();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract int getSpeed();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract boolean isHeld();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract String getDestinationId();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract String getFlightLevelId();
-
-    /**
-         * 
-         * @param flightLevelId
-         */
-    public abstract void applyFlightLevel(String flightLevelId);
-
-    /**
-         * 
-         * @param location
-         */
-    public abstract void landTo(Gateway location);
-
-    /**
-         * 
-         * @param location
-         */
-    public abstract void applyCircle(Location location);
-
-    /**
-         * 
-         * @param position
-         * @return
-         */
-    public abstract boolean isInRoute(Position position);
-
-    /**
-         * 
-         * @param location
-         * @param condition
-         */
-    public abstract void applyTurnTo(Location location, Location condition);
-
-    /**
-         * 
-         * @param entry_altitude
-         */
-    public abstract void setExpectedAltitude(int entry_altitude);
-
-    /**
-         * 
-         * @return
-         */
-    public abstract Gateway getDestination();
-
-    /**
-         * 
-         * @return
-         */
-    public abstract String getStatus();
-
-    /**
-         * 
-         * @param runway
-         */
-    public abstract void setRunway(Gateway runway);
-
-    /**
-     * 
-     * @return
-     */
-    public abstract String getClassId();
+	public abstract void update();
 }

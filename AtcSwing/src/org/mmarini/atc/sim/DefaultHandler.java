@@ -20,278 +20,302 @@ import java.util.List;
  * 
  */
 public class DefaultHandler implements AtcHandler {
-    private SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 
-    private AtcSession session;
+	private AtcSession session;
 
-    private RadarPainter radarPainter;
+	private RadarPainter radarPainter;
 
-    private Hits hits;
+	private Hits hits;
 
-    /**
+	/**
          * 
          */
-    public void consume(Message message) {
-	getSession().consume(message);
-    }
+	@Override
+	public void consume(Message message) {
+		getSession().consume(message);
+	}
 
-    /**
+	/**
          * 
          */
-    public List<Location> retrieveMapLocations() {
-	AtcSession session = getSession();
-	if (session == null)
-	    return null;
-	return session.getMapLocations();
-    }
+	@Override
+	public GameRecord createRecord() {
+		GameRecord record = new GameRecord();
+		record.setProfile(getProfile());
+		record.setMapName(getRadarMapName());
+		record.setIterationCount(getIterationCount());
+		record.setPlaneCount(getSafeExit());
+		return record;
+	}
 
-    /**
+	/**
          * 
          */
-    public List<Plane> retrievePlanes() {
-	AtcSession session = getSession();
-	if (session == null)
-	    return null;
-	return session.getPlaneList();
-    }
+	@Override
+	public void createSession(String radarMap, String profile) {
+		AtcSession session = getSessionFactory().createSession(radarMap,
+				profile);
+		setSession(session);
+	}
 
-    /**
+	/**
          * 
          */
-    public List<Route> retrieveRoutes() {
-	return getSession().getRouteList();
-    }
+	@Override
+	public int getCollisionCount() {
+		return getSession().getCollisionCount();
+	}
 
-    /**
+	/**
          * 
          */
-    public void updateSession() {
-	getSession().update();
-    }
+	@Override
+	public int getCrashCount() {
+		return getSession().getCrashCount();
+	}
 
-    /**
+	/**
+	 * @return the hits
+	 */
+	private Hits getHits() {
+		return hits;
+	}
+
+	/**
          * 
          */
-    public void createSession(String radarMap, String profile) {
-	AtcSession session = getSessionFactory().createSession(radarMap,
-		profile);
-	setSession(session);
-    }
+	@Override
+	public int getIterationCount() {
+		return getSession().getIterationCount();
+	}
 
-    /**
+	/**
          * 
          */
-    public List<RadarMap> retrieveRadarMap() {
-	return getSessionFactory().getRadarMap();
-    }
+	@Override
+	public double getNewPlaneProbability() {
+		return getSession().getNewPlaneProbability();
+	}
 
-    /**
-         * @return the sessionFactory
-         */
-    private SessionFactory getSessionFactory() {
-	return sessionFactory;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	private String getProfile() {
+		return getSession().getProfile();
+	}
 
-    /**
-         * @param sessionFactory
-         *                the sessionFactory to set
-         */
-    public void setSessionFactory(SessionFactory sessionFactory) {
-	this.sessionFactory = sessionFactory;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	private String getRadarMapName() {
+		return getSession().getRadarMapName();
+	}
 
-    /**
-         * @return the session
-         */
-    private AtcSession getSession() {
-	return session;
-    }
+	/**
+	 * @return the radarPainter
+	 */
+	private RadarPainter getRadarPainter() {
+		return radarPainter;
+	}
 
-    /**
-         * @param session
-         *                the session to set
-         */
-    private void setSession(AtcSession session) {
-	this.session = session;
-    }
-
-    /**
+	/**
          * 
          */
-    public List<Gateway> retrieveRunways() {
-	AtcSession session = getSession();
-	if (session == null)
-	    return null;
-	return session.getRunwayList();
-    }
+	@Override
+	public int getSafeExit() {
+		return getSession().getSafeCount();
+	}
 
-    /**
+	/**
+	 * @return the session
+	 */
+	private AtcSession getSession() {
+		return session;
+	}
+
+	/**
+	 * @return the sessionFactory
+	 */
+	private SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	/**
          * 
          */
-    public int getCollisionCount() {
-	return getSession().getCollisionCount();
-    }
+	@Override
+	public int getWrongExitCount() {
+		return getSession().getWrongExitCount();
+	}
 
-    /**
+	/**
          * 
          */
-    public int getCrashCount() {
-	return getSession().getCrashCount();
-    }
+	@Override
+	public boolean isBetter() {
+		return getHits().isBetter(createRecord());
+	}
 
-    /**
-         * 
-         */
-    public int getWrongExitCount() {
-	return getSession().getWrongExitCount();
-    }
-
-    /**
-         * 
-         */
-    public int getIterationCount() {
-	return getSession().getIterationCount();
-    }
-
-    /**
-         * 
-         */
-    public double getNewPlaneProbability() {
-	return getSession().getNewPlaneProbability();
-    }
-
-    /**
-         * 
-         */
-    public int getSafeExit() {
-	return getSession().getSafeCount();
-    }
-
-    /**
+	/**
          * 
          */
 
-    public void paintRadar(Graphics gr, Dimension size) {
-	RadarPainter painter = getRadarPainter();
-	painter.setSize(size);
-	painter.setAtcHandler(this);
-	painter.paint(gr);
-    }
+	@Override
+	public void paintRadar(Graphics gr, Dimension size) {
+		RadarPainter painter = getRadarPainter();
+		painter.setSize(size);
+		painter.setAtcHandler(this);
+		painter.paint(gr);
+	}
 
-    /**
-         * @return the radarPainter
-         */
-    private RadarPainter getRadarPainter() {
-	return radarPainter;
-    }
-
-    /**
-         * @param radarPainter
-         *                the radarPainter to set
-         */
-    public void setRadarPainter(RadarPainter radarPainter) {
-	this.radarPainter = radarPainter;
-    }
-
-    /**
+	/**
          * 
          */
-    public void retrieveMessages(Logger logger) {
-	LogTextMessageFormat msgFormat = new LogTextMessageFormat(logger);
-	retrieveMessages(msgFormat);
-    }
+	@Override
+	public void register(String recordId) {
+		GameRecord record = createRecord();
+		record.setName(recordId);
+		getHits().register(record);
+	}
 
-    /**
+	/**
          * 
          */
-    public void retrieveMessages(MessageConsumer consumer) {
-	getSession().dequeueMessages(consumer);
-    }
+	@Override
+	public List<Location> retrieveBeacons() {
+		return getSession().getBeaconList();
+	}
 
-    /**
+	/**
          * 
          */
-    public GameRecord createRecord() {
-	GameRecord record = new GameRecord();
-	record.setProfile(getProfile());
-	record.setMapName(getRadarMapName());
-	record.setIterationCount(getIterationCount());
-	record.setPlaneCount(getSafeExit());
-	return record;
-    }
+	@Override
+	public List<Gateway> retrieveExits() {
+		return getSession().getExitList();
+	}
 
-    /**
-         * 
-         * @return
-         */
-    private String getRadarMapName() {
-	return getSession().getRadarMapName();
-    }
-
-    /**
-         * 
-         * @return
-         */
-    private String getProfile() {
-	return getSession().getProfile();
-    }
-
-    /**
+	/**
          * 
          */
-    public boolean isBetter() {
-	return getHits().isBetter(createRecord());
-    }
+	@Override
+	public Hits retrieveHits() {
+		return getHits();
+	}
 
-    /**
+	/**
          * 
          */
-    public void register(String recordId) {
-	GameRecord record = createRecord();
-	record.setName(recordId);
-	getHits().register(record);
-    }
+	@Override
+	public List<Location> retrieveMapLocations() {
+		AtcSession session = getSession();
+		if (session == null)
+			return null;
+		return session.getMapLocations();
+	}
 
-    /**
+	/**
          * 
          */
-    public Hits retrieveHits() {
-	return getHits();
-    }
+	@Override
+	public void retrieveMessages(Logger logger) {
+		LogTextMessageFormat msgFormat = new LogTextMessageFormat(logger);
+		retrieveMessages(msgFormat);
+	}
 
-    /**
-         * @return the hits
-         */
-    private Hits getHits() {
-	return hits;
-    }
-
-    /**
-         * @param hits
-         *                the hits to set
-         */
-    public void setHits(Hits hits) {
-	this.hits = hits;
-    }
-
-    /**
+	/**
          * 
          */
-    public void storeHits(HitsMemento memento) {
-	getHits().setMemento(memento);
-    }
+	@Override
+	public void retrieveMessages(MessageConsumer consumer) {
+		getSession().dequeueMessages(consumer);
+	}
 
-    /**
+	/**
          * 
          */
-    public List<Location> retrieveBeacons() {
-	return getSession().getBeaconList();
-    }
+	@Override
+	public List<Plane> retrievePlanes() {
+		AtcSession session = getSession();
+		if (session == null)
+			return null;
+		return session.getPlaneList();
+	}
 
-    /**
+	/**
          * 
          */
-    public List<Gateway> retrieveExits() {
-	return getSession().getExitList();
-    }
+	@Override
+	public List<RadarMap> retrieveRadarMap() {
+		return getSessionFactory().getRadarMap();
+	}
+
+	/**
+         * 
+         */
+	@Override
+	public List<Route> retrieveRoutes() {
+		return getSession().getRouteList();
+	}
+
+	/**
+         * 
+         */
+	@Override
+	public List<Gateway> retrieveRunways() {
+		AtcSession session = getSession();
+		if (session == null)
+			return null;
+		return session.getRunwayList();
+	}
+
+	/**
+	 * @param hits
+	 *            the hits to set
+	 */
+	public void setHits(Hits hits) {
+		this.hits = hits;
+	}
+
+	/**
+	 * @param radarPainter
+	 *            the radarPainter to set
+	 */
+	public void setRadarPainter(RadarPainter radarPainter) {
+		this.radarPainter = radarPainter;
+	}
+
+	/**
+	 * @param session
+	 *            the session to set
+	 */
+	private void setSession(AtcSession session) {
+		this.session = session;
+	}
+
+	/**
+	 * @param sessionFactory
+	 *            the sessionFactory to set
+	 */
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
+	/**
+         * 
+         */
+	@Override
+	public void storeHits(HitsMemento memento) {
+		getHits().setMemento(memento);
+	}
+
+	/**
+         * 
+         */
+	@Override
+	public void updateSession() {
+		getSession().update();
+	}
 }

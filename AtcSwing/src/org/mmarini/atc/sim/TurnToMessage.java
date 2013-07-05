@@ -15,27 +15,28 @@ package org.mmarini.atc.sim;
  * 
  */
 public class TurnToMessage extends AbstractConditionMessage {
-    private String locationId;
+	private String locationId;
 
-    /**
-         * @return the locationId
-         */
-    public String getLocationId() {
-	return locationId;
-    }
-
-    /**
-         * @param locationId
-         *                the locationId to set
-         */
-    public void setLocationId(String locationId) {
-	this.locationId = locationId;
-    }
-
-    /**
+	/**
          * 
          */
-    public void apply(MessageVisitor visitor) {
-	visitor.visit(this);
-    }
+	@Override
+	public void apply(MessageVisitor visitor) {
+		visitor.visit(this);
+	}
+
+	/**
+	 * @return the locationId
+	 */
+	public String getLocationId() {
+		return locationId;
+	}
+
+	/**
+	 * @param locationId
+	 *            the locationId to set
+	 */
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
+	}
 }

@@ -24,110 +24,111 @@ import org.mmarini.atc.sim.AtcHandler;
  * @version $Id: AtcClock.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  */
 public class AtcClock implements ActionListener {
-    private AtcHandler atcHandler;
+	private AtcHandler atcHandler;
 
-    private Timer timer = new Timer(1000, this);
+	private Timer timer = new Timer(1000, this);
 
-    private List<Refreshable> refreshableList;
+	private List<Refreshable> refreshableList;
 
-    private GameListener gameListener;
+	private GameListener gameListener;
 
-    /**
-         * 
-         * 
-         */
-    public void init() {
-    }
-
-    /**
-         * @return the atcHandler
-         */
-    private AtcHandler getAtcHandler() {
-	return atcHandler;
-    }
-
-    /**
-         * @param atcHandler
-         *                the atcHandler to set
-         */
-    public void setAtcHandler(AtcHandler atcHandler) {
-	this.atcHandler = atcHandler;
-    }
-
-    /**
-         * 
+	/**
          * 
          */
-    public void start() {
-	getTimer().start();
-    }
-
-    /**
-         * 
-         * 
-         */
-    public void setInterval(int interval) {
-	getTimer().setDelay(interval);
-    }
-
-    /**
-         * 
-         */
-    public void actionPerformed(ActionEvent e) {
-	AtcHandler atcHandler = getAtcHandler();
-	atcHandler.updateSession();
-	for (Iterator<Refreshable> i = getRefreshableList().iterator(); i
-		.hasNext();) {
-	    i.next().refresh();
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		AtcHandler atcHandler = getAtcHandler();
+		atcHandler.updateSession();
+		for (Iterator<Refreshable> i = getRefreshableList().iterator(); i
+				.hasNext();) {
+			i.next().refresh();
+		}
+		if (atcHandler.getCrashCount() > 0
+				|| atcHandler.getCollisionCount() > 0
+				|| atcHandler.getWrongExitCount() > 0) {
+			GameListener listener = getGameListener();
+			if (listener != null) {
+				listener.endGame();
+			}
+		}
 	}
-	if (atcHandler.getCrashCount() > 0
-		|| atcHandler.getCollisionCount() > 0
-		|| atcHandler.getWrongExitCount() > 0) {
-	    GameListener listener = getGameListener();
-	    if (listener != null) {
-		listener.endGame();
-	    }
+
+	/**
+	 * @return the atcHandler
+	 */
+	private AtcHandler getAtcHandler() {
+		return atcHandler;
 	}
-    }
 
-    public void stop() {
-	getTimer().stop();
-    }
+	/**
+	 * @return the gameListener
+	 */
+	private GameListener getGameListener() {
+		return gameListener;
+	}
 
-    /**
-         * @return the timer
+	/**
+	 * @return the refreshableList
+	 */
+	private List<Refreshable> getRefreshableList() {
+		return refreshableList;
+	}
+
+	/**
+	 * @return the timer
+	 */
+	private Timer getTimer() {
+		return timer;
+	}
+
+	/**
+         * 
+         * 
          */
-    private Timer getTimer() {
-	return timer;
-    }
+	public void init() {
+	}
 
-    /**
-         * @return the refreshableList
-         */
-    private List<Refreshable> getRefreshableList() {
-	return refreshableList;
-    }
+	/**
+	 * @param atcHandler
+	 *            the atcHandler to set
+	 */
+	public void setAtcHandler(AtcHandler atcHandler) {
+		this.atcHandler = atcHandler;
+	}
 
-    /**
-         * @param refreshableList
-         *                the refreshableList to set
-         */
-    public void setRefreshableList(List<Refreshable> refreshableList) {
-	this.refreshableList = refreshableList;
-    }
+	/**
+	 * @param gameListener
+	 *            the gameListener to set
+	 */
+	public void setGameListener(GameListener gameListener) {
+		this.gameListener = gameListener;
+	}
 
-    /**
-         * @return the gameListener
+	/**
+         * 
+         * 
          */
-    private GameListener getGameListener() {
-	return gameListener;
-    }
+	public void setInterval(int interval) {
+		getTimer().setDelay(interval);
+	}
 
-    /**
-         * @param gameListener
-         *                the gameListener to set
+	/**
+	 * @param refreshableList
+	 *            the refreshableList to set
+	 */
+	public void setRefreshableList(List<Refreshable> refreshableList) {
+		this.refreshableList = refreshableList;
+	}
+
+	/**
+         * 
+         * 
          */
-    public void setGameListener(GameListener gameListener) {
-	this.gameListener = gameListener;
-    }
+	public void start() {
+		getTimer().start();
+	}
+
+	public void stop() {
+		getTimer().stop();
+	}
 }

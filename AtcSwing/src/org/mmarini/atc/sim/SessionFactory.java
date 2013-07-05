@@ -19,79 +19,79 @@ import java.util.Map;
  * 
  */
 public abstract class SessionFactory {
-    private ArrayList<RadarMap> radarMap;
+	private ArrayList<RadarMap> radarMap;
 
-    private Map<String, GameProfile> profileMap;
+	private Map<String, GameProfile> profileMap;
 
-    /**
-         * @return
-         */
-    protected abstract AtcSession createSessionTemplate();
-
-    /**
-         * 
-         * @return
-         */
-    public AtcSession createSession(String radarMap, String profile) {
-	AtcSession session = createSessionTemplate();
-	GameProfile gameProfile = findProfile(profile);
-	session.setGameProfile(gameProfile);
-	RadarMap map = findMap(radarMap);
-	session.setRadarMap(map);
-	return session;
-    }
-
-    /**
-         * 
-         * @param id
-         * @return
-         */
-    private RadarMap findMap(String id) {
-	for (Iterator<RadarMap> iter = getRadarMap().iterator(); iter.hasNext();) {
-	    RadarMap map = iter.next();
-	    if (id.equals(map.getId())) {
-		return map;
-	    }
+	/**
+	 * 
+	 * @return
+	 */
+	public AtcSession createSession(String radarMap, String profile) {
+		AtcSession session = createSessionTemplate();
+		GameProfile gameProfile = findProfile(profile);
+		session.setGameProfile(gameProfile);
+		RadarMap map = findMap(radarMap);
+		session.setRadarMap(map);
+		return session;
 	}
-	return null;
-    }
 
-    /**
-         * 
-         * @param profile
-         * @return
-         */
-    private GameProfile findProfile(String profile) {
-	return getProfileMap().get(profile);
-    }
+	/**
+	 * @return
+	 */
+	protected abstract AtcSession createSessionTemplate();
 
-    /**
-         * @return the radarMap
-         */
-    public ArrayList<RadarMap> getRadarMap() {
-	return radarMap;
-    }
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	private RadarMap findMap(String id) {
+		for (Iterator<RadarMap> iter = getRadarMap().iterator(); iter.hasNext();) {
+			RadarMap map = iter.next();
+			if (id.equals(map.getId())) {
+				return map;
+			}
+		}
+		return null;
+	}
 
-    /**
-         * @param radarMap
-         *                the radarMap to set
-         */
-    public void setRadarMap(ArrayList<RadarMap> radarMap) {
-	this.radarMap = radarMap;
-    }
+	/**
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	private GameProfile findProfile(String profile) {
+		return getProfileMap().get(profile);
+	}
 
-    /**
-         * @return the profileMap
-         */
-    private Map<String, GameProfile> getProfileMap() {
-	return profileMap;
-    }
+	/**
+	 * @return the profileMap
+	 */
+	private Map<String, GameProfile> getProfileMap() {
+		return profileMap;
+	}
 
-    /**
-         * @param profileMap
-         *                the profileMap to set
-         */
-    public void setProfileMap(Map<String, GameProfile> profileMap) {
-	this.profileMap = profileMap;
-    }
+	/**
+	 * @return the radarMap
+	 */
+	public ArrayList<RadarMap> getRadarMap() {
+		return radarMap;
+	}
+
+	/**
+	 * @param profileMap
+	 *            the profileMap to set
+	 */
+	public void setProfileMap(Map<String, GameProfile> profileMap) {
+		this.profileMap = profileMap;
+	}
+
+	/**
+	 * @param radarMap
+	 *            the radarMap to set
+	 */
+	public void setRadarMap(ArrayList<RadarMap> radarMap) {
+		this.radarMap = radarMap;
+	}
 }

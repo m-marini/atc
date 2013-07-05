@@ -15,9 +15,9 @@ package org.mmarini.atc.swing;
  * 
  */
 public interface Refreshable {
-    /**
+	/**
          * 
          * 
          */
-    public void refresh();
+	public void refresh();
 }

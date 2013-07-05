@@ -18,46 +18,46 @@ import javax.swing.JToggleButton;
  */
 public class ObjectButtonModel extends JToggleButton.ToggleButtonModel {
 
-    /**
+	/**
          * 
          */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Object selectedObject;
+	private Object selectedObject;
 
-    /**
+	/**
          * 
          */
-    public ObjectButtonModel() {
-    }
+	public ObjectButtonModel() {
+	}
 
-    /**
-         * @param selectedObject
-         */
-    public ObjectButtonModel(Object selectedObject) {
-	this.selectedObject = selectedObject;
-    }
+	/**
+	 * @param selectedObject
+	 */
+	public ObjectButtonModel(Object selectedObject) {
+		this.selectedObject = selectedObject;
+	}
 
-    /**
-         * @return the selectedObject
-         */
-    public Object getSelectedObject() {
-	return selectedObject;
-    }
+	/**
+	 * @return the selectedObject
+	 */
+	public Object getSelectedObject() {
+		return selectedObject;
+	}
 
-    /**
-         * @param selectedObject
-         *                the selectedObject to set
-         */
-    public void setSelectedObject(Object selectedObject) {
-	this.selectedObject = selectedObject;
-    }
+	/**
+	 * @see javax.swing.DefaultButtonModel#getSelectedObjects()
+	 */
+	@Override
+	public Object[] getSelectedObjects() {
+		return new Object[] { getSelectedObject() };
+	}
 
-    /**
-         * @see javax.swing.DefaultButtonModel#getSelectedObjects()
-         */
-    @Override
-    public Object[] getSelectedObjects() {
-	return new Object[] { getSelectedObject() };
-    }
+	/**
+	 * @param selectedObject
+	 *            the selectedObject to set
+	 */
+	public void setSelectedObject(Object selectedObject) {
+		this.selectedObject = selectedObject;
+	}
 }

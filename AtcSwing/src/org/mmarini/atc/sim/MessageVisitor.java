@@ -15,76 +15,76 @@ package org.mmarini.atc.sim;
  * 
  */
 public interface MessageVisitor {
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(TurnToMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(ChangeFlightLevelMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(ClearToLandMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(ClearToLandMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(ChangeFlightLevelMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(CollisionMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(HoldMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(CrashedMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(InfoMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(EnteredMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(CollisionMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(HoldMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(WrongExitMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(InfoMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(RightExitMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(LandedMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(CrashedMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(RightExitMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(LandedMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(TurnToMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(WrongRunwayMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(WrongExitMessage message);
 
-    /**
-         * 
-         * @param message
-         */
-    public abstract void visit(EnteredMessage message);
+	/**
+	 * 
+	 * @param message
+	 */
+	public abstract void visit(WrongRunwayMessage message);
 
 }
