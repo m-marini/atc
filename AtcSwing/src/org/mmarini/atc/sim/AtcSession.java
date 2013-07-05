@@ -23,32 +23,31 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class AtcSession implements MessageConsumer {
-
 	private static Log log = LogFactory.getLog(AtcSession.class);
 
 	private RadarMap radarMap;
-
 	private GameProfile gameProfile;
-
-	private List<Plane> planeList = new ArrayList<Plane>(0);
-
-	private Random random = new Random();
-
+	private List<Plane> planeList;
+	private Random random;
 	private int crashCount;
-
 	private int safeCount;
-
 	private int collisionCount;
-
 	private int wrongExitCount;
-
 	private int iterationCount;
-
 	private PlaneMessageDispatcher messageDispatcher;
-
-	private List<Message> messageList = new ArrayList<Message>(0);
-
+	private List<Message> messageList;
 	private PlaneFactory planeFactory;
+
+	/**
+	 * 
+	 */
+	public AtcSession() {
+		planeList = new ArrayList<Plane>(0);
+		random = new Random();
+		messageList = new ArrayList<Message>(0);
+		planeFactory = new PlaneFactory();
+		messageDispatcher = new PlaneMessageDispatcher();
+	}
 
 	/**
 	 * 
@@ -473,14 +472,6 @@ public class AtcSession implements MessageConsumer {
 	 */
 	public void setMessageDispatcher(PlaneMessageDispatcher messageDispatcher) {
 		this.messageDispatcher = messageDispatcher;
-	}
-
-	/**
-	 * @param planeFactory
-	 *            the planeFactory to set
-	 */
-	public void setPlaneFactory(PlaneFactory planeFactory) {
-		this.planeFactory = planeFactory;
 	}
 
 	/**

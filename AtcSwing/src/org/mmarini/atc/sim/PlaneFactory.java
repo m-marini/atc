@@ -9,6 +9,7 @@
  */
 package org.mmarini.atc.sim;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,10 +20,19 @@ import java.util.Random;
  */
 public class PlaneFactory {
 	private List<PlaneModel> templateList;
-
 	private int count;
+	private Random random;
 
-	private Random random = new Random();
+	/**
+	 * 
+	 */
+	public PlaneFactory() {
+		random = new Random();
+		templateList = new ArrayList<>();
+
+		createPlaneModel("J", 0.25f, 0.8f, 300);
+		createPlaneModel("A", 0.2f, 0.5f, 150);
+	}
 
 	/**
 	 * 
@@ -38,6 +48,24 @@ public class PlaneFactory {
 		plane.setId(id);
 		plane.setModel(model);
 		return plane;
+	}
+
+	/**
+	 * 
+	 * @param classId
+	 * @param lowSpeed
+	 * @param highSpeed
+	 * @param vSpeed
+	 */
+	private void createPlaneModel(String classId, float lowSpeed,
+			float highSpeed, int vSpeed) {
+		PlaneModel model = new PlaneModel();
+		model.setClassId(classId);
+		model.setLowSpeed(lowSpeed);
+		model.setHighSpeed(highSpeed);
+		model.setVSpeed(vSpeed);
+
+		templateList.add(model);
 	}
 
 	/**
@@ -77,22 +105,6 @@ public class PlaneFactory {
 	 */
 	private void setCount(int count) {
 		this.count = count;
-	}
-
-	/**
-	 * @param random
-	 *            the random to set
-	 */
-	public void setRandom(Random random) {
-		this.random = random;
-	}
-
-	/**
-	 * @param templateList
-	 *            the templateList to set
-	 */
-	public void setTemplateList(List<PlaneModel> planeTemplateList) {
-		this.templateList = planeTemplateList;
 	}
 
 }

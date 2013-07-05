@@ -21,12 +21,17 @@ import java.util.List;
  */
 public class DefaultHandler implements AtcHandler {
 	private SessionFactory sessionFactory;
-
 	private AtcSession session;
-
 	private RadarPainter radarPainter;
-
 	private Hits hits;
+
+	/**
+	 * 
+	 */
+	public DefaultHandler() {
+		hits = new Hits();
+		radarPainter = new RadarPainter();
+	}
 
 	/**
          * 

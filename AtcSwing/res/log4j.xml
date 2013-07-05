@@ -30,6 +30,5 @@
 	<root>
 		<priority value="info" />
 		<appender-ref ref="console" />
-		<appender-ref ref="logfile" />
 	</root>
 </log4j:configuration>

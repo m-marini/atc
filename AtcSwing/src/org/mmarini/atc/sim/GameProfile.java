@@ -16,9 +16,7 @@ package org.mmarini.atc.sim;
  */
 public class GameProfile {
 	private double newPlaneProbability;
-
 	private int maxPlane;
-
 	private String id;
 
 	/**

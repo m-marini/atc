@@ -13,15 +13,9 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.io.IOException;
-import java.net.URL;
 import java.text.MessageFormat;
 
 import javax.swing.ImageIcon;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.core.io.Resource;
 
 /**
  * @author marco.marini@mmarini.org
@@ -29,28 +23,21 @@ import org.springframework.core.io.Resource;
  * 
  */
 public class PlanePainter {
-
 	private static final int TEXT_Y_GAP = 20;
-
 	private static final Color BACKGROUND_COLOR = Color.BLACK;
-
 	public static final int TEXT_X_GAP = 1;
-
-	private static Log log = LogFactory.getLog(PlanePainter.class);
-
 	private static final String PLANE_MESSAGE1 = "{0} {2}";
-
 	private static final String PLANE_MESSAGE2 = "{1} {3}";
 
-	private Resource jetIconResource;
-
 	private ImageIcon jetIcon;
-
-	private Resource planeIconResource;
-
 	private ImageIcon planeIcon;
-
 	private Color color;
+
+	/**
+	 * 
+	 */
+	public PlanePainter() {
+	}
 
 	/**
 	 * 
@@ -65,62 +52,8 @@ public class PlanePainter {
 		int w = fm.stringWidth(text);
 		gr.setColor(BACKGROUND_COLOR);
 		gr.fillRect(x, y, w + 1, fh);
-		gr.setColor(getColor());
+		gr.setColor(color);
 		gr.drawString(text, x + 1, y + fh - fm.getDescent());
-	}
-
-	/**
-	 * @return the color
-	 */
-	private Color getColor() {
-		return color;
-	}
-
-	/**
-	 * @return the jetIcon
-	 */
-	private ImageIcon getJetIcon() {
-		return jetIcon;
-	}
-
-	/**
-	 * @return the jetIconResource
-	 */
-	private Resource getJetIconResource() {
-		return jetIconResource;
-	}
-
-	/**
-	 * @return the planeIcon
-	 */
-	private ImageIcon getPlaneIcon() {
-		return planeIcon;
-	}
-
-	/**
-	 * @return the planeIconResource
-	 */
-	private Resource getPlaneIconResource() {
-		return planeIconResource;
-	}
-
-	/**
-         * 
-         * 
-         */
-	public void init() {
-		try {
-			URL url = getJetIconResource().getURL();
-			setJetIcon(new ImageIcon(url));
-		} catch (IOException e) {
-			log.error("Load jet icon", e);
-		}
-		try {
-			URL url = getPlaneIconResource().getURL();
-			setPlaneIcon(new ImageIcon(url));
-		} catch (IOException e) {
-			log.error("Load plane icon", e);
-		}
 	}
 
 	/**
@@ -134,7 +67,7 @@ public class PlanePainter {
 		t1.concatenate(trans);
 		gr.setTransform(t1);
 		FontMetrics fm = gr.getFontMetrics();
-		gr.setColor(getColor());
+		gr.setColor(color);
 		int fh = fm.getHeight();
 
 		gr.drawLine(0, 0, 0, -TEXT_Y_GAP - fh);
@@ -150,9 +83,9 @@ public class PlanePainter {
 		double rot = Math.toRadians(plane.getHeading());
 		ImageIcon img;
 		if ("J".equals(plane.getClassId())) {
-			img = getJetIcon();
+			img = jetIcon;
 		} else {
-			img = getPlaneIcon();
+			img = planeIcon;
 		}
 		AffineTransform trans1 = new AffineTransform();
 		trans1.rotate(rot);
@@ -173,31 +106,15 @@ public class PlanePainter {
 	 * @param jetIcon
 	 *            the jetIcon to set
 	 */
-	private void setJetIcon(ImageIcon jetIcon) {
+	public void setJetIcon(ImageIcon jetIcon) {
 		this.jetIcon = jetIcon;
-	}
-
-	/**
-	 * @param jetIconResource
-	 *            the jetIconResource to set
-	 */
-	public void setJetIconResource(Resource jetIconResource) {
-		this.jetIconResource = jetIconResource;
 	}
 
 	/**
 	 * @param planeIcon
 	 *            the planeIcon to set
 	 */
-	private void setPlaneIcon(ImageIcon planeIcon) {
+	public void setPlaneIcon(ImageIcon planeIcon) {
 		this.planeIcon = planeIcon;
-	}
-
-	/**
-	 * @param planeIconResource
-	 *            the planeIconResource to set
-	 */
-	public void setPlaneIconResource(Resource planeIconResource) {
-		this.planeIconResource = planeIconResource;
 	}
 }

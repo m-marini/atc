@@ -212,6 +212,34 @@
 		</property>
 	</bean>
 
+	<bean id="color040" class="java.awt.Color">
+		<constructor-arg index="0" value="0xeceacc" />
+	</bean>
+	<bean id="color080" class="java.awt.Color">
+		<constructor-arg index="0" value="0x8de5e8" />
+	</bean>
+	<bean id="color120" class="java.awt.Color">
+		<constructor-arg index="0" value="0x60d750" />
+	</bean>
+	<bean id="color160" class="java.awt.Color">
+		<constructor-arg index="0" value="0x2b21e9" />
+	</bean>
+	<bean id="color200" class="java.awt.Color">
+		<constructor-arg index="0" value="0xe95ada" />
+	</bean>
+	<bean id="color240" class="java.awt.Color">
+		<constructor-arg index="0" value="0xe98b30" />
+	</bean>
+	<bean id="color280" class="java.awt.Color">
+		<constructor-arg value="0xea332a" />
+	</bean>
+	<bean id="color320" class="java.awt.Color">
+		<constructor-arg value="0xeee450" />
+	</bean>
+	<bean id="color360" class="java.awt.Color">
+		<constructor-arg value="0xaead97" />
+	</bean>
+	
 	<bean id="commandPane" class="org.mmarini.atc.swing.CommandPane"
 		init-method="init">
 		<property name="commandController" ref="commandController" />
