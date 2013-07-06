@@ -54,14 +54,14 @@ public class AtcSession implements MessageConsumer {
 	 * @param message
 	 */
 	public void addMessage(Message message) {
-		getMessageList().add(message);
+		messageList.add(message);
 	}
 
 	/**
          * 
          */
 	private void addSafePlane() {
-		setSafeCount(getSafeCount() + 1);
+		++safeCount;
 	}
 
 	/**
@@ -69,21 +69,20 @@ public class AtcSession implements MessageConsumer {
          * 
          */
 	private void checkForCollisions() {
-		List<Plane> list = getPlaneList();
-		int n = list.size();
+		int n = planeList.size();
 		int i = 0;
 		while (i < n - 1) {
-			Plane plane0 = list.get(i);
+			Plane plane0 = planeList.get(i);
 			int j = i + 1;
 			while (j < n) {
-				Plane plane1 = list.get(j);
+				Plane plane1 = planeList.get(j);
 				if (plane0.collidesWith(plane1)) {
 					log.debug("Collision between " + plane0 + " and " + plane1);
-					list.remove(j);
-					list.remove(i);
+					planeList.remove(j);
+					planeList.remove(i);
 					--i;
 					n -= 2;
-					setCollisionCount(getCollisionCount() + 1);
+					++collisionCount;
 					addMessage(new CollisionMessage(plane0.getId(),
 							plane1.getId()));
 					break;
@@ -100,7 +99,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	private boolean checkForEvent(double probability) {
-		return getRandom().nextDouble() < probability;
+		return random.nextDouble() < probability;
 	}
 
 	/**
@@ -108,7 +107,7 @@ public class AtcSession implements MessageConsumer {
          * 
          */
 	private void checkForPlaneEntry() {
-		if (getPlaneList().size() < getMaxPlane()
+		if (planeList.size() < getMaxPlane()
 				&& checkForEvent(getNewPlaneProbability())) {
 			createNewPlane();
 		}
@@ -119,12 +118,12 @@ public class AtcSession implements MessageConsumer {
          * 
          */
 	private void checkForPlaneExits() {
-		for (Iterator<Plane> i = getPlaneList().iterator(); i.hasNext();) {
+		for (Iterator<Plane> i = planeList.iterator(); i.hasNext();) {
 			Plane plane0 = i.next();
 			if (plane0.isExit()) {
 				if (!plane0.isCorrectExit()) {
 					addMessage(new WrongExitMessage(plane0.getId()));
-					setWrongExitCount(getWrongExitCount() + 1);
+					++wrongExitCount;
 				} else {
 					addMessage(new RightExitMessage(plane0.getId(),
 							plane0.getDestinationId()));
@@ -140,12 +139,12 @@ public class AtcSession implements MessageConsumer {
          * 
          */
 	private void checkForPlaneLanding() {
-		for (Iterator<Plane> i = getPlaneList().iterator(); i.hasNext();) {
+		for (Iterator<Plane> i = planeList.iterator(); i.hasNext();) {
 			Plane plane0 = i.next();
 			if (plane0.isCrashed()) {
 				addMessage(new CrashedMessage(plane0.getId()));
 				i.remove();
-				setCrashCount(getCrashCount() + 1);
+				++crashCount;
 			} else if (plane0.isLanded()) {
 				if (plane0.isCorrectExit()) {
 					addMessage(new LandedMessage(plane0.getId(),
@@ -155,7 +154,7 @@ public class AtcSession implements MessageConsumer {
 				} else {
 					addMessage(new WrongRunwayMessage(plane0.getId()));
 					log.debug("Plane " + plane0 + " landed at wrong runway.");
-					setWrongExitCount(getWrongExitCount() + 1);
+					++wrongExitCount;
 				}
 				i.remove();
 			}
@@ -169,9 +168,8 @@ public class AtcSession implements MessageConsumer {
 	@Override
 	public void consume(Message message) {
 		addMessage(message);
-		PlaneMessageDispatcher dispatcher = getMessageDispatcher();
-		dispatcher.setSession(this);
-		dispatcher.consume(message);
+		messageDispatcher.setSession(this);
+		messageDispatcher.consume(message);
 	}
 
 	/**
@@ -180,7 +178,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	private int createInt(int n) {
-		return getRandom().nextInt(n);
+		return random.nextInt(n);
 	}
 
 	/**
@@ -195,7 +193,7 @@ public class AtcSession implements MessageConsumer {
 		Gateway to = selectRandomGateway();
 		from.initPlane(plane);
 		plane.setDestination(to);
-		getPlaneList().add(plane);
+		planeList.add(plane);
 		addMessage(new EnteredMessage(plane.getId(), from.getId()));
 		log.debug("Plane " + plane + " entered into " + to);
 	}
@@ -205,7 +203,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	private Plane createPlane() {
-		return getPlaneFactory().createPlane();
+		return planeFactory.createPlane();
 	}
 
 	/**
@@ -213,13 +211,12 @@ public class AtcSession implements MessageConsumer {
 	 * @param consumer
 	 */
 	public void dequeueMessages(MessageConsumer consumer) {
-		List<Message> list = getMessageList();
-		if (list.isEmpty())
-			return;
-		for (Iterator<Message> i = list.iterator(); i.hasNext();) {
-			consumer.consume(i.next());
+		if (!messageList.isEmpty()) {
+			for (Message m : messageList) {
+				consumer.consume(m);
+			}
+			messageList.clear();
 		}
-		list.clear();
 	}
 
 	/**
@@ -227,7 +224,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public List<Location> getBeaconList() {
-		return getRadarMap().getBeaconList();
+		return radarMap.getBeaconList();
 	}
 
 	/**
@@ -249,21 +246,14 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public List<Gateway> getExitList() {
-		return getRadarMap().getExitList();
-	}
-
-	/**
-	 * @return the gameProfile
-	 */
-	private GameProfile getGameProfile() {
-		return gameProfile;
+		return radarMap.getExitList();
 	}
 
 	/**
 	 * @return the gatewayList
 	 */
 	private List<Gateway> getGatewayList() {
-		return getRadarMap().getGatewayList();
+		return radarMap.getGatewayList();
 	}
 
 	/**
@@ -292,25 +282,15 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public List<Location> getMapLocations() {
-		return getRadarMap().getLocationList();
+		return radarMap.getLocationList();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private int getMaxPlane() {
-		return getGameProfile().getMaxPlane();
-	}
-
-	/**
-	 * @return the messageDispatcher
-	 */
-	private PlaneMessageDispatcher getMessageDispatcher() {
-		return messageDispatcher;
-	}
-
-	/**
-	 * @return the messageList
-	 */
-	private List<Message> getMessageList() {
-		return messageList;
+		return gameProfile.getMaxPlane();
 	}
 
 	/**
@@ -318,7 +298,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public double getNewPlaneProbability() {
-		return getGameProfile().getNewPlaneProbability();
+		return gameProfile.getNewPlaneProbability();
 	}
 
 	/**
@@ -327,20 +307,11 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public Plane getPlaneById(String planeId) {
-		List<Plane> list = getPlaneList();
-		for (Iterator<Plane> i = list.iterator(); i.hasNext();) {
-			Plane plane = i.next();
+		for (Plane plane : planeList) {
 			if (plane.getId().equals(planeId))
 				return plane;
 		}
 		return null;
-	}
-
-	/**
-	 * @return the planeFactory
-	 */
-	private PlaneFactory getPlaneFactory() {
-		return planeFactory;
 	}
 
 	/**
@@ -355,14 +326,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public String getProfile() {
-		return getGameProfile().getId();
-	}
-
-	/**
-	 * @return the radarMap
-	 */
-	private RadarMap getRadarMap() {
-		return radarMap;
+		return gameProfile.getId();
 	}
 
 	/**
@@ -370,14 +334,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public String getRadarMapName() {
-		return getRadarMap().getName();
-	}
-
-	/**
-	 * @return the random
-	 */
-	private Random getRandom() {
-		return random;
+		return radarMap.getName();
 	}
 
 	/**
@@ -385,7 +342,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public List<Route> getRouteList() {
-		return getRadarMap().getRouteList();
+		return radarMap.getRouteList();
 	}
 
 	/**
@@ -407,7 +364,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public List<Gateway> getRunwayList() {
-		return getRadarMap().getRunwayList();
+		return radarMap.getRunwayList();
 	}
 
 	/**
@@ -435,43 +392,11 @@ public class AtcSession implements MessageConsumer {
 	}
 
 	/**
-	 * @param collisionCount
-	 *            the collisionCount to set
-	 */
-	private void setCollisionCount(int collisionCount) {
-		this.collisionCount = collisionCount;
-	}
-
-	/**
-	 * @param crashCount
-	 *            the crashCount to set
-	 */
-	private void setCrashCount(int crashCount) {
-		this.crashCount = crashCount;
-	}
-
-	/**
 	 * @param gameProfile
 	 *            the gameProfile to set
 	 */
 	public void setGameProfile(GameProfile gameProfile) {
 		this.gameProfile = gameProfile;
-	}
-
-	/**
-	 * @param iterationCount
-	 *            the iterationCount to set
-	 */
-	private void setIterationCount(int iterationCount) {
-		this.iterationCount = iterationCount;
-	}
-
-	/**
-	 * @param messageDispatcher
-	 *            the messageDispatcher to set
-	 */
-	public void setMessageDispatcher(PlaneMessageDispatcher messageDispatcher) {
-		this.messageDispatcher = messageDispatcher;
 	}
 
 	/**
@@ -483,35 +408,11 @@ public class AtcSession implements MessageConsumer {
 	}
 
 	/**
-	 * @param random
-	 *            the random to set
-	 */
-	public void setRandom(Random random) {
-		this.random = random;
-	}
-
-	/**
-	 * @param safeCount
-	 *            the safeCount to set
-	 */
-	private void setSafeCount(int safeCount) {
-		this.safeCount = safeCount;
-	}
-
-	/**
-	 * @param wrongExitCount
-	 *            the wrongExitCount to set
-	 */
-	private void setWrongExitCount(int wrongExits) {
-		this.wrongExitCount = wrongExits;
-	}
-
-	/**
          * 
          * 
          */
 	public void update() {
-		if (getIterationCount() == 0)
+		if (iterationCount == 0)
 			createNewPlane();
 		updateLocations();
 		updatePlaneLocations();
@@ -519,7 +420,7 @@ public class AtcSession implements MessageConsumer {
 		checkForCollisions();
 		checkForPlaneLanding();
 		checkForPlaneExits();
-		setIterationCount(getIterationCount() + 1);
+		++iterationCount;
 	}
 
 	/**
@@ -538,8 +439,7 @@ public class AtcSession implements MessageConsumer {
          * 
          */
 	private void updatePlaneLocations() {
-		for (Iterator<Plane> iter = getPlaneList().iterator(); iter.hasNext();) {
-			Plane plane = iter.next();
+		for (Plane plane : planeList) {
 			plane.update();
 		}
 	}

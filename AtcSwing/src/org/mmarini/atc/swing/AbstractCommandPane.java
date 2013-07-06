@@ -35,6 +35,7 @@ import org.springframework.core.io.Resource;
  * 
  */
 public abstract class AbstractCommandPane extends JPanel {
+
 	/**
 	 * 
 	 */
@@ -43,18 +44,16 @@ public abstract class AbstractCommandPane extends JPanel {
 	private static Log log = LogFactory.getLog(AbstractCommandPane.class);
 
 	private CommandController commandController;
-
 	private JButton cancelBtn;
-
-	private Resource cancelButtonResource;
-
-	private Resource defaultButtonResource;
-
 	private Icon defaultButtonIcon;
-
 	private Icon disabledDefaultButtonIcon;
+	private Icon cancelButtonIcon;
 
-	private Resource disabledDefaultButtonResource;
+	/**
+	 * 
+	 */
+	protected AbstractCommandPane() {
+	}
 
 	/**
          * 
@@ -80,14 +79,12 @@ public abstract class AbstractCommandPane extends JPanel {
 	 */
 	protected JButton createDefaultButton(String label) {
 		JButton btn = createButton(label);
-		Icon icon = getDefaultButtonIcon();
-		if (icon != null) {
-			btn.setIcon(icon);
+		if (defaultButtonIcon != null) {
+			btn.setIcon(disabledDefaultButtonIcon);
 			btn.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
-		icon = getDisabledDefaultButtonIcon();
-		if (icon != null) {
-			btn.setDisabledIcon(icon);
+		if (disabledDefaultButtonIcon != null) {
+			btn.setDisabledIcon(disabledDefaultButtonIcon);
 		}
 		return btn;
 	}
@@ -119,45 +116,10 @@ public abstract class AbstractCommandPane extends JPanel {
 	}
 
 	/**
-	 * @return the cancelButtonResource
-	 */
-	private Resource getCancelButtonResource() {
-		return cancelButtonResource;
-	}
-
-	/**
 	 * @return the commandController
 	 */
 	protected CommandController getCommandController() {
 		return commandController;
-	}
-
-	/**
-	 * @return the defaultButtonIcon
-	 */
-	protected Icon getDefaultButtonIcon() {
-		return defaultButtonIcon;
-	}
-
-	/**
-	 * @return the defaultButtonResource
-	 */
-	private Resource getDefaultButtonResource() {
-		return defaultButtonResource;
-	}
-
-	/**
-	 * @return the disabledDefaultButtonIcon
-	 */
-	private Icon getDisabledDefaultButtonIcon() {
-		return disabledDefaultButtonIcon;
-	}
-
-	/**
-	 * @return the disabledDefaultButtonResource
-	 */
-	private Resource getDisabledDefaultButtonResource() {
-		return disabledDefaultButtonResource;
 	}
 
 	/**
@@ -182,15 +144,12 @@ public abstract class AbstractCommandPane extends JPanel {
 			}
 
 		});
-		Icon icon = createIcon(getCancelButtonResource());
-		if (icon != null) {
-			btn.setIcon(icon);
+		if (cancelButtonIcon != null) {
+			btn.setIcon(cancelButtonIcon);
 			btn.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
-		icon = createIcon(getDefaultButtonResource());
-		setDefaultButtonIcon(icon);
-		icon = createIcon(getDisabledDefaultButtonResource());
-		setDisabledDefaultButtonIcon(icon);
+		setDefaultButtonIcon(defaultButtonIcon);
+		setDisabledDefaultButtonIcon(disabledDefaultButtonIcon);
 	}
 
 	/**
@@ -199,14 +158,6 @@ public abstract class AbstractCommandPane extends JPanel {
 	 */
 	private void setCancelBtn(JButton cancelBtn) {
 		this.cancelBtn = cancelBtn;
-	}
-
-	/**
-	 * @param cancelButtonResource
-	 *            the cancelButtonResource to set
-	 */
-	public void setCancelButtonResource(Resource buttonResource) {
-		this.cancelButtonResource = buttonResource;
 	}
 
 	/**
@@ -221,32 +172,24 @@ public abstract class AbstractCommandPane extends JPanel {
 	 * @param defaultButtonIcon
 	 *            the defaultButtonIcon to set
 	 */
-	private void setDefaultButtonIcon(Icon defaultButtonIcon) {
+	protected void setDefaultButtonIcon(Icon defaultButtonIcon) {
 		this.defaultButtonIcon = defaultButtonIcon;
-	}
-
-	/**
-	 * @param defaultButtonResource
-	 *            the defaultButtonResource to set
-	 */
-	public void setDefaultButtonResource(Resource defaultButtonResource) {
-		this.defaultButtonResource = defaultButtonResource;
 	}
 
 	/**
 	 * @param disabledDefaultButtonIcon
 	 *            the disabledDefaultButtonIcon to set
 	 */
-	private void setDisabledDefaultButtonIcon(Icon disabledDefaultButtonIcon) {
+	protected void setDisabledDefaultButtonIcon(Icon disabledDefaultButtonIcon) {
 		this.disabledDefaultButtonIcon = disabledDefaultButtonIcon;
 	}
 
 	/**
-	 * @param disabledDefaultButtonResource
-	 *            the disabledDefaultButtonResource to set
+	 * @param cancelButtonIcon
+	 *            the cancelButtonIcon to set
 	 */
-	public void setDisabledDefaultButtonResource(
-			Resource disabledDefaultButtonResource) {
-		this.disabledDefaultButtonResource = disabledDefaultButtonResource;
+	protected void setCancelButtonIcon(Icon cancelButtonIcon) {
+		this.cancelButtonIcon = cancelButtonIcon;
 	}
+
 }

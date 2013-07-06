@@ -464,8 +464,7 @@ public class RadarPainter implements AtcConstants {
 		List<Route> list = atcHandler.retrieveRoutes();
 		Point p0 = new Point();
 		Point p1 = new Point();
-		for (Iterator<Route> i = list.iterator(); i.hasNext();) {
-			Route route = i.next();
+		for (Route route : list) {
 			calculatePoint(p0, route.getLocation0().getPosition());
 			calculatePoint(p1, route.getLocation1().getPosition());
 			gr.setColor(getColor(route));

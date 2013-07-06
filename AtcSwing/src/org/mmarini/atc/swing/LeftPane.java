@@ -13,18 +13,18 @@ package org.mmarini.atc.swing;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmarini.atc.sim.AtcHandler;
 
 /**
  * @author marco.marini@mmarini.org
  * @version $Id: LeftPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  */
-public class LeftPane extends JPanel {
+public class LeftPane extends JPanel implements Refreshable {
 
 	private static Log log = LogFactory.getLog(LeftPane.class);
 
@@ -33,51 +33,46 @@ public class LeftPane extends JPanel {
          */
 	private static final long serialVersionUID = 1L;
 
-	private JComponent planePane;
-
-	private JComponent logPane;
-
-	/**
-	 * @return the logPane
-	 */
-	private JComponent getLogPane() {
-		return logPane;
-	}
+	private PlanePane planePane;
+	private LogPane logPane;
 
 	/**
-	 * @return the planePane
+	 * 
 	 */
-	private JComponent getPlanePane() {
-		return planePane;
+	public LeftPane() {
+		planePane = new PlanePane();
+		logPane = new LogPane();
+		init();
 	}
 
 	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		log.debug("init");
 		setPreferredSize(new Dimension(200, 10));
 		setLayout(new BorderLayout());
-		add(getPlanePane(), BorderLayout.CENTER);
-		JComponent logPane = getLogPane();
+		add(planePane, BorderLayout.CENTER);
 		JScrollPane scrollPane1 = new JScrollPane(logPane);
 		add(scrollPane1, BorderLayout.SOUTH);
 	}
 
 	/**
-	 * @param logPane
-	 *            the logPane to set
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
 	 */
-	public void setLogPane(JComponent logPane) {
-		this.logPane = logPane;
+	@Override
+	public void refresh() {
+		planePane.refresh();
+		logPane.refresh();
 	}
 
 	/**
-	 * @param planePane
-	 *            the planePane to set
+	 * 
+	 * @param atcHandler
 	 */
-	public void setPlanePane(JComponent planePane) {
-		this.planePane = planePane;
+	public void setAtcHandler(AtcHandler atcHandler) {
+		planePane.setAtcHandler(atcHandler);
+		logPane.setAtcHandler(atcHandler);
 	}
 }

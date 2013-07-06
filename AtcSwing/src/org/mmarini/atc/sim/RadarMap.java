@@ -18,21 +18,27 @@ import java.util.List;
  * 
  */
 public class RadarMap {
+
 	private String id;
-
 	private String name;
-
 	private List<Gateway> gatewayList;
-
 	private List<Location> beaconList;
-
 	private List<Gateway> runwayList;
-
 	private List<Gateway> exitList;
-
 	private List<Location> locationList;
-
 	private List<Route> routeList;
+
+	/**
+	 * 
+	 */
+	public RadarMap() {
+		gatewayList = new ArrayList<>();
+		locationList = new ArrayList<>();
+		beaconList = new ArrayList<>();
+		runwayList = new ArrayList<>();
+		exitList = new ArrayList<>();
+		routeList = new ArrayList<>();
+	}
 
 	/**
 	 * @return the beaconList
@@ -91,58 +97,11 @@ public class RadarMap {
 	}
 
 	/**
-         * 
-         * 
-         */
-	public void init() {
-		ArrayList<Gateway> gwList = new ArrayList<Gateway>(getExitList());
-		gwList.addAll(getRunwayList());
-		gwList.trimToSize();
-		setGatewayList(gwList);
-		ArrayList<Location> locList = new ArrayList<Location>(gwList);
-		locList.addAll(getBeaconList());
-		locList.trimToSize();
-		setLocationList(locList);
-	}
-
-	/**
-	 * @param beaconList
-	 *            the beaconList to set
-	 */
-	public void setBeaconList(List<Location> beaconList) {
-		this.beaconList = beaconList;
-	}
-
-	/**
-	 * @param exitList
-	 *            the exitList to set
-	 */
-	public void setExitList(List<Gateway> exitList) {
-		this.exitList = exitList;
-	}
-
-	/**
-	 * @param gatewayList
-	 *            the gatewayList to set
-	 */
-	private void setGatewayList(List<Gateway> gatewayList) {
-		this.gatewayList = gatewayList;
-	}
-
-	/**
 	 * @param id
 	 *            the id to set
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	/**
-	 * @param locationList
-	 *            the locationList to set
-	 */
-	private void setLocationList(List<Location> mapLocation) {
-		this.locationList = mapLocation;
 	}
 
 	/**
@@ -154,18 +113,39 @@ public class RadarMap {
 	}
 
 	/**
-	 * @param routeList
-	 *            the routeList to set
+	 * 
+	 * @param runway
 	 */
-	public void setRouteList(List<Route> routeList) {
-		this.routeList = routeList;
+	public void addRunway(DefaultRunway runway) {
+		runwayList.add(runway);
+		locationList.add(runway);
+		gatewayList.add(runway);
 	}
 
 	/**
-	 * @param runwayList
-	 *            the runwayList to set
+	 * 
+	 * @param exit
 	 */
-	public void setRunwayList(List<Gateway> runwayList) {
-		this.runwayList = runwayList;
+	public void addExit(Gateway exit) {
+		exitList.add(exit);
+		locationList.add(exit);
+		gatewayList.add(exit);
+	}
+
+	/**
+	 * 
+	 * @param route
+	 */
+	public void addRoute(Route route) {
+		routeList.add(route);
+	}
+
+	/**
+	 * 
+	 * @param beacon
+	 */
+	public void addBeacon(Location beacon) {
+		beaconList.add(beacon);
+		locationList.add(beacon);
 	}
 }

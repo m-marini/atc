@@ -16,10 +16,14 @@ package org.mmarini.atc.sim;
  */
 public class Route {
 	private Location location0;
-
 	private Location location1;
-
 	private String type;
+
+	/**
+	 * 
+	 */
+	public Route() {
+	}
 
 	/**
 	 * @return the location0

@@ -29,15 +29,14 @@ public class PlaneTableModel extends AbstractTableModel implements Refreshable {
          */
 	private static final long serialVersionUID = 1L;
 
-	private List<Plane> planeList = new ArrayList<Plane>(0);
-
+	private List<Plane> planeList;
 	private AtcHandler atcHandler;
 
 	/**
-	 * @return the atcHandler
+	 * 
 	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
+	public PlaneTableModel() {
+		planeList = new ArrayList<>(0);
 	}
 
 	/**
@@ -83,18 +82,11 @@ public class PlaneTableModel extends AbstractTableModel implements Refreshable {
 	}
 
 	/**
-	 * @return the planeList
-	 */
-	private List<Plane> getPlaneList() {
-		return planeList;
-	}
-
-	/**
          * 
          */
 	@Override
 	public int getRowCount() {
-		return getPlaneList().size();
+		return planeList.size();
 	}
 
 	/**
@@ -102,7 +94,7 @@ public class PlaneTableModel extends AbstractTableModel implements Refreshable {
          */
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Plane plane = getPlaneList().get(rowIndex);
+		Plane plane = planeList.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return plane.getId();
@@ -124,10 +116,9 @@ public class PlaneTableModel extends AbstractTableModel implements Refreshable {
          */
 	@Override
 	public void refresh() {
-		List<Plane> list = getAtcHandler().retrievePlanes();
-		List<Plane> data = getPlaneList();
-		data.clear();
-		data.addAll(list);
+		planeList.clear();
+		List<Plane> list = atcHandler.retrievePlanes();
+		planeList.addAll(list);
 		fireTableDataChanged();
 	}
 

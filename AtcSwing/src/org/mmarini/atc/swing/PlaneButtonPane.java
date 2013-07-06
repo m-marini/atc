@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -34,6 +35,8 @@ import org.mmarini.atc.sim.Plane;
  */
 public class PlaneButtonPane extends AbstractCommandPane implements
 		Refreshable, ActionListener {
+	private static final String BUTTON_IMAGE = "/images/button.png";
+	private static final String DISABLED_BUTTON_IMAGE = "/images/disabledButton.png";
 
 	private static Log log = LogFactory.getLog(PlaneButtonPane.class);
 
@@ -42,13 +45,27 @@ public class PlaneButtonPane extends AbstractCommandPane implements
          */
 	private static final long serialVersionUID = 1L;
 
-	private List<JButton> buttonList = new ArrayList<JButton>(26);
-
+	private List<JButton> buttonList;
 	private AtcHandler atcHandler;
-
 	private int rows;
-
 	private int columns;
+
+	/**
+	 * 
+	 */
+	public PlaneButtonPane() {
+		buttonList = new ArrayList<JButton>(26);
+		rows = 10;
+		columns = 1;
+
+		ImageIcon icon = new ImageIcon(getClass().getResource(BUTTON_IMAGE));
+		setDefaultButtonIcon(icon);
+
+		icon = new ImageIcon(getClass().getResource(DISABLED_BUTTON_IMAGE));
+		setDisabledDefaultButtonIcon(icon);
+
+		init();
+	}
 
 	/**
          * 
@@ -61,45 +78,15 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 	}
 
 	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the buttonList
-	 */
-	private List<JButton> getButtonList() {
-		return buttonList;
-	}
-
-	/**
-	 * @return the columns
-	 */
-	public int getColumns() {
-		return columns;
-	}
-
-	/**
-	 * @return the rows
-	 */
-	public int getRows() {
-		return rows;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		super.init("Select plane");
-		int rows = getRows();
-		int cols = getColumns();
 		GridBagConstraints gbc = new GridBagConstraints();
 		GridBagLayout gb = new GridBagLayout();
 		setLayout(gb);
-		List<JButton> list = getButtonList();
+		List<JButton> list = buttonList;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.gridwidth = 1;
@@ -108,7 +95,7 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 		gbc.weightx = 1;
 		for (int i = 0; i < rows; ++i) {
 			gbc.gridy = i;
-			for (int j = 0; j < cols; ++j) {
+			for (int j = 0; j < columns; ++j) {
 				gbc.gridx = j;
 				JButton btn = createDefaultButton("-");
 				list.add(btn);
@@ -134,11 +121,10 @@ public class PlaneButtonPane extends AbstractCommandPane implements
          */
 	@Override
 	public void refresh() {
-		List<Plane> planeList = getAtcHandler().retrievePlanes();
+		List<Plane> planeList = atcHandler.retrievePlanes();
 		if (planeList == null)
 			return;
 		int n = Math.min(planeList.size(), buttonList.size());
-		List<JButton> buttonList = getButtonList();
 		for (int i = 0; i < n; ++i) {
 			JButton btn = buttonList.get(i);
 			Plane plane = planeList.get(i);
@@ -160,21 +146,5 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
-	}
-
-	/**
-	 * @param columns
-	 *            the columns to set
-	 */
-	public void setColumns(int columns) {
-		this.columns = columns;
-	}
-
-	/**
-	 * @param rows
-	 *            the rows to set
-	 */
-	public void setRows(int rows) {
-		this.rows = rows;
 	}
 }

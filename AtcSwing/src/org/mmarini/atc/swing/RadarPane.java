@@ -36,10 +36,16 @@ public class RadarPane extends JComponent implements Refreshable,
          * 
          */
 	private static final long serialVersionUID = 1L;
-
-	private Dimension componentSize = new Dimension();
-
+	private Dimension componentSize;
 	private AtcHandler atcHandler;
+
+	/**
+	 * 
+	 */
+	public RadarPane() {
+		componentSize = new Dimension();
+		setDoubleBuffered(true);
+	}
 
 	/**
 	 * 
@@ -105,8 +111,8 @@ public class RadarPane extends JComponent implements Refreshable,
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
 	@Override
 	public void refresh() {
 		repaint();

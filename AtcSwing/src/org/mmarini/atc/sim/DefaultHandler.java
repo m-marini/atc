@@ -31,19 +31,20 @@ public class DefaultHandler implements AtcHandler {
 	public DefaultHandler() {
 		hits = new Hits();
 		radarPainter = new RadarPainter();
+		sessionFactory = new SessionFactory();
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.sim.MessageConsumer#consume(org.mmarini.atc.sim.Message)
+	 */
 	@Override
 	public void consume(Message message) {
-		getSession().consume(message);
+		session.consume(message);
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.sim.AtcHandler#createRecord()
+	 */
 	@Override
 	public GameRecord createRecord() {
 		GameRecord record = new GameRecord();
@@ -55,36 +56,28 @@ public class DefaultHandler implements AtcHandler {
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.sim.AtcHandler#createSession(java.lang.String,
+	 *      java.lang.String)
+	 */
 	@Override
 	public void createSession(String radarMap, String profile) {
-		AtcSession session = getSessionFactory().createSession(radarMap,
-				profile);
-		setSession(session);
+		session = sessionFactory.createSession(radarMap, profile);
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.sim.AtcHandler#getCollisionCount()
+	 */
 	@Override
 	public int getCollisionCount() {
-		return getSession().getCollisionCount();
+		return session.getCollisionCount();
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.sim.AtcHandler#getCrashCount()
+	 */
 	@Override
 	public int getCrashCount() {
-		return getSession().getCrashCount();
-	}
-
-	/**
-	 * @return the hits
-	 */
-	private Hits getHits() {
-		return hits;
+		return session.getCrashCount();
 	}
 
 	/**
@@ -92,7 +85,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public int getIterationCount() {
-		return getSession().getIterationCount();
+		return session.getIterationCount();
 	}
 
 	/**
@@ -100,7 +93,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public double getNewPlaneProbability() {
-		return getSession().getNewPlaneProbability();
+		return session.getNewPlaneProbability();
 	}
 
 	/**
@@ -108,7 +101,7 @@ public class DefaultHandler implements AtcHandler {
 	 * @return
 	 */
 	private String getProfile() {
-		return getSession().getProfile();
+		return session.getProfile();
 	}
 
 	/**
@@ -116,14 +109,7 @@ public class DefaultHandler implements AtcHandler {
 	 * @return
 	 */
 	private String getRadarMapName() {
-		return getSession().getRadarMapName();
-	}
-
-	/**
-	 * @return the radarPainter
-	 */
-	private RadarPainter getRadarPainter() {
-		return radarPainter;
+		return session.getRadarMapName();
 	}
 
 	/**
@@ -131,21 +117,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public int getSafeExit() {
-		return getSession().getSafeCount();
-	}
-
-	/**
-	 * @return the session
-	 */
-	private AtcSession getSession() {
-		return session;
-	}
-
-	/**
-	 * @return the sessionFactory
-	 */
-	private SessionFactory getSessionFactory() {
-		return sessionFactory;
+		return session.getSafeCount();
 	}
 
 	/**
@@ -153,7 +125,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public int getWrongExitCount() {
-		return getSession().getWrongExitCount();
+		return session.getWrongExitCount();
 	}
 
 	/**
@@ -161,7 +133,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public boolean isBetter() {
-		return getHits().isBetter(createRecord());
+		return hits.isBetter(createRecord());
 	}
 
 	/**
@@ -170,10 +142,9 @@ public class DefaultHandler implements AtcHandler {
 
 	@Override
 	public void paintRadar(Graphics gr, Dimension size) {
-		RadarPainter painter = getRadarPainter();
-		painter.setSize(size);
-		painter.setAtcHandler(this);
-		painter.paint(gr);
+		radarPainter.setSize(size);
+		radarPainter.setAtcHandler(this);
+		radarPainter.paint(gr);
 	}
 
 	/**
@@ -183,7 +154,7 @@ public class DefaultHandler implements AtcHandler {
 	public void register(String recordId) {
 		GameRecord record = createRecord();
 		record.setName(recordId);
-		getHits().register(record);
+		hits.register(record);
 	}
 
 	/**
@@ -191,7 +162,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<Location> retrieveBeacons() {
-		return getSession().getBeaconList();
+		return session.getBeaconList();
 	}
 
 	/**
@@ -199,7 +170,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<Gateway> retrieveExits() {
-		return getSession().getExitList();
+		return session.getExitList();
 	}
 
 	/**
@@ -207,7 +178,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public Hits retrieveHits() {
-		return getHits();
+		return hits;
 	}
 
 	/**
@@ -215,7 +186,6 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<Location> retrieveMapLocations() {
-		AtcSession session = getSession();
 		if (session == null)
 			return null;
 		return session.getMapLocations();
@@ -235,7 +205,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public void retrieveMessages(MessageConsumer consumer) {
-		getSession().dequeueMessages(consumer);
+		session.dequeueMessages(consumer);
 	}
 
 	/**
@@ -243,7 +213,6 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<Plane> retrievePlanes() {
-		AtcSession session = getSession();
 		if (session == null)
 			return null;
 		return session.getPlaneList();
@@ -254,7 +223,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<RadarMap> retrieveRadarMap() {
-		return getSessionFactory().getRadarMap();
+		return sessionFactory.getRadarMap();
 	}
 
 	/**
@@ -262,7 +231,7 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<Route> retrieveRoutes() {
-		return getSession().getRouteList();
+		return session.getRouteList();
 	}
 
 	/**
@@ -270,7 +239,6 @@ public class DefaultHandler implements AtcHandler {
          */
 	@Override
 	public List<Gateway> retrieveRunways() {
-		AtcSession session = getSession();
 		if (session == null)
 			return null;
 		return session.getRunwayList();
@@ -285,42 +253,18 @@ public class DefaultHandler implements AtcHandler {
 	}
 
 	/**
-	 * @param radarPainter
-	 *            the radarPainter to set
+	 * @see org.mmarini.atc.sim.AtcHandler#storeHits(org.mmarini.atc.sim.HitsMemento)
 	 */
-	public void setRadarPainter(RadarPainter radarPainter) {
-		this.radarPainter = radarPainter;
-	}
-
-	/**
-	 * @param session
-	 *            the session to set
-	 */
-	private void setSession(AtcSession session) {
-		this.session = session;
-	}
-
-	/**
-	 * @param sessionFactory
-	 *            the sessionFactory to set
-	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-         * 
-         */
 	@Override
 	public void storeHits(HitsMemento memento) {
-		getHits().setMemento(memento);
+		hits.setMemento(memento);
 	}
 
-	/**
-         * 
-         */
+	/** 
+	 * @see org.mmarini.atc.sim.AtcHandler#updateSession()
+	 */
 	@Override
 	public void updateSession() {
-		getSession().update();
+		session.update();
 	}
 }

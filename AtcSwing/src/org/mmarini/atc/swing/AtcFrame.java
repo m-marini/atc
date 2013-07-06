@@ -12,6 +12,7 @@ package org.mmarini.atc.swing;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 
 import javax.swing.JComponent;
@@ -20,43 +21,38 @@ import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmarini.atc.sim.AtcHandler;
 
 /**
  * @author marco.marini@mmarini.org
  * @version $Id: AtcFrame.java,v 1.3 2008/03/01 21:20:05 marco Exp $
  * 
  */
-public class AtcFrame extends JFrame {
+public class AtcFrame extends JFrame implements Refreshable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static Log log = LogFactory.getLog(AtcFrame.class);
 
-	private JComponent radarPane;
+	private RadarPane radarPane;
+	private LeftPane planePane;
+	private DefaultCommandController commandPane;
 
-	private JComponent planePane;
-
-	private JComponent commandPane;
+	/**
+	 * @throws HeadlessException
+	 */
+	public AtcFrame() throws HeadlessException {
+		planePane = new LeftPane();
+		radarPane = new RadarPane();
+		commandPane = new DefaultCommandController();
+		init();
+	}
 
 	/**
 	 * @return the commandPane
 	 */
 	public JComponent getCommandPane() {
 		return commandPane;
-	}
-
-	/**
-	 * @return the planePane
-	 */
-	private JComponent getPlanePane() {
-		return planePane;
-	}
-
-	/**
-	 * @return the radarPane
-	 */
-	private JComponent getRadarPane() {
-		return radarPane;
 	}
 
 	/**
@@ -73,8 +69,8 @@ public class AtcFrame extends JFrame {
 		setResizable(false);
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
-		cp.add(getRadarPane(), BorderLayout.CENTER);
-		cp.add(getPlanePane(), BorderLayout.WEST);
+		cp.add(radarPane, BorderLayout.CENTER);
+		cp.add(planePane, BorderLayout.WEST);
 		cp.add(getCommandPane(), BorderLayout.EAST);
 		pack();
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -86,26 +82,22 @@ public class AtcFrame extends JFrame {
 	}
 
 	/**
-	 * @param commandPane
-	 *            the commandPane to set
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
 	 */
-	public void setCommandPane(JComponent commandPane) {
-		this.commandPane = commandPane;
+	@Override
+	public void refresh() {
+		planePane.refresh();
+		radarPane.refresh();
+		commandPane.refresh();
 	}
 
 	/**
-	 * @param planePane
-	 *            the planePane to set
+	 * 
+	 * @param atcHandler
 	 */
-	public void setPlanePane(JComponent planePane) {
-		this.planePane = planePane;
-	}
-
-	/**
-	 * @param radarPane
-	 *            the radarPane to set
-	 */
-	public void setRadarPane(JComponent radarPane) {
-		this.radarPane = radarPane;
+	public void setAtcHandler(AtcHandler atcHandler) {
+		planePane.setAtcHandler(atcHandler);
+		radarPane.setAtcHandler(atcHandler);
+		commandPane.setAtcHandler(atcHandler);
 	}
 }

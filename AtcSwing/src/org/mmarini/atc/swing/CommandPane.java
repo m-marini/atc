@@ -16,6 +16,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -27,10 +28,21 @@ import javax.swing.JPanel;
 public class CommandPane extends AbstractCommandPane implements ActionListener,
 		UIAtcConstants {
 
+	private static final String CANCEL_IMAGE = "/images/cancel.png";
+	private static final String BUTTON_IMAGE = "/images/button.png";
 	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	public CommandPane() {
+		setDefaultButtonIcon(new ImageIcon(getClass().getResource(BUTTON_IMAGE)));
+		setCancelButtonIcon(new ImageIcon(getClass().getResource(CANCEL_IMAGE)));
+		init();
+	}
 
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -45,9 +57,8 @@ public class CommandPane extends AbstractCommandPane implements ActionListener,
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		super.init("Command");
-
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();

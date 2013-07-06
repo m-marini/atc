@@ -15,8 +15,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.net.URL;
 import java.text.MessageFormat;
 
 import javax.swing.AbstractAction;
@@ -28,8 +26,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.ChangeFlightLevelMessage;
 import org.mmarini.atc.sim.ClearToLandMessage;
@@ -39,7 +35,6 @@ import org.mmarini.atc.sim.MessageVisitor;
 import org.mmarini.atc.sim.MessageVisitorAdapter;
 import org.mmarini.atc.sim.TurnToMessage;
 import org.mmarini.atc.sound.Player;
-import org.springframework.core.io.Resource;
 
 /**
  * @author marco.marini@mmarini.org
@@ -48,20 +43,14 @@ import org.springframework.core.io.Resource;
  * 
  */
 public class DefaultCommandController extends JPanel implements
-		CommandController, UIAtcConstants {
-
+		CommandController, UIAtcConstants, Refreshable {
 	public static final String CONDITION_PANE = "CONDITION_PANE";
-
 	public static final String LOCATION_PANE = "LOCATION_PANE";
-
 	public static final String FLIGHT_LEVEL_PANE = "FLIGHT_LEVEL_PANE";
-
 	public static final String RUNWAY_PANE = "RUNWAY_PANE";
-
 	public static final String COMMAND_PANE = "COMMAND_PANE";
-
 	public static final String PLANE_PANE = "PLANE_PANE";
-
+	public static final String EXIT_IMAGE = "/images/exit.png";
 	public static final Dimension PREFERRED_SIZE = new Dimension(180, 400);
 
 	/**
@@ -69,116 +58,81 @@ public class DefaultCommandController extends JPanel implements
          */
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog(DefaultCommandController.class);
-
 	private PlaneButtonPane planeButtonPane;
-
 	private FlightLevelPane flightLevelPane;
-
 	private CommandPane commandPane;
-
 	private AbstractCommandPane locationPane;
-
 	private RunwayPane runwayPane;
-
 	private ConditionPane conditionPane;
-
-	private CardLayout cardLayout = new CardLayout();
-
+	private CardLayout cardLayout;
 	private String planeId;
-
 	private String flightLevelId;
-
 	private String locationId;
-
 	private AtcHandler atcHandler;
-
-	private JTextField info = new JTextField();
-
+	private JTextField info;
 	private Message message;
-
-	private JPanel panel = new JPanel();
-
+	private JPanel panel;
 	private Player player;
-
 	private GameListener gameListener;
+	private Action endAction;
+	private MessageVisitor messageVisitor;
 
-	private Resource endGameIconResource;
+	/**
+	 * 
+	 */
+	public DefaultCommandController() {
+		cardLayout = new CardLayout();
+		info = new JTextField();
+		panel = new JPanel();
+		planeButtonPane = new PlaneButtonPane();
+		commandPane = new CommandPane();
+		endAction = new AbstractAction() {
 
-	private Action endAction = new AbstractAction() {
+			/**
+	         * 
+	         */
+			private static final long serialVersionUID = 1L;
 
-		/**
-         * 
-         */
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			GameListener list = getGameListener();
-			if (list != null)
-				list.endGame();
-		}
-
-	};
-
-	private MessageVisitor messageVisitor = new MessageVisitorAdapter() {
-		/**
-         * 
-         */
-		@Override
-		public void visit(ChangeFlightLevelMessage message) {
-			String id = getFlightLevelId();
-			message.setFlightLevelId(id);
-			getPlayer().spell(id);
-			sendMessage();
-			cancel();
-		}
-
-		/**
-         * 
-         */
-		@Override
-		public void visit(ClearToLandMessage message) {
-			String id = getLocationId();
-			message.setLocationId(id);
-			getPlayer().spell(id);
-			sendMessage();
-			cancel();
-		}
-
-		/**
-         * 
-         */
-		@Override
-		public void visit(HoldMessage message) {
-			String id = getLocationId();
-			message.setConditionId(id);
-			if (id != null) {
-				Player player = getPlayer();
-				player.playSample(Player.AT);
-				player.spell(id);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GameListener list = gameListener;
+				if (list != null)
+					list.endGame();
 			}
-			sendMessage();
-			cancel();
-		}
 
-		/**
-         * 
-         */
-		@Override
-		public void visit(TurnToMessage message) {
-			String id = getLocationId();
-			Player player = getPlayer();
-			if (message.getLocationId() == null) {
-				message.setLocationId(id);
-				String text = MessageFormat.format(
-						"{0} turn to {1}",
-						new Object[] { message.getPlaneId(),
-								message.getLocationId() });
-				showInfo(text);
+		};
+
+		messageVisitor = new MessageVisitorAdapter() {
+			/**
+	         * 
+	         */
+			@Override
+			public void visit(ChangeFlightLevelMessage message) {
+				String id = flightLevelId;
+				message.setFlightLevelId(id);
 				player.spell(id);
-				showPane(CONDITION_PANE);
-			} else {
+				sendMessage();
+				cancel();
+			}
+
+			/**
+	         * 
+	         */
+			@Override
+			public void visit(ClearToLandMessage message) {
+				String id = locationId;
+				message.setLocationId(id);
+				player.spell(id);
+				sendMessage();
+				cancel();
+			}
+
+			/**
+	         * 
+	         */
+			@Override
+			public void visit(HoldMessage message) {
+				String id = locationId;
 				message.setConditionId(id);
 				if (id != null) {
 					player.playSample(Player.AT);
@@ -187,8 +141,35 @@ public class DefaultCommandController extends JPanel implements
 				sendMessage();
 				cancel();
 			}
-		}
-	};
+
+			/**
+	         * 
+	         */
+			@Override
+			public void visit(TurnToMessage message) {
+				String id = locationId;
+				if (message.getLocationId() == null) {
+					message.setLocationId(id);
+					String text = MessageFormat.format(
+							"{0} turn to {1}",
+							new Object[] { message.getPlaneId(),
+									message.getLocationId() });
+					showInfo(text);
+					player.spell(id);
+					showPane(CONDITION_PANE);
+				} else {
+					message.setConditionId(id);
+					if (id != null) {
+						player.playSample(Player.AT);
+						player.spell(id);
+					}
+					sendMessage();
+					cancel();
+				}
+			}
+		};
+		init();
+	}
 
 	/**
          * 
@@ -200,155 +181,23 @@ public class DefaultCommandController extends JPanel implements
 	}
 
 	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the cardLayout
-	 */
-	private CardLayout getCardLayout() {
-		return cardLayout;
-	}
-
-	/**
-	 * @return the commandPane
-	 */
-	private CommandPane getCommandPane() {
-		return commandPane;
-	}
-
-	/**
-	 * @return the conditionPane
-	 */
-	private ConditionPane getConditionPane() {
-		return conditionPane;
-	}
-
-	/**
-	 * @return the endAction
-	 */
-	private Action getEndAction() {
-		return endAction;
-	}
-
-	/**
-	 * @return the endGameIconResource
-	 */
-	private Resource getEndGameIconResource() {
-		return endGameIconResource;
-	}
-
-	/**
-	 * @return the flightLevelId
-	 */
-	private String getFlightLevelId() {
-		return flightLevelId;
-	}
-
-	/**
-	 * @return the flightLevelPane
-	 */
-	private FlightLevelPane getFlightLevelPane() {
-		return flightLevelPane;
-	}
-
-	/**
-	 * @return the gameListener
-	 */
-	private GameListener getGameListener() {
-		return gameListener;
-	}
-
-	/**
-	 * @return the info
-	 */
-	private JTextField getInfo() {
-		return info;
-	}
-
-	/**
-	 * @return the locationId
-	 */
-	private String getLocationId() {
-		return locationId;
-	}
-
-	/**
-	 * @return the locationPane
-	 */
-	private AbstractCommandPane getLocationPane() {
-		return locationPane;
-	}
-
-	/**
-	 * @return the message
-	 */
-	private Message getMessage() {
-		return message;
-	}
-
-	/**
-	 * @return the messageVisitor
-	 */
-	private MessageVisitor getMessageVisitor() {
-		return messageVisitor;
-	}
-
-	/**
-	 * @return the panel
-	 */
-	private JPanel getPanel() {
-		return panel;
-	}
-
-	/**
-	 * @return the planeButtonPane
-	 */
-	private PlaneButtonPane getPlaneButtonPane() {
-		return planeButtonPane;
-	}
-
-	/**
-	 * @return the planeId
-	 */
-	private String getPlaneId() {
-		return planeId;
-	}
-
-	/**
-	 * @return the player
-	 */
-	private Player getPlayer() {
-		return player;
-	}
-
-	/**
-	 * @return the runwayPane
-	 */
-	private RunwayPane getRunwayPane() {
-		return runwayPane;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
+		commandPane.setCommandController(this);
+		
 		setPreferredSize(PREFERRED_SIZE);
-		JPanel panel = getPanel();
-		panel.setLayout(getCardLayout());
-		panel.add(getPlaneButtonPane(), PLANE_PANE);
-		panel.add(getCommandPane(), COMMAND_PANE);
-		panel.add(getLocationPane(), LOCATION_PANE);
-		panel.add(getFlightLevelPane(), FLIGHT_LEVEL_PANE);
-		panel.add(getRunwayPane(), RUNWAY_PANE);
-		panel.add(getConditionPane(), CONDITION_PANE);
+		panel.setLayout(cardLayout);
+		panel.add(planeButtonPane, PLANE_PANE);
+		panel.add(commandPane, COMMAND_PANE);
+		panel.add(locationPane, LOCATION_PANE);
+		panel.add(flightLevelPane, FLIGHT_LEVEL_PANE);
+		panel.add(runwayPane, RUNWAY_PANE);
+		panel.add(conditionPane, CONDITION_PANE);
 		setLayout(new BorderLayout());
-		add(getPanel(), BorderLayout.CENTER);
-		JTextField info = getInfo();
+		add(panel, BorderLayout.CENTER);
+
 		info.setEditable(false);
 		info.setBackground(Color.BLACK);
 		info.setForeground(Color.GREEN);
@@ -356,22 +205,10 @@ public class DefaultCommandController extends JPanel implements
 		info.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		add(info, BorderLayout.NORTH);
 
-		Action action = getEndAction();
+		Action action = endAction;
 		action.putValue(Action.NAME, "");
-		Resource resource = getEndGameIconResource();
-		if (resource != null) {
-			try {
-				URL url = resource.getURL();
-				if (url != null) {
-					Icon icon = new ImageIcon(url);
-					if (icon != null) {
-						action.putValue(Action.SMALL_ICON, icon);
-					}
-				}
-			} catch (IOException e) {
-				log.error(e.getMessage(), e);
-			}
-		}
+		Icon icon = new ImageIcon(getClass().getResource(EXIT_IMAGE));
+		action.putValue(Action.SMALL_ICON, icon);
 		JButton button = new AtcButton();
 		button.setAction(action);
 		add(button, BorderLayout.SOUTH);
@@ -382,34 +219,34 @@ public class DefaultCommandController extends JPanel implements
          */
 	@Override
 	public void notifyCommandSelection(String commandId) {
-		String id = getPlaneId();
+		String id = planeId;
 		if (TURN_COMMAND.equals(commandId)) {
 			TurnToMessage message = new TurnToMessage();
 			message.setPlaneId(id);
-			setMessage(message);
+			this.message = message;
 			showInfo(id + " turn to");
-			getPlayer().playSample(Player.TURN_HEADING_TO);
+			player.playSample(Player.TURN_HEADING_TO);
 			showPane(LOCATION_PANE);
 		} else if (LAND_COMMAND.equals(commandId)) {
 			ClearToLandMessage message = new ClearToLandMessage();
 			message.setPlaneId(id);
-			setMessage(message);
+			this.message = message;
 			showInfo(id + " clear to land");
-			getPlayer().playSample(Player.CLEAR_TO_LAND);
+			player.playSample(Player.CLEAR_TO_LAND);
 			showPane(RUNWAY_PANE);
 		} else if (HOLD_COMMAND.equals(commandId)) {
 			HoldMessage message = new HoldMessage();
 			message.setPlaneId(id);
-			setMessage(message);
+			this.message = message;
 			showInfo(id + " hold in circle");
-			getPlayer().playSample(Player.HOLD_ON);
+			player.playSample(Player.HOLD_ON);
 			showPane(CONDITION_PANE);
 		} else if (FLIGHT_LEVEL_COMMAND.equals(commandId)) {
 			ChangeFlightLevelMessage message = new ChangeFlightLevelMessage();
 			message.setPlaneId(id);
-			setMessage(message);
+			this.message = message;
 			showInfo(id + " flight level");
-			getPlayer().playSample(Player.CHANGE_FLIGHT_LEVEL);
+			player.playSample(Player.CHANGE_FLIGHT_LEVEL);
 			showPane(FLIGHT_LEVEL_PANE);
 		} else {
 			cancel();
@@ -421,37 +258,37 @@ public class DefaultCommandController extends JPanel implements
          */
 	@Override
 	public void notifyFlightLevelSelection(String flightLevel) {
-		setFlightLevelId(flightLevel);
-		getMessage().apply(getMessageVisitor());
+		this.flightLevelId = flightLevel;
+		message.apply(messageVisitor);
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.CommandController#notifyLocationSelection(java.
+	 *      lang.String)
+	 */
 	@Override
 	public void notifyLocationSelection(String locationId) {
-		setLocationId(locationId);
-		getMessage().apply(getMessageVisitor());
+		this.locationId = locationId;
+		message.apply(messageVisitor);
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.CommandController#notifyPlaneSelection(java.lang
+	 *      .String)
+	 */
 	@Override
 	public void notifyPlaneSelection(String planeId) {
-		setPlaneId(planeId);
+		this.planeId = planeId;
 		showInfo(planeId);
-		getPlayer().spell(planeId);
+		player.spell(planeId);
 		showPane(COMMAND_PANE);
 	}
 
 	/**
-         * 
-         * 
-         */
+	 * 
+	 */
 	private void sendMessage() {
-		Message msg = getMessage();
-		getAtcHandler().consume(msg);
+		atcHandler.consume(message);
 	}
 
 	/**
@@ -460,6 +297,7 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
+		planeButtonPane.setAtcHandler(atcHandler);
 	}
 
 	/**
@@ -479,22 +317,6 @@ public class DefaultCommandController extends JPanel implements
 	}
 
 	/**
-	 * @param endGameIconResource
-	 *            the endGameIconResource to set
-	 */
-	public void setEndGameIconResource(Resource endGameIconResource) {
-		this.endGameIconResource = endGameIconResource;
-	}
-
-	/**
-	 * @param flightLevelId
-	 *            the flightLevelId to set
-	 */
-	private void setFlightLevelId(String flightLevelId) {
-		this.flightLevelId = flightLevelId;
-	}
-
-	/**
 	 * @param flightLevelPane
 	 *            the flightLevelPane to set
 	 */
@@ -511,43 +333,11 @@ public class DefaultCommandController extends JPanel implements
 	}
 
 	/**
-	 * @param locationId
-	 *            the locationId to set
-	 */
-	private void setLocationId(String locationId) {
-		this.locationId = locationId;
-	}
-
-	/**
 	 * @param locationPane
 	 *            the locationPane to set
 	 */
 	public void setLocationPane(AbstractCommandPane locationPane) {
 		this.locationPane = locationPane;
-	}
-
-	/**
-	 * @param message
-	 *            the message to set
-	 */
-	private void setMessage(Message message) {
-		this.message = message;
-	}
-
-	/**
-	 * @param planeButtonPane
-	 *            the planeButtonPane to set
-	 */
-	public void setPlaneButtonPane(PlaneButtonPane planeButtonPane) {
-		this.planeButtonPane = planeButtonPane;
-	}
-
-	/**
-	 * @param planeId
-	 *            the planeId to set
-	 */
-	private void setPlaneId(String planeId) {
-		this.planeId = planeId;
 	}
 
 	/**
@@ -571,7 +361,7 @@ public class DefaultCommandController extends JPanel implements
 	 * @param text
 	 */
 	private void showInfo(String text) {
-		getInfo().setText(text);
+		info.setText(text);
 	}
 
 	/**
@@ -579,6 +369,14 @@ public class DefaultCommandController extends JPanel implements
 	 * @param paneId
 	 */
 	private void showPane(String paneId) {
-		getCardLayout().show(getPanel(), paneId);
+		cardLayout.show(panel, paneId);
+	}
+
+	/**
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
+	@Override
+	public void refresh() {
+		planeButtonPane.refresh();
 	}
 }

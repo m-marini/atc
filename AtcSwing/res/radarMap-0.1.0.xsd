@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.example.org/route-0.1.0" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:r="http://www.example.org/route-0.1.0">
+
+    <element name="radarMap" type="r:RadarMapType"></element>
+
+    <complexType name="RadarMapType">
+    	<sequence>
+    		<element ref="r:exit" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element ref="r:runway" maxOccurs="unbounded"
+    			minOccurs="1">
+    		</element>
+    		<element ref="r:beacon" maxOccurs="unbounded"
+    			minOccurs="0">
+    		</element>
+    		<element ref="r:route" maxOccurs="unbounded"
+    			minOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string" use="required"></attribute>
+    	<attribute name="name" type="string" use="required"></attribute>
+    </complexType>
+
+    <element name="exit" type="r:ExitType"></element>
+
+    <element name="runway" type="r:RunwayType"></element>
+
+    <element name="beacon" type="r:BeaconType"></element>
+
+    <element name="route" type="r:RouteType"></element>
+
+    <complexType name="ExitType">
+    	<attribute name="course" type="int" use="required"></attribute>
+        <attributeGroup ref="r:LocationAttributes"></attributeGroup>
+    </complexType>
+
+    <complexType name="RunwayType">
+    	<attribute name="course" type="int" use="required"></attribute>
+        <attributeGroup ref="r:LocationAttributes"></attributeGroup>
+    </complexType>
+
+    <complexType name="BeaconType">
+        <attributeGroup ref="r:LocationAttributes"></attributeGroup>
+ 	</complexType>
+
+    <complexType name="RouteType">
+    	<attribute name="from" type="string" use="required"></attribute>
+    	<attribute name="to" type="string" use="required"></attribute>
+    	<attribute name="type" type="r:RouteTypeType" use="optional"></attribute>
+    </complexType>
+
+    <simpleType name="AlignmentType">
+    	<restriction base="string">
+    		<enumeration value="N"></enumeration>
+    		<enumeration value="NE"></enumeration>
+    		<enumeration value="E"></enumeration>
+    		<enumeration value="SE"></enumeration>
+    		<enumeration value="S"></enumeration>
+    		<enumeration value="SW"></enumeration>
+    		<enumeration value="W"></enumeration>
+    		<enumeration value="NW"></enumeration>
+    	</restriction>
+    </simpleType>
+    
+    <attributeGroup name="LocationAttributes">
+    	<attribute name="id" type="string" use="required"></attribute>
+    	<attribute name="alignment" type="r:AlignmentType" use="required"></attribute>
+    	<attribute name="x" type="float" use="required"></attribute>
+    	<attribute name="y" type="float" use="required"></attribute>
+    </attributeGroup>
+
+    <simpleType name="RouteTypeType">
+    	<restriction base="string">
+    		<enumeration value="land"></enumeration>
+    		<enumeration value="landConnection"></enumeration>
+    		<enumeration value="takeoff"></enumeration>
+    		<enumeration value="entry"></enumeration>
+    	</restriction>
+    </simpleType>
+</schema>

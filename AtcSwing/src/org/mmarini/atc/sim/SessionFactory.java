@@ -9,9 +9,25 @@
  */
 package org.mmarini.atc.sim;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mmarini.atc.xml.RouteMapHandler;
+import org.xml.sax.SAXException;
 
 /**
  * @author marco.marini@mmarini.org
@@ -19,20 +35,70 @@ import java.util.Map;
  * 
  */
 public class SessionFactory {
+	private static final String RADAR_MAP_XSD = "/radarMap-0.1.0.xsd";
+	private static final String[] MAP_NAMES = { "/lin.xml" };
+
+	private static Log log = LogFactory.getLog(SessionFactory.class);
+
 	private List<RadarMap> radarMap;
 	private Map<String, GameProfile> profileMap;
+	private SAXParserFactory factory;
+	private RouteMapHandler handler;
+	private SAXParser parser;
 
 	/**
 	 * 
 	 */
 	public SessionFactory() {
 		profileMap = new HashMap<>();
+		radarMap = new ArrayList<>();
 
 		createProfile("training", 0.02, 1);
 		createProfile("easy", 0.02, 3);
 		createProfile("medium", 0.04, 5);
 		createProfile("difficult", 0.1, 7);
 		createProfile("hard", 0.1, 10);
+		try {
+			loadMaps();
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws IOExceptions
+	 *             *
+	 */
+	private void loadMaps() throws ParserConfigurationException, SAXException,
+			IOException {
+		factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		SchemaFactory schemaFactory = SchemaFactory
+				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		URL schemaUrl = getClass().getResource(RADAR_MAP_XSD);
+		Schema schema = schemaFactory.newSchema(schemaUrl);
+		factory.setSchema(schema);
+		parser = factory.newSAXParser();
+		handler = new RouteMapHandler();
+		for (String mapName : MAP_NAMES) {
+			loadMap(mapName);
+		}
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private void loadMap(String name) throws SAXException, IOException {
+		InputStream stream = getClass().getResourceAsStream(name);
+		parser.parse(stream, handler);
+		stream.close();
+		RadarMap map = handler.getRadarMap();
+		radarMap.add(map);
 	}
 
 	/**

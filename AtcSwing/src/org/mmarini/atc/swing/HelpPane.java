@@ -25,7 +25,6 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.io.Resource;
 
 /**
  * @author marco.marini@mmarini.org
@@ -33,6 +32,8 @@ import org.springframework.core.io.Resource;
  * 
  */
 public class HelpPane extends JOptionPane implements UIAtcConstants {
+
+	private static final String HELP_INDEX_HTML = "/help/index.html";
 
 	private static final String HTML_ERROR = "<html><body><h2>Error</h2><p>{0}</p></body></html>";
 
@@ -42,23 +43,13 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
 	private static final long serialVersionUID = 1L;
 
 	private static Log log = LogFactory.getLog(HelpPane.class);
-
-	private JEditorPane pane = new JEditorPane();
-
-	private Resource resource;
+	private JEditorPane pane;
 
 	/**
-	 * @return the pane
+	 * 
 	 */
-	private JEditorPane getPane() {
-		return pane;
-	}
-
-	/**
-	 * @return the resource
-	 */
-	public Resource getResource() {
-		return resource;
+	public HelpPane() {
+		pane = new JEditorPane();
 	}
 
 	/**
@@ -68,11 +59,11 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
 	private void handleHyperlinkUpdate(HyperlinkEvent e) {
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			if (e instanceof HTMLFrameHyperlinkEvent) {
-				((HTMLDocument) getPane().getDocument())
+				((HTMLDocument) pane.getDocument())
 						.processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent) e);
 			} else {
 				try {
-					getPane().setPage(e.getURL());
+					pane.setPage(e.getURL());
 				} catch (IOException ioe) {
 					String message = ioe.getMessage();
 					log.error(message, ioe);
@@ -88,7 +79,6 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
          */
 	public void init() {
 		setLayout(new BorderLayout());
-		JEditorPane pane = getPane();
 		pane.setEditable(false);
 		pane.setContentType("text/html");
 		pane.addHyperlinkListener(new HyperlinkListener() {
@@ -102,20 +92,11 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
 	}
 
 	/**
-	 * @param resource
-	 *            the resource to set
-	 */
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
-
-	/**
 	 * @see java.awt.Component#show()
 	 */
 	public void showDialog() {
-		JEditorPane pane = getPane();
 		try {
-			pane.setPage(getResource().getURL());
+			pane.setPage(getClass().getResource(HELP_INDEX_HTML));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			showErrorMessage(e);
@@ -130,6 +111,6 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
 	private void showErrorMessage(Exception ex) {
 		String html = MessageFormat.format(HTML_ERROR,
 				new Object[] { ex.getMessage() });
-		getPane().setText(html);
+		pane.setText(html);
 	}
 }

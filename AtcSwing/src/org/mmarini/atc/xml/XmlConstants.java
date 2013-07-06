@@ -16,6 +16,22 @@ package org.mmarini.atc.xml;
  */
 public interface XmlConstants {
 
+	public static final String Y_ELEM = "y";
+	public static final String X_ATTR = "x";
+	public static final String ALIGNMENT_ATTR = "alignment";
+	public static final String ID_ATTR = "id";
+	public static final String TYPE_ATTR = "type";
+	public static final String TO_ATTR = "to";
+	public static final String FROM_ATTR = "from";
+	public static final String COURSE_ATTR = "course";
+
+	public static final String EXIT_ELEM = "exit";
+	public static final String ROUTE_ELEM = "route";
+	public static final String RUNWAY_ELEM = "runway";
+	public static final String BEACON_ELEM = "beacon";
+	public static final String RADAR_MAP_ELEM = "radarMap";
+	public static final String NAME_SPACE = "http://www.example.org/route-0.1.0";
+
 	public static final String SCHEMA_VERSION = "0.1.0";
 
 	public static final String ATC_OPTIONS_NS = "http://www.mmairni.org/atc/options-"

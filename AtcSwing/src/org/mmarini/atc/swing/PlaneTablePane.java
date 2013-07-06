@@ -18,6 +18,7 @@ import javax.swing.JTable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmarini.atc.sim.AtcHandler;
 
 /**
  * @author marco.marini@mmarini.org
@@ -25,40 +26,39 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PlaneTablePane extends JPanel {
 
+	/**
+	 * 
+	 */
+	public PlaneTablePane() {
+		planeTableModel = new PlaneTableModel();
+		init();
+	}
+
 	private static Log log = LogFactory.getLog(PlaneTablePane.class);
 
 	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
-
 	private PlaneTableModel planeTableModel;
-
-	/**
-	 * @return the planeTableModel
-	 */
-	private PlaneTableModel getPlaneTableModel() {
-		return planeTableModel;
-	}
 
 	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		log.debug("init");
-		PlaneTableModel model = getPlaneTableModel();
-		JTable table = new JTable(model);
+		JTable table = new JTable(planeTableModel);
 		JScrollPane scrollPane = new JScrollPane(table);
 		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
 	/**
-	 * @param planeTableModel
-	 *            the planeTableModel to set
+	 * 
+	 * @param atcHandler
 	 */
-	public void setPlaneTableModel(PlaneTableModel planeListModel) {
-		this.planeTableModel = planeListModel;
+	public void setAtcHandler(AtcHandler atcHandler) {
+		planeTableModel.setAtcHandler(atcHandler);
 	}
 }
