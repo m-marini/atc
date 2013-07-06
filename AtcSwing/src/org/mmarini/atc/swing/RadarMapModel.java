@@ -37,6 +37,13 @@ public class RadarMapModel extends AbstractListModel<String> implements
 	private int selectedIndex;
 
 	/**
+	 * 
+	 */
+	public RadarMapModel() {
+		refresh();
+	}
+
+	/**
 	 * @return the atcHandler
 	 */
 	private AtcHandler getAtcHandler() {

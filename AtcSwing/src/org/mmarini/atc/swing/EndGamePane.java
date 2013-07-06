@@ -30,7 +30,7 @@ import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.GameRecord;
 import org.mmarini.atc.sim.Hits;
 import org.mmarini.atc.sim.HitsMemento;
-import org.mmarini.atc.xml.UserOptionsHandler;
+import org.mmarini.atc.xml.UserOptionsPersistenceManager;
 
 /**
  * @author marco.marini@mmarini.org
@@ -39,14 +39,32 @@ import org.mmarini.atc.xml.UserOptionsHandler;
  */
 public class EndGamePane extends JOptionPane implements UIAtcConstants {
 
+	/**
+	 * 
+	 */
+	public EndGamePane() {
+		textArea = new JTextArea();
+		nameField = new JTextField(10);
+		okAction = new AbstractAction() {
+
+			/**
+	         * 
+	         */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				handleOk();
+			}
+
+		};
+		init();
+	}
+
 	public static final String RECORD_PATTERN = "{4}.\n{5,choice,0#You does not enter in the hits, try again!|1#You enter in the hits, insert your nickname.}\n\nLevel:\t{2}\nSafe plane:\t{0}\nTime:\t{1}\nIterations:\t{3}";
-
 	public static final String END_GAME_REASON = "Game ended because of user exit";
-
 	public static final String WRONG_EXIT_REASON = "Game ended because of wrong exit";
-
 	public static final String CRASH_REASON = "Game ended because of crash";
-
 	public static final String COLLISION_REASON = "Game ended because of collision";
 
 	/**
@@ -55,92 +73,25 @@ public class EndGamePane extends JOptionPane implements UIAtcConstants {
 	private static final long serialVersionUID = 1L;
 
 	private Refreshable hitsRefreshable;
-
 	private AtcHandler atcHandler;
-
-	private UserOptionsHandler userOptionsHandler;
-
-	private JTextArea textArea = new JTextArea();
-
+	private UserOptionsPersistenceManager userOptionsHandler;
+	private JTextArea textArea;
 	private JDialog dialog;
-
-	private JTextField nameField = new JTextField(10);
-
-	private Action okAction = new AbstractAction() {
-
-		/**
-         * 
-         */
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			handleOk();
-		}
-
-	};
-
-	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the dialog
-	 */
-	private JDialog getDialog() {
-		return dialog;
-	}
-
-	/**
-	 * @return the hitsRefreshable
-	 */
-	private Refreshable getHitsRefreshable() {
-		return hitsRefreshable;
-	}
-
-	/**
-	 * @return the nameField
-	 */
-	private JTextField getNameField() {
-		return nameField;
-	}
-
-	/**
-	 * @return the okAction
-	 */
-	private Action getOkAction() {
-		return okAction;
-	}
-
-	/**
-	 * @return the textArea
-	 */
-	private JTextArea getTextArea() {
-		return textArea;
-	}
-
-	/**
-	 * @return the userOptionsHandler
-	 */
-	private UserOptionsHandler getUserOptions() {
-		return userOptionsHandler;
-	}
+	private JTextField nameField;
+	private Action okAction;
 
 	/**
          * 
          * 
          */
 	private void handleOk() {
-		getDialog().dispose();
-		AtcHandler handler = getAtcHandler();
-		handler.register(getNameField().getText());
+		dialog.dispose();
+		AtcHandler handler = atcHandler;
+		handler.register(nameField.getText());
 		Hits hits = handler.retrieveHits();
 		if (hits.isUpdated()) {
 			store(hits.createMemento());
-			getHitsRefreshable().refresh();
+			hitsRefreshable.refresh();
 		}
 	}
 
@@ -153,13 +104,12 @@ public class EndGamePane extends JOptionPane implements UIAtcConstants {
 
 		JPanel pane = new JPanel();
 		pane.add(new JLabel("Name"));
-		pane.add(getNameField());
+		pane.add(nameField);
 		add(pane, BorderLayout.NORTH);
 
-		Action okAction = getOkAction();
 		okAction.putValue(Action.NAME, "OK");
 		add(new JButton(okAction), BorderLayout.SOUTH);
-		JTextArea textArea = getTextArea();
+
 		textArea.setEditable(false);
 		textArea.setRows(7);
 		textArea.setFont(ATC_FONT.deriveFont(Font.BOLD));
@@ -174,7 +124,7 @@ public class EndGamePane extends JOptionPane implements UIAtcConstants {
          */
 	public void refresh() {
 		String reason = END_GAME_REASON;
-		AtcHandler handler = getAtcHandler();
+		AtcHandler handler = atcHandler;
 		GameRecord record = handler.createRecord();
 		int ct = handler.getCollisionCount();
 		if (ct > 0) {
@@ -195,8 +145,8 @@ public class EndGamePane extends JOptionPane implements UIAtcConstants {
 				record.getDate(), record.getProfile(),
 				record.getIterationCount(), reason, betterInt };
 		String text = MessageFormat.format(RECORD_PATTERN, parms);
-		getTextArea().setText(text);
-		getNameField().setEnabled(better);
+		textArea.setText(text);
+		nameField.setEnabled(better);
 	}
 
 	/**
@@ -227,7 +177,7 @@ public class EndGamePane extends JOptionPane implements UIAtcConstants {
 	 * @param userOptionsHandler
 	 *            the userOptionsHandler to set
 	 */
-	public void setUserOptions(UserOptionsHandler options) {
+	public void setUserOptions(UserOptionsPersistenceManager options) {
 		this.userOptionsHandler = options;
 	}
 
@@ -246,6 +196,6 @@ public class EndGamePane extends JOptionPane implements UIAtcConstants {
 	 * @param memento
 	 */
 	private void store(HitsMemento memento) {
-		getUserOptions().setHits(memento);
+		userOptionsHandler.setHits(memento);
 	}
 }

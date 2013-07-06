@@ -37,6 +37,7 @@ import org.mmarini.atc.sim.RadarMap;
  * 
  */
 public class MenuPane extends JPanel {
+
 	/**
          * 
          */
@@ -45,61 +46,67 @@ public class MenuPane extends JPanel {
 	private static Log log = LogFactory.getLog(MenuPane.class);
 
 	private MenuPaneListener menuPaneListener;
-
 	private HitsPane hitsPane;
-
 	private AtcHandler atcHandler;
+	private ButtonGroup levelGroup;
+	private ButtonGroup mapGroup;
+	private Action newAction;
+	private Action helpAction;
+	private Action exitAction;
 
-	private ButtonGroup levelGroup = new ButtonGroup();
+	/**
+	 * 
+	 */
+	public MenuPane() {
+		levelGroup = new ButtonGroup();
+		mapGroup = new ButtonGroup();
+		hitsPane = new HitsPane();
 
-	private ButtonGroup mapGroup = new ButtonGroup();
+		newAction = new AbstractAction() {
 
-	private Action newAction = new AbstractAction() {
+			/**
+	         * 
+	         */
+			private static final long serialVersionUID = 1L;
 
-		/**
-         * 
-         */
-		private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (menuPaneListener != null)
+					menuPaneListener.startNewGame(getSelectedMap(),
+							getSelectedLevel());
+			}
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			MenuPaneListener listener = getMenuPaneListener();
-			if (listener != null)
-				listener.startNewGame(getSelectedMap(), getSelectedLevel());
-		}
+		};
 
-	};
+		helpAction = new AbstractAction() {
 
-	private Action helpAction = new AbstractAction() {
+			/**
+	         * 
+	         */
+			private static final long serialVersionUID = 1L;
 
-		/**
-         * 
-         */
-		private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (menuPaneListener != null)
+					menuPaneListener.openHelp();
+			}
+		};
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			MenuPaneListener listener = getMenuPaneListener();
-			if (listener != null)
-				listener.openHelp();
-		}
-	};
+		exitAction = new AbstractAction() {
 
-	private Action exitAction = new AbstractAction() {
+			/**
+	         * 
+	         */
+			private static final long serialVersionUID = 1L;
 
-		/**
-         * 
-         */
-		private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (menuPaneListener != null)
+					menuPaneListener.exitGame();
+			}
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			MenuPaneListener listener = getMenuPaneListener();
-			if (listener != null)
-				listener.exitGame();
-		}
-
-	};
+		};
+	}
 
 	/**
 	 * @return
@@ -108,15 +115,12 @@ public class MenuPane extends JPanel {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new GridLayout(3, 1));
 
-		Action newAction = getNewAction();
 		newAction.putValue(Action.NAME, "New Game");
 		buttonPane.add(new JButton(newAction));
 
-		Action helpAction = getHelpAction();
 		helpAction.putValue(Action.NAME, "Help");
 		buttonPane.add(new JButton(helpAction));
 
-		Action exitAction = getExitAction();
 		exitAction.putValue(Action.NAME, "Exit");
 		buttonPane.add(new JButton(exitAction));
 		return buttonPane;
@@ -136,7 +140,7 @@ public class MenuPane extends JPanel {
 		gbc.insets = new Insets(1, 1, 1, 1);
 		gbc.anchor = GridBagConstraints.WEST;
 
-		ButtonGroup group = getLevelGroup();
+		ButtonGroup group = levelGroup;
 
 		JRadioButton btn = createRadioButton("Training", "training", group);
 		btn.setSelected(true);
@@ -187,8 +191,8 @@ public class MenuPane extends JPanel {
 		gbc.insets = new Insets(1, 1, 1, 1);
 		gbc.anchor = GridBagConstraints.WEST;
 
-		ButtonGroup group = getMapGroup();
-		List<RadarMap> list = getAtcHandler().retrieveRadarMap();
+		ButtonGroup group = mapGroup;
+		List<RadarMap> list = atcHandler.retrieveRadarMap();
 
 		boolean next = false;
 		for (Iterator<RadarMap> i = list.iterator(); i.hasNext();) {
@@ -244,67 +248,11 @@ public class MenuPane extends JPanel {
 	}
 
 	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the exitAction
-	 */
-	private Action getExitAction() {
-		return exitAction;
-	}
-
-	/**
-	 * @return the helpAction
-	 */
-	private Action getHelpAction() {
-		return helpAction;
-	}
-
-	/**
-	 * @return the hitsPane
-	 */
-	private HitsPane getHitsPane() {
-		return hitsPane;
-	}
-
-	/**
-	 * @return the levelGroup
-	 */
-	private ButtonGroup getLevelGroup() {
-		return levelGroup;
-	}
-
-	/**
-	 * @return the mapGroup
-	 */
-	private ButtonGroup getMapGroup() {
-		return mapGroup;
-	}
-
-	/**
-	 * @return the menuPaneListener
-	 */
-	private MenuPaneListener getMenuPaneListener() {
-		return menuPaneListener;
-	}
-
-	/**
-	 * @return the newAction
-	 */
-	private Action getNewAction() {
-		return newAction;
-	}
-
-	/**
 	 * 
 	 * @return
 	 */
 	private String getSelectedLevel() {
-		ButtonGroup group = getLevelGroup();
+		ButtonGroup group = levelGroup;
 		ButtonModel btn = group.getSelection();
 		Object[] aa = btn.getSelectedObjects();
 		return (String) aa[0];
@@ -315,14 +263,14 @@ public class MenuPane extends JPanel {
 	 * @return
 	 */
 	private String getSelectedMap() {
-		return (String) getMapGroup().getSelection().getSelectedObjects()[0];
+		return (String) mapGroup.getSelection().getSelectedObjects()[0];
 	}
 
 	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		log.debug("init");
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -333,7 +281,6 @@ public class MenuPane extends JPanel {
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
 
-		HitsPane hitsPane = getHitsPane();
 		gbl.setConstraints(hitsPane, gbc);
 		add(hitsPane);
 
@@ -354,14 +301,8 @@ public class MenuPane extends JPanel {
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
-	}
-
-	/**
-	 * @param hitsPane
-	 *            the hitsPane to set
-	 */
-	public void setHitsPane(HitsPane hitsPane) {
-		this.hitsPane = hitsPane;
+		hitsPane.setAtcHandler(atcHandler);
+		init();
 	}
 
 	/**

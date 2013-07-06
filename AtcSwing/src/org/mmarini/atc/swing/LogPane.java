@@ -34,6 +34,8 @@ import org.mmarini.atc.sound.Player;
  */
 public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 		UIAtcConstants, Logger {
+	private static final int ROWS = 10;
+
 	private static Log log = LogFactory.getLog(LogPane.class);
 
 	/**
@@ -42,19 +44,26 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	private static final long serialVersionUID = 1L;
 
 	private Player player;
-
 	private AtcHandler atcHandler;
+	private JTextArea area;
+	private LogTextMessageFormat format;
 
-	private JTextArea area = new JTextArea();
-
-	private LogTextMessageFormat format = new LogTextMessageFormat(this);
+	/**
+	 * 
+	 */
+	public LogPane() {
+		player = Player.getInstance();
+		area = new JTextArea();
+		format = new LogTextMessageFormat(this);
+		init();
+	}
 
 	/**
          * 
          * 
          */
 	public void clear() {
-		getArea().setText("");
+		area.setText("");
 	}
 
 	/**
@@ -63,48 +72,21 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	 */
 	@Override
 	public void consume(Message message) {
-		getFormat().consume(message);
-		getPlayer().play(message);
-	}
-
-	/**
-	 * @return the area
-	 */
-	private JTextArea getArea() {
-		return area;
-	}
-
-	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the format
-	 */
-	private LogTextMessageFormat getFormat() {
-		return format;
-	}
-
-	/**
-	 * @return the player
-	 */
-	private Player getPlayer() {
-		return player;
+		format.consume(message);
+		player.play(message);
 	}
 
 	/**
          * 
          * 
          */
-	public void init() {
-		JTextArea area = getArea();
+	private void init() {
 		area.setEditable(false);
 		area.setBackground(Color.BLACK);
 		area.setForeground(Color.GREEN);
 		area.setFont(ATC_FONT);
+		area.setRows(ROWS);
+
 		setLayout(new BorderLayout());
 		add(area, BorderLayout.CENTER);
 	}
@@ -114,9 +96,7 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	 */
 	@Override
 	public void log(String text) {
-		JTextArea area = getArea();
-		int rows = area.getRows();
-		if (area.getLineCount() >= rows) {
+		if (area.getLineCount() >= ROWS) {
 			int start;
 			try {
 				start = area.getLineStartOffset(0);
@@ -136,7 +116,6 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
          * 
          */
 	private void println() {
-		JTextArea area = getArea();
 		area.append(System.getProperty("line.separator"));
 	}
 
@@ -144,7 +123,6 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	 * @param text
 	 */
 	private void println(String text) {
-		JTextArea area = getArea();
 		area.append(text);
 		println();
 	}
@@ -154,7 +132,7 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	 */
 	@Override
 	public void refresh() {
-		getAtcHandler().retrieveMessages((MessageConsumer) this);
+		atcHandler.retrieveMessages((MessageConsumer) this);
 	}
 
 	/**
@@ -164,21 +142,4 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
 	}
-
-	/**
-	 * @param player
-	 *            the player to set
-	 */
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	/**
-	 * 
-	 * @param rows
-	 */
-	public void setRows(int rows) {
-		getArea().setRows(rows);
-	}
-
 }

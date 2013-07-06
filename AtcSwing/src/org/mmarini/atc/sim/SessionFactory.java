@@ -66,42 +66,6 @@ public class SessionFactory {
 	}
 
 	/**
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 * @throws IOExceptions
-	 *             *
-	 */
-	private void loadMaps() throws ParserConfigurationException, SAXException,
-			IOException {
-		factory = SAXParserFactory.newInstance();
-		factory.setNamespaceAware(true);
-		SchemaFactory schemaFactory = SchemaFactory
-				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		URL schemaUrl = getClass().getResource(RADAR_MAP_XSD);
-		Schema schema = schemaFactory.newSchema(schemaUrl);
-		factory.setSchema(schema);
-		parser = factory.newSAXParser();
-		handler = new RouteMapHandler();
-		for (String mapName : MAP_NAMES) {
-			loadMap(mapName);
-		}
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	private void loadMap(String name) throws SAXException, IOException {
-		InputStream stream = getClass().getResourceAsStream(name);
-		parser.parse(stream, handler);
-		stream.close();
-		RadarMap map = handler.getRadarMap();
-		radarMap.add(map);
-	}
-
-	/**
 	 * 
 	 * @param id
 	 * @param probability
@@ -156,6 +120,42 @@ public class SessionFactory {
 	 */
 	public List<RadarMap> getRadarMap() {
 		return radarMap;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private void loadMap(String name) throws SAXException, IOException {
+		InputStream stream = getClass().getResourceAsStream(name);
+		parser.parse(stream, handler);
+		stream.close();
+		RadarMap map = handler.getRadarMap();
+		radarMap.add(map);
+	}
+
+	/**
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws IOExceptions
+	 *             *
+	 */
+	private void loadMaps() throws ParserConfigurationException, SAXException,
+			IOException {
+		factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		SchemaFactory schemaFactory = SchemaFactory
+				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		URL schemaUrl = getClass().getResource(RADAR_MAP_XSD);
+		Schema schema = schemaFactory.newSchema(schemaUrl);
+		factory.setSchema(schema);
+		parser = factory.newSAXParser();
+		handler = new RouteMapHandler();
+		for (String mapName : MAP_NAMES) {
+			loadMap(mapName);
+		}
 	}
 
 	/**

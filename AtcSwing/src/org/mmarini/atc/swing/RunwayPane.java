@@ -29,8 +29,9 @@ import org.mmarini.atc.sim.Location;
  * @version $Id: RunwayPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class RunwayPane extends AbstractCommandPane implements Refreshable,
-		ActionListener {
+public class RunwayPane extends AbstractCommandPane implements UIAtcConstants,
+		Refreshable, ActionListener {
+
 	/**
          * 
          */
@@ -39,8 +40,18 @@ public class RunwayPane extends AbstractCommandPane implements Refreshable,
 	private AtcHandler atcHandler;
 
 	/**
-         * 
-         */
+	 * 
+	 */
+	public RunwayPane() {
+		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
+		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
+		init();
+	}
+
+	/**
+	 * @see org.mmarini.atc.swing.AbstractCommandPane#actionPerformed(java.awt.event
+	 *      .ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		String locationId = event.getActionCommand();
@@ -48,28 +59,21 @@ public class RunwayPane extends AbstractCommandPane implements Refreshable,
 	}
 
 	/**
-	 * @return the atcHandler
+	 * 
 	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-         * 
-         * 
-         */
-	public void init() {
+	private void init() {
 		super.init("Runway");
 		refresh();
 	}
 
 	/**
-         * 
-         * 
-         */
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
 	@Override
 	public void refresh() {
-		List<Gateway> locationList = getAtcHandler().retrieveRunways();
+		if (atcHandler == null)
+			return;
+		List<Gateway> locationList = atcHandler.retrieveRunways();
 		removeAll();
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);

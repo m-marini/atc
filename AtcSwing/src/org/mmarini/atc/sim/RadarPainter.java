@@ -39,16 +39,6 @@ public class RadarPainter implements AtcConstants {
 	private static final String ENTRY_IMAGE_NAME = "/images/entry.png";
 	private static final String BEACON_IMAGE_NAME = "/images/beacon.png";
 
-	private static final Color H040_COLOR = new Color(0xeceacc);
-	private static final Color H080_COLOR = new Color(0x8de5e8);
-	private static final Color H120_COLOR = new Color(0x60d750);
-	private static final Color H160_COLOR = new Color(0x2b21e9);
-	private static final Color H200_COLOR = new Color(0xe95ada);
-	private static final Color H240_COLOR = new Color(0xe98b30);
-	private static final Color H280_COLOR = new Color(0xea332a);
-	private static final Color H320_COLOR = new Color(0xeee450);
-	private static final Color H360_COLOR = new Color(0xaead97);
-
 	private static final Color ENTRY_CONNECTION_COLOR = new Color(0x8f551d);
 	private static final Color LAND_ROUTE_COLOR = new Color(0x797429);
 	private static final Color LAND_CONNECTION_COLOR = new Color(0x004000);

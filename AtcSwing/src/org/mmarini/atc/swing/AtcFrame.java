@@ -15,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
@@ -49,20 +48,13 @@ public class AtcFrame extends JFrame implements Refreshable {
 	}
 
 	/**
-	 * @return the commandPane
-	 */
-	public JComponent getCommandPane() {
-		return commandPane;
-	}
-
-	/**
 	 * Initialization method of the frame.
 	 * <p>
 	 * It creates the content of the frame, locates, sizes and shows the frame.
 	 * </p>
 	 * 
 	 */
-	public void init() {
+	private void init() {
 		log.debug("init"); //$NON-NLS-1$
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setTitle("Air Trafic Controller");
@@ -71,7 +63,7 @@ public class AtcFrame extends JFrame implements Refreshable {
 		cp.setLayout(new BorderLayout());
 		cp.add(radarPane, BorderLayout.CENTER);
 		cp.add(planePane, BorderLayout.WEST);
-		cp.add(getCommandPane(), BorderLayout.EAST);
+		cp.add(commandPane, BorderLayout.EAST);
 		pack();
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension size = screen;
@@ -99,5 +91,13 @@ public class AtcFrame extends JFrame implements Refreshable {
 		planePane.setAtcHandler(atcHandler);
 		radarPane.setAtcHandler(atcHandler);
 		commandPane.setAtcHandler(atcHandler);
+	}
+
+	/**
+	 * 
+	 * @param listener
+	 */
+	public void setGameListener(GameListener listener) {
+		commandPane.setGameListener(listener);
 	}
 }

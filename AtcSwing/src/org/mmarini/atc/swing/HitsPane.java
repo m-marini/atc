@@ -16,12 +16,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.mmarini.atc.sim.AtcHandler;
+
 /**
  * @author marco.marini@mmarini.org
  * @version $Id: HitsPane.java,v 1.3 2008/03/01 21:20:05 marco Exp $
  * 
  */
 public class HitsPane extends JPanel implements Refreshable {
+
+	/**
+	 * 
+	 */
+	public HitsPane() {
+		hitsTableModel = new HitsTableModel();
+		init();
+	}
 
 	public static final Dimension SIZE = new Dimension(500, 195);
 
@@ -33,18 +43,11 @@ public class HitsPane extends JPanel implements Refreshable {
 	private HitsTableModel hitsTableModel;
 
 	/**
-	 * @return the hitsTableModel
-	 */
-	private HitsTableModel getHitsTableModel() {
-		return hitsTableModel;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
-		HitsTableModel model = getHitsTableModel();
+	private void init() {
+		HitsTableModel model = hitsTableModel;
 		JTable table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setPreferredScrollableViewportSize(SIZE);
@@ -56,18 +59,18 @@ public class HitsPane extends JPanel implements Refreshable {
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
 	@Override
 	public void refresh() {
-		getHitsTableModel().refresh();
+		hitsTableModel.refresh();
 	}
 
 	/**
-	 * @param hitsTableModel
-	 *            the hitsTableModel to set
+	 * @param atcHandler
+	 * @see org.mmarini.atc.swing.HitsTableModel#setAtcHandler(org.mmarini.atc.sim.AtcHandler)
 	 */
-	public void setHitsTableModel(HitsTableModel hitsTableModel) {
-		this.hitsTableModel = hitsTableModel;
+	public void setAtcHandler(AtcHandler atcHandler) {
+		hitsTableModel.setAtcHandler(atcHandler);
 	}
 }

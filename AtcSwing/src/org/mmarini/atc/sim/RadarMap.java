@@ -41,6 +41,43 @@ public class RadarMap {
 	}
 
 	/**
+	 * 
+	 * @param beacon
+	 */
+	public void addBeacon(Location beacon) {
+		beaconList.add(beacon);
+		locationList.add(beacon);
+	}
+
+	/**
+	 * 
+	 * @param exit
+	 */
+	public void addExit(Gateway exit) {
+		exitList.add(exit);
+		locationList.add(exit);
+		gatewayList.add(exit);
+	}
+
+	/**
+	 * 
+	 * @param route
+	 */
+	public void addRoute(Route route) {
+		routeList.add(route);
+	}
+
+	/**
+	 * 
+	 * @param runway
+	 */
+	public void addRunway(DefaultRunway runway) {
+		runwayList.add(runway);
+		locationList.add(runway);
+		gatewayList.add(runway);
+	}
+
+	/**
 	 * @return the beaconList
 	 */
 	public List<Location> getBeaconList() {
@@ -110,42 +147,5 @@ public class RadarMap {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * 
-	 * @param runway
-	 */
-	public void addRunway(DefaultRunway runway) {
-		runwayList.add(runway);
-		locationList.add(runway);
-		gatewayList.add(runway);
-	}
-
-	/**
-	 * 
-	 * @param exit
-	 */
-	public void addExit(Gateway exit) {
-		exitList.add(exit);
-		locationList.add(exit);
-		gatewayList.add(exit);
-	}
-
-	/**
-	 * 
-	 * @param route
-	 */
-	public void addRoute(Route route) {
-		routeList.add(route);
-	}
-
-	/**
-	 * 
-	 * @param beacon
-	 */
-	public void addBeacon(Location beacon) {
-		beaconList.add(beacon);
-		locationList.add(beacon);
 	}
 }

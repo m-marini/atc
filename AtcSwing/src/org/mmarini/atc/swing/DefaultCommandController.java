@@ -50,7 +50,6 @@ public class DefaultCommandController extends JPanel implements
 	public static final String RUNWAY_PANE = "RUNWAY_PANE";
 	public static final String COMMAND_PANE = "COMMAND_PANE";
 	public static final String PLANE_PANE = "PLANE_PANE";
-	public static final String EXIT_IMAGE = "/images/exit.png";
 	public static final Dimension PREFERRED_SIZE = new Dimension(180, 400);
 
 	/**
@@ -61,7 +60,7 @@ public class DefaultCommandController extends JPanel implements
 	private PlaneButtonPane planeButtonPane;
 	private FlightLevelPane flightLevelPane;
 	private CommandPane commandPane;
-	private AbstractCommandPane locationPane;
+	private LocationPane locationPane;
 	private RunwayPane runwayPane;
 	private ConditionPane conditionPane;
 	private CardLayout cardLayout;
@@ -86,6 +85,12 @@ public class DefaultCommandController extends JPanel implements
 		panel = new JPanel();
 		planeButtonPane = new PlaneButtonPane();
 		commandPane = new CommandPane();
+		flightLevelPane = new FlightLevelPane();
+		runwayPane = new RunwayPane();
+		conditionPane = new ConditionPane();
+		locationPane=new LocationPane();
+		player = Player.getInstance();
+		
 		endAction = new AbstractAction() {
 
 			/**
@@ -95,9 +100,8 @@ public class DefaultCommandController extends JPanel implements
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GameListener list = gameListener;
-				if (list != null)
-					list.endGame();
+				if (gameListener != null)
+					gameListener.endGame();
 			}
 
 		};
@@ -186,7 +190,11 @@ public class DefaultCommandController extends JPanel implements
          */
 	private void init() {
 		commandPane.setCommandController(this);
-		
+		flightLevelPane.setCommandController(this);
+		runwayPane.setCommandController(this);
+		conditionPane.setCommandController(this);
+		locationPane.setCommandController(this);
+
 		setPreferredSize(PREFERRED_SIZE);
 		panel.setLayout(cardLayout);
 		panel.add(planeButtonPane, PLANE_PANE);
@@ -285,6 +293,16 @@ public class DefaultCommandController extends JPanel implements
 	}
 
 	/**
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
+	@Override
+	public void refresh() {
+		planeButtonPane.refresh();
+		runwayPane.refresh();
+		conditionPane.refresh();
+	}
+
+	/**
 	 * 
 	 */
 	private void sendMessage() {
@@ -298,30 +316,8 @@ public class DefaultCommandController extends JPanel implements
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
 		planeButtonPane.setAtcHandler(atcHandler);
-	}
-
-	/**
-	 * @param commandPane
-	 *            the commandPane to set
-	 */
-	public void setCommandPane(CommandPane commandPane) {
-		this.commandPane = commandPane;
-	}
-
-	/**
-	 * @param conditionPane
-	 *            the conditionPane to set
-	 */
-	public void setConditionPane(ConditionPane conditionPane) {
-		this.conditionPane = conditionPane;
-	}
-
-	/**
-	 * @param flightLevelPane
-	 *            the flightLevelPane to set
-	 */
-	public void setFlightLevelPane(FlightLevelPane flightLevelPane) {
-		this.flightLevelPane = flightLevelPane;
+		runwayPane.setAtcHandler(atcHandler);
+		locationPane.setAtcHandler(atcHandler);
 	}
 
 	/**
@@ -330,30 +326,6 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	public void setGameListener(GameListener gameListener) {
 		this.gameListener = gameListener;
-	}
-
-	/**
-	 * @param locationPane
-	 *            the locationPane to set
-	 */
-	public void setLocationPane(AbstractCommandPane locationPane) {
-		this.locationPane = locationPane;
-	}
-
-	/**
-	 * @param player
-	 *            the player to set
-	 */
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	/**
-	 * @param runwayPane
-	 *            the runwayPane to set
-	 */
-	public void setRunwayPane(RunwayPane runwayPane) {
-		this.runwayPane = runwayPane;
 	}
 
 	/**
@@ -370,13 +342,5 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	private void showPane(String paneId) {
 		cardLayout.show(panel, paneId);
-	}
-
-	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
-	 */
-	@Override
-	public void refresh() {
-		planeButtonPane.refresh();
 	}
 }

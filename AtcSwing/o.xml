@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+-
+<o:options xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmairni.org/atc/options-0.1.0 options-0.1.0.xsd"
+	xmlns:o="http://www.mmairni.org/atc/options-0.1.0">
+	-
+	<o:hits>
+		<o:record o:iterationCount="12" o:mapName="Lamarx (Demo)"
+			o:name="" o:planeCount="0" o:profile="hard" o:time="1373040605962" />
+		<o:record o:iterationCount="12" o:mapName="Lamarx (Demo)"
+			o:name="" o:planeCount="0" o:profile="hard" o:time="1373040612792" />
+		<o:record o:iterationCount="2" o:mapName="Lamarx (Demo)"
+			o:name="" o:planeCount="0" o:profile="training" o:time="1373040859906" />
+		<o:record o:iterationCount="10" o:mapName="Lamarx (Demo)"
+			o:name="" o:planeCount="0" o:profile="training" o:time="1373042755049" />
+	</o:hits>
+</o:options>

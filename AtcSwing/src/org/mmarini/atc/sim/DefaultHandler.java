@@ -245,14 +245,6 @@ public class DefaultHandler implements AtcHandler {
 	}
 
 	/**
-	 * @param hits
-	 *            the hits to set
-	 */
-	public void setHits(Hits hits) {
-		this.hits = hits;
-	}
-
-	/**
 	 * @see org.mmarini.atc.sim.AtcHandler#storeHits(org.mmarini.atc.sim.HitsMemento)
 	 */
 	@Override
@@ -260,7 +252,7 @@ public class DefaultHandler implements AtcHandler {
 		hits.setMemento(memento);
 	}
 
-	/** 
+	/**
 	 * @see org.mmarini.atc.sim.AtcHandler#updateSession()
 	 */
 	@Override

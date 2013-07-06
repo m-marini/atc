@@ -9,12 +9,23 @@
  */
 package org.mmarini.atc.sim;
 
+import java.awt.Color;
+
 /**
  * @author marco.marini@mmarini.org
  * @version $Id: AtcConstants.java,v 1.3 2008/02/27 14:55:48 marco Exp $
  * 
  */
 public interface AtcConstants {
+	public static final Color H040_COLOR = new Color(0xeceacc);
+	public static final Color H080_COLOR = new Color(0x8de5e8);
+	public static final Color H120_COLOR = new Color(0x60d750);
+	public static final Color H160_COLOR = new Color(0x2b21e9);
+	public static final Color H200_COLOR = new Color(0xe95ada);
+	public static final Color H240_COLOR = new Color(0xe98b30);
+	public static final Color H280_COLOR = new Color(0xea332a);
+	public static final Color H320_COLOR = new Color(0xeee450);
+	public static final Color H360_COLOR = new Color(0xaead97);
 
 	public static final String NORTH = "N";
 

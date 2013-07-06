@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.mmarini.org/option-0.1.0"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:o="http://www.mmarini.org/option-0.1.0">
+
+    <element name="options" type="o:OptionsType"></element>
+
+	<complexType name="OptionsType">
+		<sequence>
+			<element ref="o:hits"></element>
+		</sequence>
+	</complexType>
+
+    <element name="hits" type="o:HitsType"></element>
+
+    <complexType name="HitsType">
+    	<sequence>
+    		<element ref="o:record" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="record" type="o:RecordType"></element>
+    
+    <complexType name="RecordType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="mapName" type="string" use="required"></attribute>
+    	<attribute name="iterationCount" type="int" use="required"></attribute>
+    	<attribute name="planeCount" type="int"></attribute>
+    	<attribute name="profile" type="string"></attribute>
+    	<attribute name="time" type="long"></attribute>
+    </complexType>
+</schema>

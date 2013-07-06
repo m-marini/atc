@@ -24,7 +24,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public class RouteMapHandler extends DefaultHandler implements XmlConstants {
-	private static final String NAME_ATTR = "name";
 	private Locator locator;
 	private RadarMap radarMap;
 	private Map<String, Location> locations;
@@ -61,7 +60,7 @@ public class RouteMapHandler extends DefaultHandler implements XmlConstants {
 		String id = attributes.getValue(ID_ATTR);
 		String algn = attributes.getValue(ALIGNMENT_ATTR);
 		float x = Float.parseFloat(attributes.getValue(X_ATTR));
-		float y = Float.parseFloat(attributes.getValue(Y_ELEM));
+		float y = Float.parseFloat(attributes.getValue(Y_ATTR));
 
 		loc.setId(id);
 		loc.setAlignment(algn);

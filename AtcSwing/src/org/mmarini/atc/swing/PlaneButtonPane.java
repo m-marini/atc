@@ -121,6 +121,8 @@ public class PlaneButtonPane extends AbstractCommandPane implements
          */
 	@Override
 	public void refresh() {
+		if (atcHandler == null)
+			return;
 		List<Plane> planeList = atcHandler.retrievePlanes();
 		if (planeList == null)
 			return;

@@ -50,6 +50,7 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
 	 */
 	public HelpPane() {
 		pane = new JEditorPane();
+		init();
 	}
 
 	/**
@@ -74,10 +75,9 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
 	}
 
 	/**
-         * 
-         * 
-         */
-	public void init() {
+	 * 
+	 */
+	private void init() {
 		setLayout(new BorderLayout());
 		pane.setEditable(false);
 		pane.setContentType("text/html");

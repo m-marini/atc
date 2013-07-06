@@ -26,20 +26,20 @@ import org.mmarini.atc.sim.GameRecord;
 public class HitsTableModel extends AbstractTableModel implements Refreshable {
 
 	/**
+	 * 
+	 */
+	public HitsTableModel() {
+		records = new ArrayList<>(0);
+		refresh();
+	}
+
+	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
 
-	private List<GameRecord> records = new ArrayList<GameRecord>(0);
-
+	private List<GameRecord> records;
 	private AtcHandler atcHandler;
-
-	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
 
 	/**
 	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
@@ -56,8 +56,8 @@ public class HitsTableModel extends AbstractTableModel implements Refreshable {
 	}
 
 	/**
-         * 
-         */
+	 * @see javax.swing.table.TableModel#getColumnCount()
+	 */
 	@Override
 	public int getColumnCount() {
 		return 5;
@@ -84,26 +84,19 @@ public class HitsTableModel extends AbstractTableModel implements Refreshable {
 	}
 
 	/**
-	 * @return the records
+	 * @see javax.swing.table.TableModel#getRowCount()
 	 */
-	private List<GameRecord> getRecords() {
-		return records;
-	}
-
-	/**
-         * 
-         */
 	@Override
 	public int getRowCount() {
-		return getRecords().size();
+		return records.size();
 	}
 
 	/**
-         * 
-         */
+	 * @see javax.swing.table.TableModel#getValueAt(int, int)
+	 */
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		GameRecord record = getRecords().get(rowIndex);
+		GameRecord record = records.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return record.getName();
@@ -120,15 +113,15 @@ public class HitsTableModel extends AbstractTableModel implements Refreshable {
 	}
 
 	/**
-         * 
-         * 
-         */
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
 	@Override
 	public void refresh() {
-		List<GameRecord> list = getAtcHandler().retrieveHits().getTable();
-		List<GameRecord> data = getRecords();
-		data.clear();
-		data.addAll(list);
+		records.clear();
+		if (atcHandler == null)
+			return;
+		List<GameRecord> list = atcHandler.retrieveHits().getTable();
+		records.addAll(list);
 		fireTableDataChanged();
 	}
 
@@ -138,5 +131,6 @@ public class HitsTableModel extends AbstractTableModel implements Refreshable {
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
+		refresh();
 	}
 }

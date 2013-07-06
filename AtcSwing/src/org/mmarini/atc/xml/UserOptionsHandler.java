@@ -1,251 +1,105 @@
-/*
- * UserOptionsHandler.java
- *
- * $Id: UserOptionsHandler.java,v 1.2 2008/02/27 15:00:17 marco Exp $
- *
- * 18/feb/08
- *
- * Copyright notice
+/**
+ * 
  */
 package org.mmarini.atc.xml;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
-import java.util.zip.ZipEntry;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.xmlrules.DigesterLoader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mmarini.atc.sim.AtcHandler;
-import org.mmarini.atc.sim.HitsMemento;
-import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.mmarini.atc.sim.GameRecord;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * @author marco.marini@mmarini.org
- * @version $Id: UserOptionsHandler.java,v 1.2 2008/02/27 15:00:17 marco Exp $
+ * @author US00852
  * 
  */
-public class UserOptionsHandler implements XmlConstants {
-
-	private static final String ZIP_ENTRY_NAME = "options.xml";
-
-	private static Log log = LogFactory.getLog(UserOptionsHandler.class);
-
-	private String optionsFilename;
-
-	private UserOptions userOptions = new UserOptions();
-
-	private Resource ruleResource;
-
-	private AtcHandler atcHandler;
+public class UserOptionsHandler extends DefaultHandler implements XmlConstants {
+	private UserOptions userOptions;
+	private Locator locator;
 
 	/**
 	 * 
-	 * @return
-	 * @throws IOException
 	 */
-	private Digester createDigester() throws IOException {
-		URL url = getRuleResource().getURL();
-		Digester digester = DigesterLoader.createDigester(url);
-		digester.setNamespaceAware(true);
-		return digester;
+	public UserOptionsHandler() {
 	}
 
 	/**
-	 * @return
-	 * @throws ParserConfigurationException
-	 * 
+	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
+	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
-	private Document createDocument() throws ParserConfigurationException {
-		Document doc = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().newDocument();
-		Element elem = getUserOptions().createElement(doc);
-		doc.appendChild(elem);
-		return doc;
-	}
-
-	/**
-	 * @return
-	 */
-	private String createFilename() {
-		String userHome = System.getProperty("user.home");
-		String optFilename = userHome + File.separator + getOptionsFilename();
-		return optFilename;
-	}
-
-	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
+	@Override
+	public void startElement(String uri, String localName, String qName,
+			Attributes attributes) throws SAXException {
+		if ("".equals(uri)) {
+			switch (localName) {
+			case OPTIONS_ELEM:
+				userOptions = new UserOptions();
+				break;
+			case RECORD_ELEM:
+				startRecord(attributes);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	/**
 	 * 
-	 * @return
+	 * @param attributes
+	 * @throws SAXParseException
 	 */
-	public HitsMemento getHits() {
-		HitsMemento memento = new HitsMemento();
-		memento.setTable(getUserOptions().getHits());
-		return memento;
+	private void startRecord(Attributes attributes) throws SAXParseException {
+		GameRecord record = new GameRecord();
+		String name = attributes.getValue(NAME_ATTR);
+		String mapName = attributes.getValue(MAP_NAME_ATTR);
+		String profile = attributes.getValue(PROFILE_ATTR);
+
+		int iterationCount;
+		int planeCount;
+		long time;
+		try {
+			iterationCount = Integer.parseInt(attributes
+					.getValue(ITERATION_COUNT_ATTR));
+			planeCount = Integer
+					.parseInt(attributes.getValue(PLANE_COUNT_ATTR));
+			time = Long.parseLong(attributes.getValue(TIME_ATTR));
+		} catch (NumberFormatException e) {
+			throw new SAXParseException(e.getMessage(), locator, e);
+		}
+
+		record.setTime(time);
+		record.setProfile(profile);
+		record.setPlaneCount(planeCount);
+		record.setMapName(mapName);
+		record.setIterationCount(iterationCount);
+		record.setName(name);
+		userOptions.addRecord(record);
 	}
 
 	/**
-	 * @return the optionsFilename
+	 * @see org.xml.sax.helpers.DefaultHandler#error(org.xml.sax.SAXParseException)
 	 */
-	private String getOptionsFilename() {
-		return optionsFilename;
+	@Override
+	public void error(SAXParseException e) throws SAXException {
+		throw e;
 	}
 
 	/**
-	 * @return the ruleResource
+	 * @see org.xml.sax.helpers.DefaultHandler#setDocumentLocator(org.xml.sax.Locator
+	 *      )
 	 */
-	private Resource getRuleResource() {
-		return ruleResource;
+	@Override
+	public void setDocumentLocator(Locator locator) {
+		this.locator = locator;
 	}
 
 	/**
 	 * @return the userOptions
 	 */
-	private UserOptions getUserOptions() {
+	public UserOptions getUserOptions() {
 		return userOptions;
 	}
 
-	/**
-         * 
-         * 
-         */
-	public void init() {
-		load();
-		HitsMemento memento = getHits();
-		getAtcHandler().storeHits(memento);
-	}
-
-	/**
-         * 
-         * 
-         */
-	private void load() {
-		try {
-			String optFilename = createFilename();
-			JarFile file = new JarFile(optFilename);
-			InputStream is = file.getInputStream(new ZipEntry(ZIP_ENTRY_NAME));
-			load(is);
-			file.close();
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param is
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	private void load(InputStream is) throws IOException, SAXException {
-		Digester digester = createDigester();
-		UserOptions userOptions = (UserOptions) digester.parse(is);
-		if (userOptions == null) {
-			throw new SAXException("Options not found");
-		}
-		setUserOptions(userOptions);
-	}
-
-	/**
-	 * @param atcHandler
-	 *            the atcHandler to set
-	 */
-	public void setAtcHandler(AtcHandler atcHandler) {
-		this.atcHandler = atcHandler;
-	}
-
-	/**
-	 * 
-	 * @param memento
-	 */
-	public void setHits(HitsMemento memento) {
-		getUserOptions().setHits(memento.getTable());
-		store();
-	}
-
-	/**
-	 * @param optionsFilename
-	 *            the optionsFilename to set
-	 */
-	public void setOptionsFilename(String optionsFilename) {
-		this.optionsFilename = optionsFilename;
-	}
-
-	/**
-	 * @param ruleResource
-	 *            the ruleResource to set
-	 */
-	public void setRuleResource(Resource resource) {
-		this.ruleResource = resource;
-	}
-
-	/**
-	 * @param userOptions
-	 *            the userOptions to set
-	 */
-	private void setUserOptions(UserOptions userOptions) {
-		this.userOptions = userOptions;
-	}
-
-	/**
-         * 
-         * 
-         */
-	private void store() {
-		try {
-			String optFilename = createFilename();
-			FileOutputStream fos = new FileOutputStream(optFilename);
-			JarOutputStream jos = new JarOutputStream(fos);
-			jos.putNextEntry(new ZipEntry(ZIP_ENTRY_NAME));
-			writeXml(jos);
-			jos.closeEntry();
-			jos.close();
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param stream
-	 * @throws ParserConfigurationException
-	 * @throws TransformerFactoryConfigurationError
-	 * @throws TransformerException
-	 */
-	private void writeXml(OutputStream stream)
-			throws ParserConfigurationException,
-			TransformerFactoryConfigurationError, TransformerException {
-		Document doc = createDocument();
-		Result result = new StreamResult(stream);
-		Source source = new DOMSource(doc);
-		Transformer trans = TransformerFactory.newInstance().newTransformer();
-		trans.transform(source, result);
-	}
 }

@@ -15,13 +15,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class BufferedPlayer {
 
+	private static final float DEFAULT_GAIN = -10f;
 	private static Log log = LogFactory.getLog(BufferedPlayer.class);
-
 	private Queue<AudioInputStream> aisBuffer;
-
 	private Clip clip;
-
-	private float gain;
 
 	/**
          * 
@@ -50,7 +47,7 @@ public class BufferedPlayer {
          */
 	private void dequeueAudioInputStream() {
 		log.debug("clip ended");
-		AudioInputStream ais = getAisBuffer().poll();
+		AudioInputStream ais = aisBuffer.poll();
 		if (ais != null) {
 			startClip(ais);
 		} else {
@@ -59,17 +56,10 @@ public class BufferedPlayer {
 	}
 
 	/**
-	 * @return the aisBuffer
-	 */
-	private Queue<AudioInputStream> getAisBuffer() {
-		return aisBuffer;
-	}
-
-	/**
 	 * @param ais
 	 */
 	public void playStream(AudioInputStream ais) {
-		getAisBuffer().offer(ais);
+		aisBuffer.offer(ais);
 		log.debug("enqueued " + ais);
 		synchronized (this) {
 			notify();
@@ -93,14 +83,6 @@ public class BufferedPlayer {
 	}
 
 	/**
-	 * 
-	 * @param gain
-	 */
-	public synchronized void setGain(float gain) {
-		this.gain = gain;
-	}
-
-	/**
 	 * @param ais
 	 * 
 	 */
@@ -119,7 +101,7 @@ public class BufferedPlayer {
 			ais.close();
 			FloatControl control = (FloatControl) clip
 					.getControl(FloatControl.Type.MASTER_GAIN);
-			control.setValue(gain);
+			control.setValue(DEFAULT_GAIN);
 			log.debug("start clip");
 			clip.start();
 			while (!clip.isRunning())
@@ -134,7 +116,7 @@ public class BufferedPlayer {
 	 * @return
 	 */
 	private void waitForReady() {
-		if (!clip.isRunning() && !getAisBuffer().isEmpty())
+		if (!clip.isRunning() && !aisBuffer.isEmpty())
 			return;
 		if (!clip.isRunning()) {
 			try {

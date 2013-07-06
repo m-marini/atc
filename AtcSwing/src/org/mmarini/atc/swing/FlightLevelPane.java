@@ -16,7 +16,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
-import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -24,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.mmarini.atc.sim.AtcConstants;
-import org.springframework.core.io.Resource;
 
 /**
  * @author marco.marini@mmarini.org
@@ -32,16 +30,24 @@ import org.springframework.core.io.Resource;
  * 
  */
 public class FlightLevelPane extends AbstractCommandPane implements
-		AtcConstants, ActionListener {
+		UIAtcConstants, AtcConstants, ActionListener {
+
+	private static final Color[] LEVEL_COLORS = new Color[] { H360_COLOR,
+			H320_COLOR, H280_COLOR, H240_COLOR, H200_COLOR, H160_COLOR,
+			H120_COLOR, H080_COLOR, H040_COLOR };
 
 	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
 
-	private List<Color> buttonColor;
-
-	private List<Resource> buttonResource;
+	/**
+	 * 
+	 */
+	public FlightLevelPane() {
+		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
+		init();
+	}
 
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -53,24 +59,10 @@ public class FlightLevelPane extends AbstractCommandPane implements
 	}
 
 	/**
-	 * @return the buttonColor
-	 */
-	private List<Color> getButtonColor() {
-		return buttonColor;
-	}
-
-	/**
-	 * @return the buttonResource
-	 */
-	private List<Resource> getButtonResource() {
-		return buttonResource;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		super.init("Flight level");
 
 		GridBagLayout gbl = new GridBagLayout();
@@ -88,15 +80,14 @@ public class FlightLevelPane extends AbstractCommandPane implements
 		++gbc.gridy;
 
 		DecimalFormat decimalFormat = new DecimalFormat("000");
-		List<Color> btnCol = getButtonColor();
 		int j = 0;
 		for (int i = EXIT_ALTITUDE; i > 0; i -= FIGHT_LEVEL_GAP) {
 			String flId = decimalFormat.format(i / 100);
 			btn = createButton("FL " + flId);
 			btn.addActionListener(this);
 			btn.setActionCommand(flId);
-			btn.setForeground(btnCol.get(j));
-			Icon icon = createIcon(getButtonResource().get(j));
+			btn.setForeground(LEVEL_COLORS[j]);
+			Icon icon = createIcon(LEVEL_IMAGES[j]);
 			if (icon != null) {
 				btn.setIcon(icon);
 				btn.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -113,21 +104,5 @@ public class FlightLevelPane extends AbstractCommandPane implements
 		gbl.setConstraints(cmp, gbc);
 		gbc.weightx = 1;
 		add(cmp);
-	}
-
-	/**
-	 * @param buttonColor
-	 *            the buttonColor to set
-	 */
-	public void setButtonColor(List<Color> buttonColor) {
-		this.buttonColor = buttonColor;
-	}
-
-	/**
-	 * @param buttonResource
-	 *            the buttonResource to set
-	 */
-	public void setButtonResource(List<Resource> buttonResource) {
-		this.buttonResource = buttonResource;
 	}
 }

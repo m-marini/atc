@@ -26,6 +26,15 @@ import org.mmarini.atc.sim.AtcHandler;
  */
 public class PlaneTablePane extends JPanel {
 
+	private static Log log = LogFactory.getLog(PlaneTablePane.class);
+
+	/**
+         * 
+         */
+	private static final long serialVersionUID = 1L;
+
+	private PlaneTableModel planeTableModel;
+
 	/**
 	 * 
 	 */
@@ -33,14 +42,6 @@ public class PlaneTablePane extends JPanel {
 		planeTableModel = new PlaneTableModel();
 		init();
 	}
-
-	private static Log log = LogFactory.getLog(PlaneTablePane.class);
-
-	/**
-         * 
-         */
-	private static final long serialVersionUID = 1L;
-	private PlaneTableModel planeTableModel;
 
 	/**
          * 

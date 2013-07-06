@@ -12,7 +12,6 @@ package org.mmarini.atc.swing;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -23,10 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.core.io.Resource;
 
 /**
  * @author marco.marini@mmarini.org
@@ -40,8 +35,6 @@ public abstract class AbstractCommandPane extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -8513765146483956118L;
-
-	private static Log log = LogFactory.getLog(AbstractCommandPane.class);
 
 	private CommandController commandController;
 	private JButton cancelBtn;
@@ -91,21 +84,14 @@ public abstract class AbstractCommandPane extends JPanel {
 
 	/**
 	 * 
-	 * @param resource
+	 * @param name
 	 * @return
 	 */
-	protected Icon createIcon(Resource resource) {
-		try {
-			if (resource != null) {
-				URL url = resource.getURL();
-				if (url != null) {
-					return new ImageIcon(url);
-				}
-			}
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-		return null;
+	protected Icon createIcon(String name) {
+		URL resource = getClass().getResource(name);
+		if (resource == null)
+			return null;
+		return new ImageIcon(resource);
 	}
 
 	/**
@@ -161,6 +147,14 @@ public abstract class AbstractCommandPane extends JPanel {
 	}
 
 	/**
+	 * @param cancelButtonIcon
+	 *            the cancelButtonIcon to set
+	 */
+	protected void setCancelButtonIcon(Icon cancelButtonIcon) {
+		this.cancelButtonIcon = cancelButtonIcon;
+	}
+
+	/**
 	 * @param commandController
 	 *            the commandController to set
 	 */
@@ -182,14 +176,6 @@ public abstract class AbstractCommandPane extends JPanel {
 	 */
 	protected void setDisabledDefaultButtonIcon(Icon disabledDefaultButtonIcon) {
 		this.disabledDefaultButtonIcon = disabledDefaultButtonIcon;
-	}
-
-	/**
-	 * @param cancelButtonIcon
-	 *            the cancelButtonIcon to set
-	 */
-	protected void setCancelButtonIcon(Icon cancelButtonIcon) {
-		this.cancelButtonIcon = cancelButtonIcon;
 	}
 
 }

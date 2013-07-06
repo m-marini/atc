@@ -27,9 +27,6 @@ import javax.swing.JPanel;
  */
 public class CommandPane extends AbstractCommandPane implements ActionListener,
 		UIAtcConstants {
-
-	private static final String CANCEL_IMAGE = "/images/cancel.png";
-	private static final String BUTTON_IMAGE = "/images/button.png";
 	/**
          * 
          */

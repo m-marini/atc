@@ -28,8 +28,8 @@ import org.mmarini.atc.sim.Location;
  * @version $Id: ConditionPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class ConditionPane extends AbstractCommandPane implements Refreshable,
-		ActionListener {
+public class ConditionPane extends AbstractCommandPane implements
+		UIAtcConstants, Refreshable, ActionListener {
 	/**
          * 
          */
@@ -37,11 +37,22 @@ public class ConditionPane extends AbstractCommandPane implements Refreshable,
 
 	private AtcHandler atcHandler;
 
-	private JButton immediateBtn = new JButton();
+	private JButton immediateBtn;
 
 	/**
-         * 
-         */
+	 * 
+	 */
+	public ConditionPane() {
+		immediateBtn = new JButton();
+		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
+		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
+		init();
+	}
+
+	/**
+	 * @see org.mmarini.atc.swing.AbstractCommandPane#actionPerformed(java.awt.event
+	 *      .ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		String locationId = event.getActionCommand();
@@ -49,24 +60,9 @@ public class ConditionPane extends AbstractCommandPane implements Refreshable,
 	}
 
 	/**
-	 * @return the atcHandler
+	 * 
 	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the immediateBtn
-	 */
-	private JButton getImmediateBtn() {
-		return immediateBtn;
-	}
-
-	/**
-         * 
-         * 
-         */
-	public void init() {
+	private void init() {
 		super.init("Condition");
 		JButton btn = createDefaultButton("Immediate");
 		setImmediateBtn(btn);
@@ -81,12 +77,13 @@ public class ConditionPane extends AbstractCommandPane implements Refreshable,
 	}
 
 	/**
-         * 
-         * 
-         */
+	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 */
 	@Override
 	public void refresh() {
-		List<Location> locationList = getAtcHandler().retrieveMapLocations();
+		if (atcHandler == null)
+			return;
+		List<Location> locationList = atcHandler.retrieveMapLocations();
 		removeAll();
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
@@ -101,7 +98,7 @@ public class ConditionPane extends AbstractCommandPane implements Refreshable,
 		gbl.setConstraints(btn, gbc);
 		add(btn);
 		++gbc.gridy;
-		btn = getImmediateBtn();
+		btn = immediateBtn;
 		gbl.setConstraints(btn, gbc);
 		add(btn);
 		int y = ++gbc.gridy;

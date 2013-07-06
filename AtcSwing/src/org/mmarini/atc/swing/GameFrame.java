@@ -22,7 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.DefaultHandler;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.mmarini.atc.sim.HitsMemento;
+import org.mmarini.atc.xml.UserOptionsPersistenceManager;
 
 /**
  * @author marco.marini@mmarini.org
@@ -30,7 +31,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  */
 public class GameFrame extends JFrame implements MenuPaneListener, GameListener {
-	private static final String[] CONTEXT_CONFIGURATION_FILES = new String[] { "/swing-beans.xml" }; //$NON-NLS-1$ //$NON-NLS-2$
 	private static final long serialVersionUID = 1L;
 	private static Log log = LogFactory.getLog(GameFrame.class);
 
@@ -44,10 +44,7 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	 */
 	public static void main(String[] arg) throws Throwable {
 		log.info("Starting ATC ..."); //$NON-NLS-1$
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-				CONTEXT_CONFIGURATION_FILES);
-		GameFrame frame = (GameFrame) ctx.getBean(GameFrame.class.getName(),
-				GameFrame.class);
+		GameFrame frame = new GameFrame();
 		frame.setVisible(true);
 	}
 
@@ -59,6 +56,7 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	private LogPane logPane;
 	private AtcHandler atcHandler;
 	private List<Refreshable> menuListener;
+	private UserOptionsPersistenceManager userOptionHandler;
 
 	/**
 	 * @throws HeadlessException
@@ -68,6 +66,12 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 		atcHandler = new DefaultHandler();
 		atcClock = new AtcClock();
 		atcFrame = new AtcFrame();
+		logPane = new LogPane();
+		endGamePane = new EndGamePane();
+		menuPane = new MenuPane();
+		userOptionHandler = new UserOptionsPersistenceManager();
+
+		init();
 	}
 
 	/**
@@ -120,22 +124,26 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	 * </p>
 	 * 
 	 */
-	public void init() {
+	private void init() {
 		log.debug("init"); //$NON-NLS-1$
 
-		helpPane.init();
+		HitsMemento memento = userOptionHandler.getHits();
+		atcHandler.storeHits(memento);
 
 		atcClock.setAtcHandler(atcHandler);
 		atcClock.setGameListener(this);
 		atcClock.addRefreshable(atcFrame);
 		atcClock.addRefreshable(logPane);
-		atcClock.init();
 
 		atcFrame.setAtcHandler(atcHandler);
+		atcFrame.setGameListener(this);
 
 		endGamePane.setAtcHandler(atcHandler);
+
 		logPane.setAtcHandler(atcHandler);
+
 		menuPane.setAtcHandler(atcHandler);
+		menuPane.setMenuPaneListener(this);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Air Trafic Controller");
@@ -146,7 +154,6 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 		cp.add(menuPane, BorderLayout.CENTER);
 		pack();
 		centerWindow();
-
 	}
 
 	/**
@@ -155,54 +162,6 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	@Override
 	public void openHelp() {
 		helpPane.showDialog();
-	}
-
-	/**
-	 * @param atcClock
-	 *            the atcClock to set
-	 */
-	public void setAtcClock(AtcClock atcClock) {
-		this.atcClock = atcClock;
-	}
-
-	/**
-	 * @param atcHandler
-	 *            the atcHandler to set
-	 */
-	public void setAtcHandler(AtcHandler atcHandler) {
-		this.atcHandler = atcHandler;
-	}
-
-	/**
-	 * @param endGamePane
-	 *            the endGamePane to set
-	 */
-	public void setEndGamePane(EndGamePane endGamePane) {
-		this.endGamePane = endGamePane;
-	}
-
-	/**
-	 * @param logPane
-	 *            the logPane to set
-	 */
-	public void setLogPane(LogPane logPane) {
-		this.logPane = logPane;
-	}
-
-	/**
-	 * @param menuListener
-	 *            the menuListener to set
-	 */
-	public void setMenuListener(List<Refreshable> menuListener) {
-		this.menuListener = menuListener;
-	}
-
-	/**
-	 * @param menuPane
-	 *            the menuPane to set
-	 */
-	public void setMenuPane(MenuPane menuPane) {
-		this.menuPane = menuPane;
 	}
 
 	/**

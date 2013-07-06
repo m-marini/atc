@@ -40,14 +40,6 @@ public class AtcClock implements ActionListener {
 	}
 
 	/**
-	 * 
-	 * @param refreshable
-	 */
-	public void addRefreshable(Refreshable refreshable) {
-		refreshableList.add(refreshable);
-	}
-
-	/**
          * 
          */
 	@Override
@@ -66,6 +58,14 @@ public class AtcClock implements ActionListener {
 	}
 
 	/**
+	 * 
+	 * @param refreshable
+	 */
+	public void addRefreshable(Refreshable refreshable) {
+		refreshableList.add(refreshable);
+	}
+
+	/**
          * 
          * 
          */
@@ -81,6 +81,14 @@ public class AtcClock implements ActionListener {
 	}
 
 	/**
+	 * @param gameListener
+	 *            the gameListener to set
+	 */
+	protected void setGameListener(GameListener gameListener) {
+		this.gameListener = gameListener;
+	}
+
+	/**
          * 
          * 
          */
@@ -93,12 +101,5 @@ public class AtcClock implements ActionListener {
 	 */
 	public void stop() {
 		timer.stop();
-	}
-
-	/**
-	 * @param gameListener the gameListener to set
-	 */
-	protected void setGameListener(GameListener gameListener) {
-		this.gameListener = gameListener;
 	}
 }

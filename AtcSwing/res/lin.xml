@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<radarMap id="LIN" name="Milan (Italy)" xmlns="http://www.example.org/route-0.1.0"
+<radarMap id="LIN" name="Milan (Italy)" xmlns="http://www.mmarini.org/radarMap-0.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/route-0.1.0 route-0.1.0.xsd ">
+	xsi:schemaLocation="http://www.mmarini.org/radarMap-0.1.0 radarMap-0.1.0.xsd ">
 	<exit id="VIC" course="271" alignment="N" x="99.6" y="9.2" />
 	<exit id="DJ" alignment="NW" course="124" x="-81" y="58.6" />
 	<exit id="ELB" alignment="S" course="332" x="11.7" y="-99.3" />

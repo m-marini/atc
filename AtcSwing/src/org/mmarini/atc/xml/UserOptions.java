@@ -26,7 +26,14 @@ import org.w3c.dom.Element;
  */
 public class UserOptions implements XmlConstants {
 
-	private List<GameRecord> hits = new ArrayList<GameRecord>(0);
+	/**
+	 * 
+	 */
+	public UserOptions() {
+		hits = new ArrayList<GameRecord>(0);
+	}
+
+	private List<GameRecord> hits;
 
 	/**
 	 * 

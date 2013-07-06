@@ -28,14 +28,23 @@ import org.mmarini.atc.sim.Location;
  * @version $Id: LocationPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class LocationPane extends AbstractCommandPane implements Refreshable,
-		ActionListener {
+public class LocationPane extends AbstractCommandPane implements
+		UIAtcConstants, Refreshable, ActionListener {
 	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
 
 	private AtcHandler atcHandler;
+
+	/**
+	 * 
+	 */
+	public LocationPane() {
+		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
+		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
+		init();
+	}
 
 	/**
          * 
@@ -47,17 +56,10 @@ public class LocationPane extends AbstractCommandPane implements Refreshable,
 	}
 
 	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		super.init("Location");
 		refresh();
 	}
@@ -68,7 +70,9 @@ public class LocationPane extends AbstractCommandPane implements Refreshable,
          */
 	@Override
 	public void refresh() {
-		List<Location> locationList = getAtcHandler().retrieveMapLocations();
+		if (atcHandler == null)
+			return;
+		List<Location> locationList = atcHandler.retrieveMapLocations();
 		removeAll();
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);

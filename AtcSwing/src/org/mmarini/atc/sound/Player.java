@@ -38,38 +38,34 @@ import org.mmarini.atc.sim.WrongRunwayMessage;
  * 
  */
 public class Player extends MessageVisitorAdapter {
-
 	public static final String LANDED_WRONG_RUNWAY = "landedWrongRunway";
-
 	public static final String EXITED_WRONG_WAY = "exitedWrongWay";
-
 	public static final String LANDED = "landed";
-
 	public static final String EXITED = "exited";
-
 	public static final String ENTERED_AT = "enteredAt";
-
 	public static final String CRASHED = "crashed";
-
 	public static final String COLLISION = "collision";
-
 	public static final String AND = "and";
-
 	public static final String TURN_HEADING_TO = "turnHeadingTo";
-
 	public static final String AT = "at";
-
 	public static final String HOLD_ON = "HoldOn";
-
 	public static final String CHANGE_FLIGHT_LEVEL = "changeFlightLevel";
-
 	public static final String CLEAR_TO_LAND = "clearToLandRunway";
 
 	private static final int LOAD_BUFFER = 1024;
 
 	private static Log log = LogFactory.getLog(Player.class);
 
-	private Map<String, byte[]> clipCache = new HashMap<String, byte[]>();
+	private static Player instance = new Player();
+
+	/**
+	 * @return the instance
+	 */
+	public static Player getInstance() {
+		return instance;
+	}
+
+	private Map<String, byte[]> clipCache;
 
 	private BufferedPlayer bufferedPlayer;
 
@@ -77,6 +73,9 @@ public class Player extends MessageVisitorAdapter {
          * 
          */
 	public Player() {
+		clipCache = new HashMap<String, byte[]>();
+		bufferedPlayer = new BufferedPlayer();
+		init();
 	}
 
 	/**
@@ -100,12 +99,11 @@ public class Player extends MessageVisitorAdapter {
 	 * @return
 	 */
 	private byte[] getAudioData(String id) {
-		Map<String, byte[]> cache = getClipCache();
-		byte[] data = cache.get(id);
+		byte[] data = clipCache.get(id);
 		if (data == null) {
 			data = loadAudioData(id);
 			if (data != null)
-				cache.put(id, data);
+				clipCache.put(id, data);
 		}
 		return data;
 	}
@@ -124,24 +122,10 @@ public class Player extends MessageVisitorAdapter {
 	}
 
 	/**
-	 * @return the bufferedPlayer
-	 */
-	private BufferedPlayer getBufferedPlayer() {
-		return bufferedPlayer;
-	}
-
-	/**
-	 * @return the clipCache
-	 */
-	private Map<String, byte[]> getClipCache() {
-		return clipCache;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		for (int i = 0; i < 10; ++i) {
 			getAudioData(String.valueOf(i));
 		}
@@ -189,7 +173,7 @@ public class Player extends MessageVisitorAdapter {
 	 * @param ais
 	 */
 	private void play(AudioInputStream ais) {
-		getBufferedPlayer().playStream(ais);
+		bufferedPlayer.playStream(ais);
 	}
 
 	/**
@@ -210,14 +194,6 @@ public class Player extends MessageVisitorAdapter {
 		if (ais == null)
 			return;
 		play(ais);
-	}
-
-	/**
-	 * @param bufferedPlayer
-	 *            the bufferedPlayer to set
-	 */
-	public void setBufferedPlayer(BufferedPlayer bufferedPlayer) {
-		this.bufferedPlayer = bufferedPlayer;
 	}
 
 	/**
