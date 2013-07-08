@@ -32,8 +32,8 @@ import org.mmarini.atc.sound.Player;
  * @version $Id: LogPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class LogPane extends JPanel implements MessageConsumer, Refreshable,
-		UIAtcConstants, Logger {
+public class LogPane extends JPanel implements MessageConsumer, UIAtcConstants,
+		Logger {
 	private static final int ROWS = 10;
 
 	private static Log log = LogFactory.getLog(LogPane.class);
@@ -128,9 +128,8 @@ public class LogPane extends JPanel implements MessageConsumer, Refreshable,
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		atcHandler.retrieveMessages((MessageConsumer) this);
 	}

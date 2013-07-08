@@ -14,7 +14,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
-import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -22,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.DefaultHandler;
+import org.mmarini.atc.sim.Hits;
 import org.mmarini.atc.sim.HitsMemento;
 import org.mmarini.atc.xml.UserOptionsPersistenceManager;
 
@@ -52,32 +52,26 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	private MenuPane menuPane;
 	private EndGamePane endGamePane;
 	private AtcClock atcClock;
-	private HelpPane helpPane;
-	private LogPane logPane;
 	private AtcHandler atcHandler;
-	private List<Refreshable> menuListener;
-	private UserOptionsPersistenceManager userOptionHandler;
+	private UserOptionsPersistenceManager userOptionsHandler;
 
 	/**
 	 * @throws HeadlessException
 	 */
 	public GameFrame() throws HeadlessException {
-		helpPane = new HelpPane();
 		atcHandler = new DefaultHandler();
 		atcClock = new AtcClock();
 		atcFrame = new AtcFrame();
-		logPane = new LogPane();
 		endGamePane = new EndGamePane();
 		menuPane = new MenuPane();
-		userOptionHandler = new UserOptionsPersistenceManager();
+		userOptionsHandler = new UserOptionsPersistenceManager();
 
 		init();
 	}
 
 	/**
-         * 
-         * 
-         */
+	 * 
+	 */
 	private void centerWindow() {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension size = getSize();
@@ -88,33 +82,28 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.GameListener#endGame()
+	 */
 	@Override
 	public void endGame() {
 		atcClock.stop();
 		endGamePane.showDialog();
 		atcFrame.setVisible(false);
+		Hits hits = atcHandler.retrieveHits();
+		if (hits.isUpdated()) {
+			HitsMemento memento = hits.createMemento();
+			userOptionsHandler.setHits(memento);
+		}
+		menuPane.refresh();
 		setVisible(true);
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.MenuPaneListener#exitGame()
+	 */
 	@Override
 	public void exitGame() {
 		System.exit(0);
-	}
-
-	/**
-         * 
-         */
-	private void fireRefresh() {
-		if (menuListener == null)
-			return;
-		for (Refreshable r : menuListener) {
-			r.refresh();
-		}
 	}
 
 	/**
@@ -127,20 +116,16 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	private void init() {
 		log.debug("init"); //$NON-NLS-1$
 
-		HitsMemento memento = userOptionHandler.getHits();
+		HitsMemento memento = userOptionsHandler.getHits();
 		atcHandler.storeHits(memento);
 
 		atcClock.setAtcHandler(atcHandler);
 		atcClock.setGameListener(this);
-		atcClock.addRefreshable(atcFrame);
-		atcClock.addRefreshable(logPane);
 
 		atcFrame.setAtcHandler(atcHandler);
 		atcFrame.setGameListener(this);
 
 		endGamePane.setAtcHandler(atcHandler);
-
-		logPane.setAtcHandler(atcHandler);
 
 		menuPane.setAtcHandler(atcHandler);
 		menuPane.setMenuPaneListener(this);
@@ -157,24 +142,24 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 	}
 
 	/**
-         * 
-         */
-	@Override
-	public void openHelp() {
-		helpPane.showDialog();
-	}
-
-	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.MenuPaneListener#startNewGame(java.lang.String,
+	 *      java.lang.String)
+	 */
 	@Override
 	public void startNewGame(String mapId, String profile) {
 		log.debug("mapId=" + mapId + ", profile=" + profile);
 		atcHandler.createSession(mapId, profile);
-		fireRefresh();
-		logPane.clear();
 		setVisible(false);
 		atcFrame.setVisible(true);
+		atcFrame.refresh();
 		atcClock.start();
+	}
+
+	/**
+	 * @see org.mmarini.atc.swing.GameListener#tick()
+	 */
+	@Override
+	public void tick() {
+		atcFrame.refresh();
 	}
 }

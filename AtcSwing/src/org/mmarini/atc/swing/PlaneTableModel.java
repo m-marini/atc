@@ -22,7 +22,7 @@ import org.mmarini.atc.sim.Plane;
  * @author marco.marini@mmarini.org
  * @version $Id: PlaneTableModel.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  */
-public class PlaneTableModel extends AbstractTableModel implements Refreshable {
+public class PlaneTableModel extends AbstractTableModel {
 
 	/**
          * 
@@ -111,10 +111,8 @@ public class PlaneTableModel extends AbstractTableModel implements Refreshable {
 	}
 
 	/**
-         * 
-         * 
-         */
-	@Override
+	 * 
+	 */
 	public void refresh() {
 		planeList.clear();
 		List<Plane> list = atcHandler.retrievePlanes();

@@ -29,7 +29,7 @@ import org.mmarini.atc.sim.Location;
  * 
  */
 public class LocationPane extends AbstractCommandPane implements
-		UIAtcConstants, Refreshable, ActionListener {
+		UIAtcConstants, ActionListener {
 	/**
          * 
          */
@@ -65,10 +65,8 @@ public class LocationPane extends AbstractCommandPane implements
 	}
 
 	/**
-         * 
-         * 
-         */
-	@Override
+	 * 
+	 */
 	public void refresh() {
 		if (atcHandler == null)
 			return;

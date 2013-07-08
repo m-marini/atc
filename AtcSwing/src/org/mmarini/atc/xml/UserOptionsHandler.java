@@ -25,13 +25,37 @@ public class UserOptionsHandler extends DefaultHandler implements XmlConstants {
 	}
 
 	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#error(org.xml.sax.SAXParseException)
+	 */
+	@Override
+	public void error(SAXParseException e) throws SAXException {
+		throw e;
+	}
+
+	/**
+	 * @return the userOptions
+	 */
+	public UserOptions getUserOptions() {
+		return userOptions;
+	}
+
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#setDocumentLocator(org.xml.sax.Locator
+	 *      )
+	 */
+	@Override
+	public void setDocumentLocator(Locator locator) {
+		this.locator = locator;
+	}
+
+	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
 	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
-		if ("".equals(uri)) {
+		if (ATC_OPTIONS_NS.equals(uri)) {
 			switch (localName) {
 			case OPTIONS_ELEM:
 				userOptions = new UserOptions();
@@ -76,30 +100,6 @@ public class UserOptionsHandler extends DefaultHandler implements XmlConstants {
 		record.setIterationCount(iterationCount);
 		record.setName(name);
 		userOptions.addRecord(record);
-	}
-
-	/**
-	 * @see org.xml.sax.helpers.DefaultHandler#error(org.xml.sax.SAXParseException)
-	 */
-	@Override
-	public void error(SAXParseException e) throws SAXException {
-		throw e;
-	}
-
-	/**
-	 * @see org.xml.sax.helpers.DefaultHandler#setDocumentLocator(org.xml.sax.Locator
-	 *      )
-	 */
-	@Override
-	public void setDocumentLocator(Locator locator) {
-		this.locator = locator;
-	}
-
-	/**
-	 * @return the userOptions
-	 */
-	public UserOptions getUserOptions() {
-		return userOptions;
 	}
 
 }

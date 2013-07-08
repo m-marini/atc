@@ -53,6 +53,7 @@ public class MenuPane extends JPanel {
 	private Action newAction;
 	private Action helpAction;
 	private Action exitAction;
+	private HelpPane helpPane;
 
 	/**
 	 * 
@@ -61,6 +62,7 @@ public class MenuPane extends JPanel {
 		levelGroup = new ButtonGroup();
 		mapGroup = new ButtonGroup();
 		hitsPane = new HitsPane();
+		helpPane = new HelpPane();
 
 		newAction = new AbstractAction() {
 
@@ -87,8 +89,7 @@ public class MenuPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (menuPaneListener != null)
-					menuPaneListener.openHelp();
+				helpPane.showDialog();
 			}
 		};
 
@@ -293,6 +294,13 @@ public class MenuPane extends JPanel {
 		++gbc.gridx;
 		gbl.setConstraints(buttonPane, gbc);
 		add(buttonPane);
+	}
+
+	/**
+	 * 
+	 */
+	public void refresh() {
+		hitsPane.refresh();
 	}
 
 	/**

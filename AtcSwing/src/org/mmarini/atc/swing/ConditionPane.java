@@ -29,7 +29,7 @@ import org.mmarini.atc.sim.Location;
  * 
  */
 public class ConditionPane extends AbstractCommandPane implements
-		UIAtcConstants, Refreshable, ActionListener {
+		UIAtcConstants, ActionListener {
 	/**
          * 
          */
@@ -77,9 +77,8 @@ public class ConditionPane extends AbstractCommandPane implements
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		if (atcHandler == null)
 			return;

@@ -10,6 +10,7 @@
 package org.mmarini.atc.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -27,21 +28,21 @@ import org.mmarini.atc.sim.AtcHandler;
  * @version $Id: AtcFrame.java,v 1.3 2008/03/01 21:20:05 marco Exp $
  * 
  */
-public class AtcFrame extends JFrame implements Refreshable {
+public class AtcFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private static Log log = LogFactory.getLog(AtcFrame.class);
 
 	private RadarPane radarPane;
-	private LeftPane planePane;
+	private LeftPane leftPane;
 	private DefaultCommandController commandPane;
 
 	/**
 	 * @throws HeadlessException
 	 */
 	public AtcFrame() throws HeadlessException {
-		planePane = new LeftPane();
+		leftPane = new LeftPane();
 		radarPane = new RadarPane();
 		commandPane = new DefaultCommandController();
 		init();
@@ -59,10 +60,11 @@ public class AtcFrame extends JFrame implements Refreshable {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setTitle("Air Trafic Controller");
 		setResizable(false);
+		setBackground(Color.BLACK);
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
 		cp.add(radarPane, BorderLayout.CENTER);
-		cp.add(planePane, BorderLayout.WEST);
+		cp.add(leftPane, BorderLayout.WEST);
 		cp.add(commandPane, BorderLayout.EAST);
 		pack();
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -74,11 +76,10 @@ public class AtcFrame extends JFrame implements Refreshable {
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
-		planePane.refresh();
+		leftPane.refresh();
 		radarPane.refresh();
 		commandPane.refresh();
 	}
@@ -88,7 +89,7 @@ public class AtcFrame extends JFrame implements Refreshable {
 	 * @param atcHandler
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
-		planePane.setAtcHandler(atcHandler);
+		leftPane.setAtcHandler(atcHandler);
 		radarPane.setAtcHandler(atcHandler);
 		commandPane.setAtcHandler(atcHandler);
 	}

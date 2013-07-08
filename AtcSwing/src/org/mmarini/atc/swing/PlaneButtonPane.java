@@ -34,7 +34,7 @@ import org.mmarini.atc.sim.Plane;
  * 
  */
 public class PlaneButtonPane extends AbstractCommandPane implements
-		Refreshable, ActionListener {
+		ActionListener {
 	private static final String BUTTON_IMAGE = "/images/button.png";
 	private static final String DISABLED_BUTTON_IMAGE = "/images/disabledButton.png";
 
@@ -116,10 +116,8 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 	}
 
 	/**
-         * 
-         * 
-         */
-	@Override
+	 * 
+	 */
 	public void refresh() {
 		if (atcHandler == null)
 			return;

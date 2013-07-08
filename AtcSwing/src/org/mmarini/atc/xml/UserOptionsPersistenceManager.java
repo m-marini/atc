@@ -20,27 +20,28 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmarini.atc.sim.GameRecord;
 import org.mmarini.atc.sim.HitsMemento;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author marco.marini@mmarini.org
@@ -49,14 +50,18 @@ import org.xml.sax.SAXException;
  */
 public class UserOptionsPersistenceManager implements XmlConstants {
 
+	private static final String CDATA_ATTR_TYPE = "CDATA";
+	private static final String EMPTY_STRING = "";
 	private static final String OPTIONS_SCHEMA = "/options-0.1.0.xsd";
 	private static final String OPTION_FILENAME = ".atc.jar";
 	private static final String ZIP_ENTRY_NAME = "options.xml";
+	private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
 	private static Log log = LogFactory
 			.getLog(UserOptionsPersistenceManager.class);
 
 	private UserOptions userOptions;
+	private TransformerHandler handler;
 
 	/**
 	 * 
@@ -71,13 +76,13 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 	 * @throws ParserConfigurationException
 	 * 
 	 */
-	private Document createDocument() throws ParserConfigurationException {
-		Document doc = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().newDocument();
-		Element elem = userOptions.createElement(doc);
-		doc.appendChild(elem);
-		return doc;
-	}
+	// private Document createDocument() throws ParserConfigurationException {
+	// Document doc = DocumentBuilderFactory.newInstance()
+	// .newDocumentBuilder().newDocument();
+	// Element elem = userOptions.createElement(doc);
+	// doc.appendChild(elem);
+	// return doc;
+	// }
 
 	/**
 	 * @return
@@ -87,6 +92,59 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 		String optFilename = userHome + File.separator + OPTION_FILENAME;
 		log.info(optFilename);
 		return optFilename;
+	}
+
+	/**
+	 * 
+	 * @param stream
+	 * @throws TransformerFactoryConfigurationError
+	 * @throws TransformerConfigurationException
+	 * @throws SAXException
+	 */
+	private void createXml(OutputStream stream)
+			throws TransformerFactoryConfigurationError,
+			TransformerConfigurationException, SAXException {
+		Result result = new StreamResult(stream);
+
+		SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory
+				.newInstance();
+		handler = factory.newTransformerHandler();
+		Transformer tr = handler.getTransformer();
+		tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+		handler.setResult(result);
+		handler.startDocument();
+
+		handler.startElement(ATC_OPTIONS_NS, EMPTY_STRING, OPTIONS_ELEM,
+				EMPTY_ATTRIBUTES);
+		handler.startElement(ATC_OPTIONS_NS, EMPTY_STRING, HITS_ELEMENT,
+				EMPTY_ATTRIBUTES);
+
+		AttributesImpl attrs = new AttributesImpl();
+		for (GameRecord record : userOptions.getHits()) {
+			attrs.clear();
+			attrs.addAttribute(EMPTY_STRING, EMPTY_STRING, NAME_ATTR,
+					CDATA_ATTR_TYPE, String.valueOf(record.getName()));
+			attrs.addAttribute(EMPTY_STRING, EMPTY_STRING, PROFILE_ATTR,
+					CDATA_ATTR_TYPE, String.valueOf(record.getProfile()));
+			attrs.addAttribute(EMPTY_STRING, EMPTY_STRING, MAP_NAME_ATTR,
+					CDATA_ATTR_TYPE, String.valueOf(record.getMapName()));
+			attrs.addAttribute(EMPTY_STRING, EMPTY_STRING,
+					ITERATION_COUNT_ATTR, CDATA_ATTR_TYPE,
+					String.valueOf(record.getIterationCount()));
+			attrs.addAttribute(EMPTY_STRING, EMPTY_STRING, PLANE_COUNT_ATTR,
+					CDATA_ATTR_TYPE, String.valueOf(record.getPlaneCount()));
+			attrs.addAttribute(EMPTY_STRING, EMPTY_STRING, TIME_ATTR,
+					CDATA_ATTR_TYPE, String.valueOf(record.getTime()));
+			handler.startElement(ATC_OPTIONS_NS, EMPTY_STRING, RECORD_ELEM,
+					attrs);
+			handler.endElement(ATC_OPTIONS_NS, EMPTY_STRING, RECORD_ELEM);
+		}
+
+		handler.endElement(ATC_OPTIONS_NS, EMPTY_STRING, HITS_ELEMENT);
+		handler.endElement(ATC_OPTIONS_NS, EMPTY_STRING, OPTIONS_ELEM);
+
+		handler.endDocument();
 	}
 
 	/**
@@ -107,8 +165,10 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 		try {
 			String optFilename = createFilename();
 			JarFile file = new JarFile(optFilename);
-			InputStream is = file.getInputStream(new ZipEntry(ZIP_ENTRY_NAME));
+			ZipEntry zipEntry = new ZipEntry(ZIP_ENTRY_NAME);
+			InputStream is = file.getInputStream(zipEntry);
 			load(is);
+			is.close();
 			file.close();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -130,6 +190,7 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 		Schema schema = schemaFactory.newSchema(schemaUrl);
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setSchema(schema);
+		parserFactory.setNamespaceAware(true);
 		SAXParser parser = parserFactory.newSAXParser();
 		UserOptionsHandler handler = new UserOptionsHandler();
 		parser.parse(is, handler);
@@ -154,13 +215,17 @@ public class UserOptionsPersistenceManager implements XmlConstants {
          */
 	private void store() {
 		try {
+
 			String optFilename = createFilename();
 			FileOutputStream fos = new FileOutputStream(optFilename);
 			JarOutputStream jos = new JarOutputStream(fos);
 			jos.putNextEntry(new ZipEntry(ZIP_ENTRY_NAME));
-			writeXml(jos);
+
+			createXml(jos);
+
 			jos.closeEntry();
 			jos.close();
+			fos.close();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
@@ -173,13 +238,14 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 	 * @throws TransformerFactoryConfigurationError
 	 * @throws TransformerException
 	 */
-	private void writeXml(OutputStream stream)
-			throws ParserConfigurationException,
-			TransformerFactoryConfigurationError, TransformerException {
-		Document doc = createDocument();
-		Result result = new StreamResult(stream);
-		Source source = new DOMSource(doc);
-		Transformer trans = TransformerFactory.newInstance().newTransformer();
-		trans.transform(source, result);
-	}
+	// private void writeXml(OutputStream stream)
+	// throws ParserConfigurationException,
+	// TransformerFactoryConfigurationError, TransformerException {
+	//
+	// Document doc = createDocument();
+	// Result result = new StreamResult(stream);
+	// Source source = new DOMSource(doc);
+	// Transformer trans = TransformerFactory.newInstance().newTransformer();
+	// trans.transform(source, result);
+	// }
 }

@@ -28,7 +28,7 @@ import org.mmarini.atc.sim.Hits;
  * @version $Id: HitsPaneNoTable.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class HitsPaneNoTable extends JPanel implements Refreshable {
+public class HitsPaneNoTable extends JPanel {
 
 	/**
          * 
@@ -65,9 +65,8 @@ public class HitsPaneNoTable extends JPanel implements Refreshable {
 	}
 
 	/**
-         * 
-         */
-	@Override
+	 * 
+	 */
 	public void refresh() {
 		removeAll();
 		setLayout(new GridBagLayout());

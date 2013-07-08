@@ -30,7 +30,7 @@ import org.mmarini.atc.sim.Location;
  * 
  */
 public class RunwayPane extends AbstractCommandPane implements UIAtcConstants,
-		Refreshable, ActionListener {
+		ActionListener {
 
 	/**
          * 
@@ -67,9 +67,8 @@ public class RunwayPane extends AbstractCommandPane implements UIAtcConstants,
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		if (atcHandler == null)
 			return;

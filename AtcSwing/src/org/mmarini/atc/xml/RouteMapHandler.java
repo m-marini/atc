@@ -124,7 +124,7 @@ public class RouteMapHandler extends DefaultHandler implements XmlConstants {
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
-		if (NAME_SPACE.equals(uri)) {
+		if (MAP_NS.equals(uri)) {
 			switch (localName) {
 			case RADAR_MAP_ELEM:
 				startRadarMap(attributes);

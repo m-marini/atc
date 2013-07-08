@@ -21,4 +21,9 @@ public interface GameListener {
          */
 	public abstract void endGame();
 
+	/**
+	 * 
+	 */
+	public abstract void tick();
+
 }

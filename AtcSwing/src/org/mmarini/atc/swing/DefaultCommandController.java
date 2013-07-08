@@ -43,7 +43,7 @@ import org.mmarini.atc.sound.Player;
  * 
  */
 public class DefaultCommandController extends JPanel implements
-		CommandController, UIAtcConstants, Refreshable {
+		CommandController, UIAtcConstants {
 	public static final String CONDITION_PANE = "CONDITION_PANE";
 	public static final String LOCATION_PANE = "LOCATION_PANE";
 	public static final String FLIGHT_LEVEL_PANE = "FLIGHT_LEVEL_PANE";
@@ -88,9 +88,9 @@ public class DefaultCommandController extends JPanel implements
 		flightLevelPane = new FlightLevelPane();
 		runwayPane = new RunwayPane();
 		conditionPane = new ConditionPane();
-		locationPane=new LocationPane();
+		locationPane = new LocationPane();
 		player = Player.getInstance();
-		
+
 		endAction = new AbstractAction() {
 
 			/**
@@ -293,9 +293,8 @@ public class DefaultCommandController extends JPanel implements
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		planeButtonPane.refresh();
 		runwayPane.refresh();

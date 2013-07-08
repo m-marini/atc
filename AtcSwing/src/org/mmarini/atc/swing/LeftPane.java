@@ -11,6 +11,7 @@
 package org.mmarini.atc.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
@@ -24,7 +25,7 @@ import org.mmarini.atc.sim.AtcHandler;
  * @author marco.marini@mmarini.org
  * @version $Id: LeftPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  */
-public class LeftPane extends JPanel implements Refreshable {
+public class LeftPane extends JPanel {
 
 	private static Log log = LogFactory.getLog(LeftPane.class);
 
@@ -53,15 +54,15 @@ public class LeftPane extends JPanel implements Refreshable {
 		log.debug("init");
 		setPreferredSize(new Dimension(200, 10));
 		setLayout(new BorderLayout());
+		setBackground(Color.BLACK);
 		add(planePane, BorderLayout.CENTER);
 		JScrollPane scrollPane1 = new JScrollPane(logPane);
 		add(scrollPane1, BorderLayout.SOUTH);
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		planePane.refresh();
 		logPane.refresh();

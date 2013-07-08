@@ -23,15 +23,7 @@ import org.mmarini.atc.sim.AtcHandler;
  * @version $Id: HitsPane.java,v 1.3 2008/03/01 21:20:05 marco Exp $
  * 
  */
-public class HitsPane extends JPanel implements Refreshable {
-
-	/**
-	 * 
-	 */
-	public HitsPane() {
-		hitsTableModel = new HitsTableModel();
-		init();
-	}
+public class HitsPane extends JPanel {
 
 	public static final Dimension SIZE = new Dimension(500, 195);
 
@@ -41,6 +33,14 @@ public class HitsPane extends JPanel implements Refreshable {
 	private static final long serialVersionUID = 1L;
 
 	private HitsTableModel hitsTableModel;
+
+	/**
+	 * 
+	 */
+	public HitsPane() {
+		hitsTableModel = new HitsTableModel();
+		init();
+	}
 
 	/**
          * 
@@ -59,9 +59,8 @@ public class HitsPane extends JPanel implements Refreshable {
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		hitsTableModel.refresh();
 	}

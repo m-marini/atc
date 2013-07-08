@@ -23,7 +23,16 @@ import org.mmarini.atc.sim.GameRecord;
  * @author marco.marini@mmarini.org
  * @version $Id: HitsTableModel.java,v 1.3 2008/03/01 21:20:05 marco Exp $
  */
-public class HitsTableModel extends AbstractTableModel implements Refreshable {
+public class HitsTableModel extends AbstractTableModel {
+
+	/**
+         * 
+         */
+	private static final long serialVersionUID = 1L;
+
+	private List<GameRecord> records;
+
+	private AtcHandler atcHandler;
 
 	/**
 	 * 
@@ -32,14 +41,6 @@ public class HitsTableModel extends AbstractTableModel implements Refreshable {
 		records = new ArrayList<>(0);
 		refresh();
 	}
-
-	/**
-         * 
-         */
-	private static final long serialVersionUID = 1L;
-
-	private List<GameRecord> records;
-	private AtcHandler atcHandler;
 
 	/**
 	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
@@ -113,9 +114,8 @@ public class HitsTableModel extends AbstractTableModel implements Refreshable {
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		records.clear();
 		if (atcHandler == null)

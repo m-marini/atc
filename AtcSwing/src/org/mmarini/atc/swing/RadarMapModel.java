@@ -23,7 +23,7 @@ import org.mmarini.atc.sim.RadarMap;
  * 
  */
 public class RadarMapModel extends AbstractListModel<String> implements
-		ComboBoxModel<String>, Refreshable {
+		ComboBoxModel<String> {
 
 	/**
          * 
@@ -101,10 +101,8 @@ public class RadarMapModel extends AbstractListModel<String> implements
 	}
 
 	/**
-         * 
-         * 
-         */
-	@Override
+	 * 
+	 */
 	public void refresh() {
 		List<RadarMap> list = getAtcHandler().retrieveRadarMap();
 		setList(list);

@@ -23,12 +23,6 @@ public interface MenuPaneListener {
 	public abstract void exitGame();
 
 	/**
-         * 
-         * 
-         */
-	public abstract void openHelp();
-
-	/**
 	 * 
 	 * @param string
 	 * @param f

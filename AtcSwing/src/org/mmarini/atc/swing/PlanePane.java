@@ -29,7 +29,7 @@ import org.mmarini.atc.sim.Plane;
  * @author marco.marini@mmarini.org
  * @version $Id: PlanePane.java,v 1.3 2008/03/01 09:50:13 marco Exp $
  */
-public class PlanePane extends JPanel implements Refreshable, UIAtcConstants {
+public class PlanePane extends JPanel implements UIAtcConstants {
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	private static Log log = LogFactory.getLog(PlanePane.class);
@@ -44,62 +44,55 @@ public class PlanePane extends JPanel implements Refreshable, UIAtcConstants {
 
 	private AtcHandler atcHandler;
 
-	private JTextArea displayArea = new JTextArea();
+	private JTextArea displayArea;
+
+	/**
+	 * 
+	 */
+	public PlanePane() {
+		displayArea = new JTextArea();
+		setBackground(Color.BLACK);
+		init();
+	}
 
 	/**
 	 * 
 	 * @param bfr
 	 * @param plane
 	 */
-	private void formatMsg(StringBuffer bfr, Plane plane) {
-		bfr.append(MessageFormat.format(
-				PLANE_MESSAGE,
-				new Object[] { plane.getId(), plane.getFlightLevelId(),
-						plane.getClassId(), plane.getDestinationId(),
-						plane.getHeading(), plane.getStatus() }));
-	}
-
-	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the displayArea
-	 */
-	private JTextArea getDisplayArea() {
-		return displayArea;
+	private void formatMsg(StringBuilder bfr, Plane plane) {
+		bfr.append(MessageFormat.format(PLANE_MESSAGE, plane.getId(),
+				plane.getFlightLevelId(), plane.getClassId(),
+				plane.getDestinationId(), plane.getHeading(), plane.getStatus()));
 	}
 
 	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		log.debug("init");
-		JTextArea area = getDisplayArea();
-		area.setEditable(false);
-		area.setBackground(Color.BLACK);
-		area.setForeground(Color.GREEN);
-		area.setFont(ATC_FONT);
-		area.setDoubleBuffered(true);
-		JScrollPane scrollPane = new JScrollPane(area);
+
+		displayArea.setEditable(false);
+		displayArea.setBackground(Color.BLACK);
+		displayArea.setForeground(Color.GREEN);
+		displayArea.setFont(ATC_FONT);
+		displayArea.setDoubleBuffered(true);
+
+		JScrollPane scrollPane = new JScrollPane(displayArea);
 		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
+
 		refresh();
 	}
 
 	/**
-         * 
-         */
-	@Override
+	 * 
+	 */
 	public void refresh() {
-		StringBuffer bfr = new StringBuffer();
-		AtcHandler handler = getAtcHandler();
-		if (handler != null) {
-			List<Plane> planeList = handler.retrievePlanes();
+		StringBuilder bfr = new StringBuilder();
+		if (atcHandler != null) {
+			List<Plane> planeList = atcHandler.retrievePlanes();
 			if (planeList != null) {
 				int i = 0;
 				for (Iterator<Plane> iter = planeList.iterator(); iter
@@ -112,7 +105,7 @@ public class PlanePane extends JPanel implements Refreshable, UIAtcConstants {
 				}
 			}
 		}
-		getDisplayArea().setText(bfr.toString());
+		displayArea.setText(bfr.toString());
 	}
 
 	/**

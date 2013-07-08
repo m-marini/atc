@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="http://www.mmarini.org/option-0.1.0"
+<schema targetNamespace="http://www.mmarini.org/atc/options-0.1.0"
 	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:o="http://www.mmarini.org/option-0.1.0">
+	xmlns:o="http://www.mmarini.org/atc/options-0.1.0">
 
     <element name="options" type="o:OptionsType"></element>
 

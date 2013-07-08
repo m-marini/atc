@@ -25,8 +25,7 @@ import org.mmarini.atc.sim.AtcHandler;
  * @version $Id: RadarPane.java,v 1.3 2008/03/01 21:20:05 marco Exp $
  * 
  */
-public class RadarPane extends JComponent implements Refreshable,
-		UIAtcConstants {
+public class RadarPane extends JComponent implements UIAtcConstants {
 
 	public static final Color BACKGROUND_COLOR = Color.BLACK;
 
@@ -45,6 +44,7 @@ public class RadarPane extends JComponent implements Refreshable,
 	public RadarPane() {
 		componentSize = new Dimension();
 		setDoubleBuffered(true);
+		setBackground(BACKGROUND_COLOR);
 	}
 
 	/**
@@ -111,9 +111,8 @@ public class RadarPane extends JComponent implements Refreshable,
 	}
 
 	/**
-	 * @see org.mmarini.atc.swing.Refreshable#refresh()
+	 * 
 	 */
-	@Override
 	public void refresh() {
 		repaint();
 	}
