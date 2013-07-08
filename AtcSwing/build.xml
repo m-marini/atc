@@ -43,7 +43,6 @@
 		<delete file="${lib}/${jar}.jar" failonerror="false" />
 		<jar manifest="META-INF/MANIFEST.MF" jarfile="${lib}/${jar}.jar">
 			<fileset dir="classes" />
-			<fileset dir="../AtcWeb/build/classes" />
 		</jar>
 	</target>
 
