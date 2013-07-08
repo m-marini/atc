@@ -45,7 +45,7 @@ public class AtcFrame extends JFrame {
 		leftPane = new LeftPane();
 		radarPane = new RadarPane();
 		commandPane = new DefaultCommandController();
-		init();
+		createContent();
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class AtcFrame extends JFrame {
 	 * </p>
 	 * 
 	 */
-	private void init() {
+	private void createContent() {
 		log.debug("init"); //$NON-NLS-1$
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setTitle("Air Trafic Controller");
@@ -73,6 +73,14 @@ public class AtcFrame extends JFrame {
 		setSize(new Dimension(size));
 		setLocation((screen.width - size.width) / 2,
 				(screen.height - size.height) / 2);
+	}
+
+	/**
+	 * 
+	 */
+	public void init() {
+		leftPane.init();
+		commandPane.init();
 	}
 
 	/**

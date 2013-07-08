@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radarMap id="PAR" name="Paris (France)"
+	xmlns="http://www.mmarini.org/atc/radarMap-0.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/atc/radarMap-0.1.0 ../xsd/radarMap-0.1.0.xsd ">
+
+	<!-- Entries -->
+	<exit id="MOU" alignment="S" course="336" x="40.7" y="-91.4" />
+	<exit id="GUR" alignment="W" course="99" x="-92.9" y="36.9" />
+	<exit id="REM" alignment="E" course="243" x="91.6" y="40.1" />
+	<exit id="ANG" alignment="SW" course="57" x="-89" y="-45.6" />
+	<exit id="BNE" alignment="N" course="188" x="-7.5" y="99.7" />
+
+	<!-- Runways -->
+	<runway id="07" alignment="S" course="72" x="14.0" y="13.3" />
+	<runway id="27" alignment="N" course="269" x="18.2" y="16.6" />
+	<runway id="26" alignment="S" course="259" x="11.2" y="-1.2" />
+
+	<!-- Beacons -->
+	<beacon id="TSU" alignment="NW" x="0" y="0" />
+	<beacon id="DVL" alignment="N" x="-70.8" y="33.4" />
+	<beacon id="ABB" alignment="W" x="-9.8" y="82.9" />
+	<beacon id="PON" alignment="NW" x="-2.6" y="20.6" />
+	<beacon id="CTL" alignment="SE" x="58.3" y="23.1" />
+	<beacon id="CHW" alignment="SE" x="-44.1" y="-16.4" />
+	<beacon id="BGW" alignment="S" x="4.9" y="10.4" />
+	<beacon id="RSY" alignment="E" x="29.4" y="16.8" />
+	<beacon id="CRL" alignment="NE" x="16.4" y="30.1" />
+	<beacon id="OYE" alignment="E" x="19.7" y="0.5" />
+
+	<route from="MOU" to="TSU" type="entry" />
+	<route from="GUR" to="DVL" type="entry" />
+	<route from="BNE" to="ABB" type="entry" />
+	<route from="ANG" to="CHW" type="entry" />
+	<route from="REM" to="CTL" type="entry" />
+
+	<!-- Connection Routes -->
+	<route from="PON" to="TSU" />
+	<route from="PON" to="CTL" />
+	<route from="PON" to="REM" />
+	<route from="MOU" to="CTL" />
+	<route from="DVL" to="CHW" />
+	<route from="DVL" to="PON" />
+	<route from="BNE" to="CTL" />
+	<route from="BNE" to="CTL" />
+	<route from="CHW" to="TSU" />
+	<route from="CTL" to="TSU" />
+	<route from="CHW" to="PON" />
+	<route from="ABB" to="PON" />
+	<route from="ABB" to="CTL" />
+
+
+	<!-- Landing ConnectionRoutes -->
+	<route from="PON" to="CRL" type="landConnection" />
+	<route from="CTL" to="CRL" type="landConnection" />
+	<route from="ABB" to="CRL" type="landConnection" />
+
+
+	<!-- Landing Routes -->
+	<route from="07" to="BGW" type="land" />
+	<route from="PON" to="BGW" type="land" />
+	<route from="27" to="RSY" type="land" />
+	<route from="CRL" to="RSY" type="land" />
+	<route from="TSU" to="OYE" type="land" />
+	<route from="OYE" to="26" type="land" />
+</radarMap>

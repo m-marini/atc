@@ -29,22 +29,12 @@ public class PlaneMessageDispatcher extends MessageVisitorAdapter implements
 	}
 
 	/**
-	 * @return the session
-	 */
-	private AtcSession getSession() {
-		return session;
-	}
-
-	/**
 	 * 
 	 * @param locationId
 	 * @return
 	 */
 	private Location retreiveLocation(String locationId) {
-		AtcSession session = getSession();
 		Location location = session.getLocationById(locationId);
-		if (location == null)
-			session.addMessage(new InfoMessage(locationId + " does not exist"));
 		return location;
 	}
 
@@ -54,7 +44,7 @@ public class PlaneMessageDispatcher extends MessageVisitorAdapter implements
 	 * @return
 	 */
 	private Gateway retreiveRunway(String runwayId) {
-		return getSession().getRunwayById(runwayId);
+		return session.getRunwayById(runwayId);
 	}
 
 	/**
@@ -63,7 +53,6 @@ public class PlaneMessageDispatcher extends MessageVisitorAdapter implements
 	 * @return
 	 */
 	private Plane retrievePlane(String planeId) {
-		AtcSession session = getSession();
 		Plane plane = session.getPlaneById(planeId);
 		if (plane == null)
 			session.addMessage(new InfoMessage(planeId + " does not exist"));
@@ -87,9 +76,8 @@ public class PlaneMessageDispatcher extends MessageVisitorAdapter implements
 	private boolean verifyRoute(Plane plane, Location location) {
 		if (plane.isInRoute(location.getPosition()))
 			return true;
-		getSession().addMessage(
-				new InfoMessage(plane.getId() + " will not pass at "
-						+ location.getId()));
+		session.addMessage(new InfoMessage(plane.getId() + " will not pass at "
+				+ location.getId()));
 		return false;
 	}
 

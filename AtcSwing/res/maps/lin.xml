@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <radarMap id="LIN" name="Milan (Italy)" xmlns="http://www.mmarini.org/atc/radarMap-0.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mmarini.org/radarMap-0.1.0 radarMap-0.1.0.xsd ">
-	<exit id="VIC" course="271" alignment="N" x="99.6" y="9.2" />
+	xsi:schemaLocation="http://www.mmarini.org/atc/radarMap-0.1.0 ../xsd/radarMap-0.1.0.xsd ">
+	<exit id="VIC" course="271" x="99.6" y="9.2" />
 	<exit id="DJ" alignment="NW" course="124" x="-81" y="58.6" />
 	<exit id="ELB" alignment="S" course="332" x="11.7" y="-99.3" />
 	<exit id="ALB" alignment="SW" course="62" x="-51.9" y="-85.5" />
@@ -19,7 +19,7 @@
 	<beacon id="VOG" alignment="NW" x="-12.8" y="-29.8" />
 	<beacon id="COD" alignment="SE" x="11.2" y="-14.1" />
 	<beacon id="SRN" alignment="W" x="-10.6" y="11.2" />
-	<beacon id="TZO" alignment="N" x="9.8" y="5.9" />
+	<beacon id="TZO"  x="9.8" y="5.9" />
 	<beacon id="GEN" alignment="NE" x="-8.1" y="-62.2" />
 	<beacon id="PAR" alignment="NE" x="42.9" y="-38.3" />
 	<beacon id="TOP" alignment="NE" x="-59.5" y="-32.1" />

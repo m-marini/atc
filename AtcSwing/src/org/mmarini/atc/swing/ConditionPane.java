@@ -29,57 +29,44 @@ import org.mmarini.atc.sim.Location;
  * 
  */
 public class ConditionPane extends AbstractCommandPane implements
-		UIAtcConstants, ActionListener {
+		UIAtcConstants {
+
 	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
 
 	private AtcHandler atcHandler;
-
 	private JButton immediateBtn;
+	private ActionListener listener;
 
 	/**
 	 * 
 	 */
 	public ConditionPane() {
 		immediateBtn = new JButton();
-		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
-		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
-		init();
-	}
-
-	/**
-	 * @see org.mmarini.atc.swing.AbstractCommandPane#actionPerformed(java.awt.event
-	 *      .ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		String locationId = event.getActionCommand();
-		getCommandController().notifyLocationSelection(locationId);
-	}
-
-	/**
-	 * 
-	 */
-	private void init() {
-		super.init("Condition");
-		JButton btn = createDefaultButton("Immediate");
-		setImmediateBtn(btn);
-		btn.addActionListener(new ActionListener() {
+		listener = new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				getCommandController().notifyLocationSelection(null);
+			public void actionPerformed(ActionEvent e) {
+				String locationId = e.getActionCommand();
+				if (IMMEDIATE_LOCATION_ID.equals(locationId))
+					locationId = null;
+				getCommandController().notifyLocationSelection(locationId);
 			}
-		});
-		refresh();
+		};
+		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
+		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
+		immediateBtn = createDefaultButton(IMMEDIATE_LOCATION_ID);
+		immediateBtn.setActionCommand(null);
+		immediateBtn.addActionListener(listener);
+		init("Condition");
 	}
 
 	/**
 	 * 
 	 */
-	public void refresh() {
+	public void init() {
 		if (atcHandler == null)
 			return;
 		List<Location> locationList = atcHandler.retrieveMapLocations();
@@ -114,7 +101,7 @@ public class ConditionPane extends AbstractCommandPane implements
 				String id = location.getId();
 				btn = createDefaultButton(id);
 				btn.setActionCommand(id);
-				btn.addActionListener(this);
+				btn.addActionListener(listener);
 				gbl.setConstraints(btn, gbc);
 				add(btn);
 				++gbc.gridy;
@@ -136,13 +123,5 @@ public class ConditionPane extends AbstractCommandPane implements
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
-	}
-
-	/**
-	 * @param immediateBtn
-	 *            the immediateBtn to set
-	 */
-	private void setImmediateBtn(JButton immediateBtn) {
-		this.immediateBtn = immediateBtn;
 	}
 }

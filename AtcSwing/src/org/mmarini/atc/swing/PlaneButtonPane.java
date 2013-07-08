@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -34,9 +33,9 @@ import org.mmarini.atc.sim.Plane;
  * 
  */
 public class PlaneButtonPane extends AbstractCommandPane implements
-		ActionListener {
-	private static final String BUTTON_IMAGE = "/images/button.png";
-	private static final String DISABLED_BUTTON_IMAGE = "/images/disabledButton.png";
+		UIAtcConstants {
+
+	private static final int ROWS = 10;
 
 	private static Log log = LogFactory.getLog(PlaneButtonPane.class);
 
@@ -47,34 +46,27 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 
 	private List<JButton> buttonList;
 	private AtcHandler atcHandler;
-	private int rows;
-	private int columns;
+	private ActionListener listener;
 
 	/**
 	 * 
 	 */
 	public PlaneButtonPane() {
 		buttonList = new ArrayList<JButton>(26);
-		rows = 10;
-		columns = 1;
+		listener = new ActionListener() {
 
-		ImageIcon icon = new ImageIcon(getClass().getResource(BUTTON_IMAGE));
-		setDefaultButtonIcon(icon);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String planeId = e.getActionCommand();
+				log.debug("button=" + planeId);
+				getCommandController().notifyPlaneSelection(planeId);
+			}
+		};
 
-		icon = new ImageIcon(getClass().getResource(DISABLED_BUTTON_IMAGE));
-		setDisabledDefaultButtonIcon(icon);
+		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
+		setDisabledDefaultButtonIcon(createIcon(DISABLED_BUTTON_IMAGE));
 
 		init();
-	}
-
-	/**
-         * 
-         */
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		String planeId = event.getActionCommand();
-		log.debug("button=" + planeId);
-		getCommandController().notifyPlaneSelection(planeId);
 	}
 
 	/**
@@ -93,16 +85,14 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 		gbc.gridheight = 1;
 		gbc.insets = new Insets(2, 2, 2, 2);
 		gbc.weightx = 1;
-		for (int i = 0; i < rows; ++i) {
+		for (int i = 0; i < ROWS; ++i) {
 			gbc.gridy = i;
-			for (int j = 0; j < columns; ++j) {
-				gbc.gridx = j;
-				JButton btn = createDefaultButton("-");
-				list.add(btn);
-				btn.addActionListener(this);
-				gb.setConstraints(btn, gbc);
-				add(btn);
-			}
+			gbc.gridx = 1;
+			JButton btn = createDefaultButton("-");
+			list.add(btn);
+			btn.addActionListener(listener);
+			gb.setConstraints(btn, gbc);
+			add(btn);
 		}
 		gbc.gridy++;
 		gbc.gridx = 0;

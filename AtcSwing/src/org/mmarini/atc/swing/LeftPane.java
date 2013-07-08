@@ -43,14 +43,14 @@ public class LeftPane extends JPanel {
 	public LeftPane() {
 		planePane = new PlanePane();
 		logPane = new LogPane();
-		init();
+		createContent();
 	}
 
 	/**
          * 
          * 
          */
-	private void init() {
+	private void createContent() {
 		log.debug("init");
 		setPreferredSize(new Dimension(200, 10));
 		setLayout(new BorderLayout());
@@ -58,6 +58,13 @@ public class LeftPane extends JPanel {
 		add(planePane, BorderLayout.CENTER);
 		JScrollPane scrollPane1 = new JScrollPane(logPane);
 		add(scrollPane1, BorderLayout.SOUTH);
+	}
+
+	/**
+	 * 
+	 */
+	public void init() {
+		logPane.clear();
 	}
 
 	/**

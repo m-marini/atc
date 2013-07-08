@@ -35,8 +35,9 @@ import org.xml.sax.SAXException;
  * 
  */
 public class SessionFactory {
-	private static final String RADAR_MAP_XSD = "/radarMap-0.1.0.xsd";
-	private static final String[] MAP_NAMES = { "/lin.xml" };
+	private static final String RADAR_MAP_XSD = "/xsd/radarMap-0.1.0.xsd";
+	private static final String[] MAP_NAMES = { "/maps/lrx.xml",
+			"/maps/ffm.xml", "/maps/lon.xml", "/maps/lin.xml", "/maps/par.xml" };
 
 	private static Log log = LogFactory.getLog(SessionFactory.class);
 

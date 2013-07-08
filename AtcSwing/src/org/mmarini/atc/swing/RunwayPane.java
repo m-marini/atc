@@ -45,7 +45,7 @@ public class RunwayPane extends AbstractCommandPane implements UIAtcConstants,
 	public RunwayPane() {
 		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
 		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
-		init();
+		init("Runway");
 	}
 
 	/**
@@ -61,15 +61,7 @@ public class RunwayPane extends AbstractCommandPane implements UIAtcConstants,
 	/**
 	 * 
 	 */
-	private void init() {
-		super.init("Runway");
-		refresh();
-	}
-
-	/**
-	 * 
-	 */
-	public void refresh() {
+	public void init() {
 		if (atcHandler == null)
 			return;
 		List<Gateway> locationList = atcHandler.retrieveRunways();

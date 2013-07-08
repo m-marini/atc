@@ -151,7 +151,7 @@ public class GameFrame extends JFrame implements MenuPaneListener, GameListener 
 		atcHandler.createSession(mapId, profile);
 		setVisible(false);
 		atcFrame.setVisible(true);
-		atcFrame.refresh();
+		atcFrame.init();
 		atcClock.start();
 	}
 

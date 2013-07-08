@@ -52,7 +52,7 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 
 	private static final String CDATA_ATTR_TYPE = "CDATA";
 	private static final String EMPTY_STRING = "";
-	private static final String OPTIONS_SCHEMA = "/options-0.1.0.xsd";
+	private static final String OPTIONS_SCHEMA = "/xsd/options-0.1.0.xsd";
 	private static final String OPTION_FILENAME = ".atc.jar";
 	private static final String ZIP_ENTRY_NAME = "options.xml";
 	private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
@@ -73,24 +73,10 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 
 	/**
 	 * @return
-	 * @throws ParserConfigurationException
-	 * 
-	 */
-	// private Document createDocument() throws ParserConfigurationException {
-	// Document doc = DocumentBuilderFactory.newInstance()
-	// .newDocumentBuilder().newDocument();
-	// Element elem = userOptions.createElement(doc);
-	// doc.appendChild(elem);
-	// return doc;
-	// }
-
-	/**
-	 * @return
 	 */
 	private String createFilename() {
 		String userHome = System.getProperty("user.home");
 		String optFilename = userHome + File.separator + OPTION_FILENAME;
-		log.info(optFilename);
 		return optFilename;
 	}
 
@@ -230,22 +216,4 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 			log.error(e.getMessage(), e);
 		}
 	}
-
-	/**
-	 * 
-	 * @param stream
-	 * @throws ParserConfigurationException
-	 * @throws TransformerFactoryConfigurationError
-	 * @throws TransformerException
-	 */
-	// private void writeXml(OutputStream stream)
-	// throws ParserConfigurationException,
-	// TransformerFactoryConfigurationError, TransformerException {
-	//
-	// Document doc = createDocument();
-	// Result result = new StreamResult(stream);
-	// Source source = new DOMSource(doc);
-	// Transformer trans = TransformerFactory.newInstance().newTransformer();
-	// trans.transform(source, result);
-	// }
 }

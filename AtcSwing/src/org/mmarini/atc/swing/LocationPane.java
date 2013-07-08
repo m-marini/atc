@@ -28,46 +28,36 @@ import org.mmarini.atc.sim.Location;
  * @version $Id: LocationPane.java,v 1.2 2008/02/27 15:00:16 marco Exp $
  * 
  */
-public class LocationPane extends AbstractCommandPane implements
-		UIAtcConstants, ActionListener {
+public class LocationPane extends AbstractCommandPane implements UIAtcConstants {
 	/**
          * 
          */
 	private static final long serialVersionUID = 1L;
 
 	private AtcHandler atcHandler;
+	private ActionListener listener;
 
 	/**
 	 * 
 	 */
 	public LocationPane() {
+		listener = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String locationId = e.getActionCommand();
+				getCommandController().notifyLocationSelection(locationId);
+			}
+		};
 		setDefaultButtonIcon(createIcon(BUTTON_IMAGE));
 		setCancelButtonIcon(createIcon(CANCEL_IMAGE));
-		init();
-	}
-
-	/**
-         * 
-         */
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		String locationId = event.getActionCommand();
-		getCommandController().notifyLocationSelection(locationId);
-	}
-
-	/**
-         * 
-         * 
-         */
-	private void init() {
-		super.init("Location");
-		refresh();
+		init("Location");
 	}
 
 	/**
 	 * 
 	 */
-	public void refresh() {
+	public void init() {
 		if (atcHandler == null)
 			return;
 		List<Location> locationList = atcHandler.retrieveMapLocations();
@@ -84,34 +74,34 @@ public class LocationPane extends AbstractCommandPane implements
 		JButton btn = getCancelBtn();
 		gbl.setConstraints(btn, gbc);
 		add(btn);
-		int y = ++gbc.gridy;
 		int n = 0;
+		int nr = 0;
 		if (locationList != null) {
 			n = locationList.size();
+			nr = (n + 1) / 2;
 			gbc.gridwidth = 1;
 			for (int i = 0; i < n; ++i) {
-				if (i == (n + 1) / 2) {
-					gbc.gridx = 1;
-					gbc.gridy = y;
-				}
+				gbc.gridx = i / nr;
+				gbc.gridy = i % nr + 1;
 				Location location = locationList.get(i);
 				String id = location.getId();
 				btn = createDefaultButton(id);
 				btn.setActionCommand(id);
-				btn.addActionListener(this);
+				btn.addActionListener(listener);
+				btn.setEnabled(true);
 				gbl.setConstraints(btn, gbc);
 				add(btn);
-				++gbc.gridy;
 			}
 		}
 		JPanel cmp = new JPanel();
 		cmp.setBackground(Color.BLACK);
 		gbc.gridx = 0;
-		gbc.gridy = y + (n + 1) / 2;
+		gbc.gridy = nr + 1;
 		gbc.gridwidth = 2;
 		gbc.weighty = 1;
 		gbl.setConstraints(cmp, gbc);
 		add(cmp);
+		repaint();
 	}
 
 	/**

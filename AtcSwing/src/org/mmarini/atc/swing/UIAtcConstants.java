@@ -20,6 +20,7 @@ public interface UIAtcConstants {
 	public static final String EXIT_IMAGE = "/images/exit.png";
 	public static final String CANCEL_IMAGE = "/images/cancel.png";
 	public static final String BUTTON_IMAGE = "/images/button.png";
+	public static final String DISABLED_BUTTON_IMAGE = "/images/disabledButton.png";
 
 	public static final String[] LEVEL_IMAGES = { "/images/fl360Button.png",
 			"/images/fl320Button.png", "/images/fl280Button.png",
@@ -29,6 +30,7 @@ public interface UIAtcConstants {
 
 	public static final Font ATC_FONT = Font.decode("Dialog PLAIN 11");
 
+	public static final String IMMEDIATE_LOCATION_ID = "Immediate";
 	public static final String HOLD_COMMAND = "Hold";
 	public static final String LAND_COMMAND = "Land";
 	public static final String FLIGHT_LEVEL_COMMAND = "FlightLevel";

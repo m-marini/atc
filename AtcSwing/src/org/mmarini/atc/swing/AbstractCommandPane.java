@@ -73,7 +73,7 @@ public abstract class AbstractCommandPane extends JPanel {
 	protected JButton createDefaultButton(String label) {
 		JButton btn = createButton(label);
 		if (defaultButtonIcon != null) {
-			btn.setIcon(disabledDefaultButtonIcon);
+			btn.setIcon(defaultButtonIcon);
 			btn.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
 		if (disabledDefaultButtonIcon != null) {
@@ -120,30 +120,21 @@ public abstract class AbstractCommandPane extends JPanel {
 		border.setTitleColor(Color.GREEN);
 		setBorder(border);
 
-		JButton btn = createButton("");
-		setCancelBtn(btn);
-		btn.addActionListener(new ActionListener() {
+		cancelBtn = createButton("");
+		cancelBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				getCommandController().cancel();
+				commandController.cancel();
 			}
 
 		});
 		if (cancelButtonIcon != null) {
-			btn.setIcon(cancelButtonIcon);
-			btn.setHorizontalTextPosition(SwingConstants.RIGHT);
+			cancelBtn.setIcon(cancelButtonIcon);
+			cancelBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
 		setDefaultButtonIcon(defaultButtonIcon);
 		setDisabledDefaultButtonIcon(disabledDefaultButtonIcon);
-	}
-
-	/**
-	 * @param cancelBtn
-	 *            the cancelBtn to set
-	 */
-	private void setCancelBtn(JButton cancelBtn) {
-		this.cancelBtn = cancelBtn;
 	}
 
 	/**

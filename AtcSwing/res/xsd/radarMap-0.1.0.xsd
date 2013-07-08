@@ -63,7 +63,7 @@
     
     <attributeGroup name="LocationAttributes">
     	<attribute name="id" type="string" use="required"></attribute>
-    	<attribute name="alignment" type="r:AlignmentType" use="required"></attribute>
+    	<attribute name="alignment" type="r:AlignmentType" default="E"></attribute>
     	<attribute name="x" type="float" use="required"></attribute>
     	<attribute name="y" type="float" use="required"></attribute>
     </attributeGroup>

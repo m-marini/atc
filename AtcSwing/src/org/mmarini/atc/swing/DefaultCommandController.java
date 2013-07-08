@@ -20,8 +20,6 @@ import java.text.MessageFormat;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -44,6 +42,7 @@ import org.mmarini.atc.sound.Player;
  */
 public class DefaultCommandController extends JPanel implements
 		CommandController, UIAtcConstants {
+	private static final String IMMEDIATE = "Immediate";
 	public static final String CONDITION_PANE = "CONDITION_PANE";
 	public static final String LOCATION_PANE = "LOCATION_PANE";
 	public static final String FLIGHT_LEVEL_PANE = "FLIGHT_LEVEL_PANE";
@@ -138,7 +137,7 @@ public class DefaultCommandController extends JPanel implements
 			public void visit(HoldMessage message) {
 				String id = locationId;
 				message.setConditionId(id);
-				if (id != null) {
+				if (id != null || IMMEDIATE.equals(id)) {
 					player.playSample(Player.AT);
 					player.spell(id);
 				}
@@ -172,15 +171,16 @@ public class DefaultCommandController extends JPanel implements
 				}
 			}
 		};
-		init();
+		createContent();
 	}
 
 	/**
-         * 
-         */
+	 * @see org.mmarini.atc.swing.CommandController#cancel()
+	 */
 	@Override
 	public void cancel() {
 		showInfo("");
+		planeButtonPane.refresh();
 		showPane(PLANE_PANE);
 	}
 
@@ -188,12 +188,13 @@ public class DefaultCommandController extends JPanel implements
          * 
          * 
          */
-	private void init() {
+	private void createContent() {
 		commandPane.setCommandController(this);
 		flightLevelPane.setCommandController(this);
 		runwayPane.setCommandController(this);
 		conditionPane.setCommandController(this);
 		locationPane.setCommandController(this);
+		planeButtonPane.setCommandController(this);
 
 		setPreferredSize(PREFERRED_SIZE);
 		panel.setLayout(cardLayout);
@@ -213,13 +214,23 @@ public class DefaultCommandController extends JPanel implements
 		info.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		add(info, BorderLayout.NORTH);
 
-		Action action = endAction;
-		action.putValue(Action.NAME, "");
-		Icon icon = new ImageIcon(getClass().getResource(EXIT_IMAGE));
-		action.putValue(Action.SMALL_ICON, icon);
+		endAction.putValue(Action.NAME, "");
+		endAction.putValue(Action.SMALL_ICON, IconFactory.getInstance()
+				.createIcon(EXIT_IMAGE));
 		JButton button = new AtcButton();
-		button.setAction(action);
+		button.setAction(endAction);
 		add(button, BorderLayout.SOUTH);
+	}
+
+	/**
+	 * 
+	 */
+	public void init() {
+		planeButtonPane.refresh();
+		runwayPane.init();
+		conditionPane.init();
+		locationPane.init();
+		cancel();
 	}
 
 	/**
@@ -297,8 +308,6 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	public void refresh() {
 		planeButtonPane.refresh();
-		runwayPane.refresh();
-		conditionPane.refresh();
 	}
 
 	/**
@@ -317,6 +326,7 @@ public class DefaultCommandController extends JPanel implements
 		planeButtonPane.setAtcHandler(atcHandler);
 		runwayPane.setAtcHandler(atcHandler);
 		locationPane.setAtcHandler(atcHandler);
+		conditionPane.setAtcHandler(atcHandler);
 	}
 
 	/**

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radarMap id="LON" name="London (UK)"
+	xmlns="http://www.mmarini.org/atc/radarMap-0.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/atc/radarMap-0.1.0 ../xsd/radarMap-0.1.0.xsd ">
+
+	<exit id="DPE" alignment="SE" course="326" x="66.6" y="-74.6" />
+	<exit id="NIK" alignment="E" course="294" x="93.3" y="35.9" />
+	<exit id="DCS" alignment="N" course="163" x="-42.9" y="90.3" />
+	<exit id="BCN" alignment="W" course="106" x="-89.1" y="45.4" />
+	<exit id="LND" alignment="W" course="80" x="-98.3" y="-18.4" />
+	<exit id="GUR" alignment="SW" course="45" x="-70.7" y="-70.7" />
+
+	<!-- Runways -->
+	<runway id="27L" alignment="N" course="275" x="6.2" y="25.4" />
+	<runway id="08R" alignment="E" course="82" x="15.8" y="5.2" />
+	<runway id="26" alignment="W" course="259" x="10.1" y="49.7" />
+
+	<!-- Radio Beams -->
+	<beacon id="MID" alignment="S" x="0" y="0" />
+	<beacon id="BKY" alignment="NE" x="25.9" y="56.2" />
+	<beacon id="BIG" alignment="E" x="24.9" y="16.6" />
+	<beacon id="BNN" alignment="E" x="2.8" y="40.3" />
+	<beacon id="WOD" alignment="E" x="-9.6" y="24" />
+	<beacon id="CPT" alignment="SW" x="-22.4" y="26.3" />
+	<beacon id="CLN" alignment="NE" x="66.9" y="47.7" />
+	<beacon id="DTY" alignment="NE" x="-18.4" y="67.7" />
+	<beacon id="HON" alignment="W" x="-39.2" y="78.2" />
+	<beacon id="SAM" alignment="S" x="-27.2" y="-5.9" />
+	<beacon id="SFD" alignment="SW" x="28.3" y="-17.6" />
+	<beacon id="MAY" alignment="SE" x="28" y="-2.2" />
+	<beacon id="OE" alignment="NE" x="21.1" y="24.1" />
+	<beacon id="GY" alignment="N" x="7.4" y="4" />
+	<beacon id="LUT" alignment="N" x="18.9" y="51.5" />
+
+	<route from="NIK" to="CLN" type="entry" />
+	<route from="DCS" to="HON" type="entry" />
+	<route from="BCN" to="CPT" type="entry" />
+	<route from="LND" to="SAM" type="entry" />
+	<route from="DPE" to="SFD" type="entry" />
+	<route from="GUR" to="MID" type="entry" />
+
+	<!-- Connection Routes -->
+	<route from="CPT" to="HON" />
+	<route from="CPT" to="WOD" />
+	<route from="CPT" to="MID" />
+	<route from="CPT" to="SAM" />
+	<route from="WOD" to="DTY" />
+	<route from="WOD" to="MID" />
+	<route from="HON" to="DTY" />
+	<route from="CLN" to="DTY" />
+	<route from="MID" to="CLN" />
+	<route from="MID" to="SFD" />
+	<route from="MID" to="HON" />
+	<route from="MID" to="SAM" />
+	<route from="DTY" to="BKY" type="landConnection" />
+	<route from="CLN" to="BKY" type="landConnection" />
+	<route from="SFD" to="BKY" type="landConnection" />
+	<route from="MID" to="BKY" type="landConnection" />
+	<route from="CPT" to="BKY" type="landConnection" />
+	<route from="CLN" to="MAY" type="landConnection" />
+	<route from="CLN" to="BIG" type="landConnection" />
+	<route from="SFD" to="BIG" type="landConnection" />
+	<route from="MID" to="MAY" type="landConnection" />
+	<route from="MID" to="BIG" type="landConnection" />
+	<route from="CPT" to="BNN" type="landConnection" />
+	<route from="DTY" to="BNN" type="landConnection" />
+
+	<!-- Approach Routes -->
+	<route from="BIG" to="OE" type="land" />
+	<route from="BNN" to="OE" type="land" />
+	<route from="27L" to="OE" type="land" />
+	<route from="08R" to="GY" type="land" />
+	<route from="MAY" to="GY" type="land" />
+	<route from="LUT" to="BKY" type="land" />
+	<route from="LUT" to="26" type="land" />
+</radarMap>
