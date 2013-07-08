@@ -14,7 +14,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -196,8 +195,7 @@ public class MenuPane extends JPanel {
 		List<RadarMap> list = atcHandler.retrieveRadarMap();
 
 		boolean next = false;
-		for (Iterator<RadarMap> i = list.iterator(); i.hasNext();) {
-			RadarMap map = i.next();
+		for (RadarMap map : list) {
 			JRadioButton btn = createRadioButton(map.getName(), map.getId(),
 					group);
 			gbl.setConstraints(btn, gbc);

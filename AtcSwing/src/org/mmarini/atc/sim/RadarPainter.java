@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -314,8 +313,7 @@ public class RadarPainter implements AtcConstants {
 		gr.setColor(beaconColor);
 		Point point = new Point();
 		AffineTransform transform = new AffineTransform();
-		for (Iterator<Location> i = locationList.iterator(); i.hasNext();) {
-			Location loc = i.next();
+		for (Location loc : locationList) {
 			Position p = loc.getPosition();
 			calculatePoint(point, p);
 			transform.setToTranslation(point.x, point.y);
@@ -365,8 +363,7 @@ public class RadarPainter implements AtcConstants {
 			ImageIcon icon) {
 		Point point = new Point();
 		AffineTransform trans = new AffineTransform();
-		for (Iterator<Gateway> i = locationList.iterator(); i.hasNext();) {
-			Gateway loc = i.next();
+		for (Gateway loc : locationList) {
 			Position p = loc.getPosition();
 			calculatePoint(point, p);
 			trans.setToTranslation(point.x, point.y);
@@ -416,8 +413,7 @@ public class RadarPainter implements AtcConstants {
 		Collections.sort(list, altitudePlaneComparator);
 		Point point = new Point();
 		AffineTransform trans = new AffineTransform();
-		for (Iterator<Plane> i = list.iterator(); i.hasNext();) {
-			Plane plane = i.next();
+		for (Plane plane : list) {
 			if (!plane.isHeld()) {
 				Position p = plane.getPosition();
 				calculatePoint(point, p);

@@ -13,7 +13,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.text.MessageFormat;
-import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -78,8 +77,7 @@ public class HitsPaneNoTable extends JPanel {
 
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		for (Iterator<GameRecord> i = hits.getTable().iterator(); i.hasNext();) {
-			GameRecord record = i.next();
+		for (GameRecord record: hits.getTable()) {
 			gbc.gridx = 0;
 			gbc.anchor = GridBagConstraints.WEST;
 			String text = record.getName();

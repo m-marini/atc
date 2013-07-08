@@ -269,8 +269,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public Location getLocationById(String locationId) {
-		for (Iterator<Location> i = getMapLocations().iterator(); i.hasNext();) {
-			Location location = i.next();
+		for (Location location : getMapLocations()) {
 			if (location.getId().equals(locationId))
 				return location;
 		}
@@ -351,8 +350,7 @@ public class AtcSession implements MessageConsumer {
 	 * @return
 	 */
 	public Gateway getRunwayById(String runwayId) {
-		for (Iterator<Gateway> i = getRunwayList().iterator(); i.hasNext();) {
-			Gateway location = i.next();
+		for (Gateway location : getRunwayList()) {
 			if (location.getId().equals(runwayId))
 				return location;
 		}
@@ -428,8 +426,7 @@ public class AtcSession implements MessageConsumer {
          * 
          */
 	private void updateLocations() {
-		for (Iterator<Location> i = getMapLocations().iterator(); i.hasNext();) {
-			Location loc = i.next();
+		for (Location loc : getMapLocations()) {
 			loc.update();
 		}
 	}

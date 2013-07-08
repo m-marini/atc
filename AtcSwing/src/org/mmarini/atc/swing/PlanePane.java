@@ -13,7 +13,6 @@ package org.mmarini.atc.swing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.MessageFormat;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -95,12 +94,10 @@ public class PlanePane extends JPanel implements UIAtcConstants {
 			List<Plane> planeList = atcHandler.retrievePlanes();
 			if (planeList != null) {
 				int i = 0;
-				for (Iterator<Plane> iter = planeList.iterator(); iter
-						.hasNext(); ++i) {
+				for (Plane plane : planeList) {
 					if (i > 0) {
 						bfr.append(NEW_LINE);
 					}
-					Plane plane = iter.next();
 					formatMsg(bfr, plane);
 				}
 			}
