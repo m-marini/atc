@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- <!DOCTYPE faces-config PUBLIC "-//Sun Microsystems, Inc.//DTD JavaServer 
+	Faces Config 1.1//EN" "http://java.sun.com/dtd/web-facesconfig_1_1.dtd"> -->
+<!DOCTYPE faces-config PUBLIC
+	"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+	"web-facesconfig_1_1.dtd">
+<!-- $Id: faces-config.xml,v 1.3 2008/02/27 14:55:53 marco Exp $ -->
+<faces-config>
+	<application>
+		<message-bundle>org.mmarini.atc.jsf.Messages</message-bundle>
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+	</application>
+
+	<managed-bean>
+		<managed-bean-name>atcHandler</managed-bean-name>
+		<managed-bean-class>
+			org.mmarini.atc.sim.DefaultHandler
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>userGame</managed-bean-name>
+		<managed-bean-class>
+			org.mmarini.atc.jsf.UserGame
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>atcHandler</property-name>
+			<value>#{atcHandler}</value>
+		</managed-property>
+ 		<managed-property>
+			<property-name>radarMap</property-name>
+			<value>RadarMapServlet</value>
+		</managed-property>
+		<managed-property>
+			<property-name>hitsBean</property-name>
+			<value>#{hitsBean}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>hitsBean</managed-bean-name>
+		<managed-bean-class>
+			org.mmarini.atc.jsf.HitsBean
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>atcHandler</property-name>
+			<value>#{atcHandler}</value>
+		</managed-property>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>configBean</managed-bean-name>
+		<managed-bean-class>
+			org.mmarini.atc.jsf.ConfigBean
+		</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<!-- Navigation rules -->
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>atcPane</from-outcome>
+			<to-view-id>/atcPage.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>gamePage</from-outcome>
+			<to-view-id>/gamePage.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>helpPage</from-outcome>
+			<to-view-id>/helpPage.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+</faces-config>

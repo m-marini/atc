@@ -1,0 +1,146 @@
+BODY {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	background-color: white;
+	color: black;
+	background-image: url("../images/bg.jpg");
+}
+
+LABEL {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+TD {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+TH {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+TABLE.extEndGame {
+	vertical-align: middle;
+	top: 
+}
+
+TABLE.endGame {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+
+SPAN.level {
+	font-weight: bold;
+}
+
+TABLE.level {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	width: 80px;
+	height: 100%;
+}
+
+SPAN.hits {
+	font-weight: bold;
+}
+
+TABLE.hits {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	width: 400px;
+	height: 100%;
+}
+
+TD.hitsId {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left;
+	color: teal;
+}
+
+TD.hitsProfile {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left;
+	color: olive;
+}
+
+TD.hitsPlane {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: right;
+	color: green;
+}
+
+TD.hitsMapName {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: right;
+	color: green;
+}
+
+TD.hitsTime {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left;
+	color: maroon;
+}
+
+SPAN.map {
+	font-weight: bold;
+}
+
+TABLE.map {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	width: 160px;
+	height: 100%;
+}
+
+TABLE.help {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	width: 100%;
+	height: 100%;
+}
+
+TABLE.main {
+	width: 100%;
+	height: 100%;
+}
+
+TD.main {
+	vertical-align: top;
+}
+
+TD.center {
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+
+TD.help {
+	vertical-align: top;
+}
+
+INPUT {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+}
+
+SELECT {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+}

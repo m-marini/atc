@@ -1,0 +1,190 @@
+BODY {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	background-color: black;
+	color: #00ff00;
+}
+
+TD {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+TH {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+INPUT {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+}
+
+SELECT {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+}
+
+TABLE.atcPanel {
+	border-style: none;
+	border-width: 0px;
+}
+
+TD.atcPanel {
+	border-width: 0px;
+	border-style: none;
+	height: 100%;
+}
+
+TABLE.leftAtcPanel {
+	border-style: none;
+	border-width: 0px;
+	height: 100%;
+}
+
+TD.leftAtcPanel {
+	border-style: solid;
+	border-width: 1px;
+}
+
+TABLE.rightActPane {
+	border-style: none;
+	border-width: 0px;
+	height: 100%;
+}
+
+TR.upperRightPane {
+	vertical-align: top;
+	height: 10%;
+}
+
+TR.centerRightPane {
+	vertical-align: top;
+}
+
+TR.bottomRightPane {
+	vertical-align: bottom;
+	height: 10%;
+}
+
+TABLE.panel {
+	border-style: groove;
+	border-width: 2px;
+}
+
+TH.panel {
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #1e397b;
+	color: white;
+	border-width: 1px;
+	border-style: solid;
+	text-align: left;
+}
+
+TD.panel {
+	border-width: 1px;
+	border-style: inset;
+}
+
+TABLE.window {
+	border-style: outset;
+	border-width: 2px;
+}
+
+TH.window {
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #1e397b;
+	color: white;
+	border-width: 1px;
+	border-style: solid;
+	text-align: left;
+}
+
+TD.window {
+	border-width: 1px;
+	border-style: inset;
+}
+
+INPUT.button {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	color: buttontext;
+	background-color: buttonface;
+}
+
+SPAN.error {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	color: red;
+}
+
+SPAN.title {
+	font-size: 10px;
+	font-weight: bold;
+}
+
+.buttonLabel {
+	font-size: 12px;
+	font-weight: bold;
+	color: 0x00ff00;
+}
+
+TD.dualWindowsRight {
+	text-align: center;
+	vertical-align: top;
+}
+
+TD.dualWindowsLeft {
+	text-align: center;
+	vertical-align: top;
+}
+
+TABLE.enabledPanel {
+	border-style: none;
+	border-width: 1px;
+	display: block;
+	vertical-align: top;
+}
+
+TABLE.hiddenPanel {
+	border-style: none;
+	border-width: 1px;
+	display: none;
+}
+
+IFRAME.buttonPane {
+	border-style: none;
+	border-width: 0px;
+	outline-width: 0px;
+	height: 100%;
+}
+
+TR.planePane {
+	border-style: solid;
+	border-width: 1px;
+	vertical-align: top;
+	height: 70%;
+}
+
+DIV.planePane {
+	border-style: none;
+	border-width: 0px;
+}
+
+TR.logPane {
+	border-style: solid;
+	border-width: 1px;
+	vertical-align: top;
+}
+
+DIV.logPane {
+	border-style: none;
+	border-width: 0px;
+}

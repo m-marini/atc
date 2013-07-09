@@ -1,0 +1,114 @@
+/*
+ * ConfigBean.java
+ *
+ * $Id: ConfigBean.java,v 1.3 2008/03/01 21:17:52 marco Exp $
+ *
+ * 18/feb/08
+ *
+ * Copyright notice
+ */
+package org.mmarini.atc.jsf;
+
+import java.sql.SQLException;
+
+import javax.naming.NamingException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mmarini.atc.db.PersistenceManager;
+
+/**
+ * @author marco.marini@mmarini.org
+ * @version $Id: ConfigBean.java,v 1.3 2008/03/01 21:17:52 marco Exp $
+ * 
+ */
+public class ConfigBean {
+	private static final String PASSWORD = "ATC123";
+	private static Log log = LogFactory.getLog(ConfigBean.class);
+
+	/**
+	 * 
+	 */
+	public ConfigBean() {
+		testResult = "";
+	}
+
+	private String password;
+	private String testResult;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String testDatabase() {
+		try {
+			PersistenceManager pm = new PersistenceManager();
+			testResult = pm.testDatabase();
+			pm.close();
+		} catch (NamingException e) {
+			log.error(e.getMessage(), e);
+			testResult = e.getMessage();
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			testResult = e.getMessage();
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String createTables() {
+		if (!checkForAccess())
+			return null;
+		try {
+			PersistenceManager pm = new PersistenceManager();
+			pm.createTables();
+			pm.close();
+			testResult = "Table created";
+		} catch (NamingException e) {
+			log.error(e.getMessage(), e);
+			testResult = e.getMessage();
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			testResult = e.getMessage();
+		}
+		return null;
+	}
+
+	/**
+         * 
+         */
+	private boolean checkForAccess() {
+		String psw = getPassword();
+		password = null;
+		if (!PASSWORD.equals(psw)) {
+			testResult = "Access Denied";
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password
+	 *            the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @return the testResult
+	 */
+	public String getTestResult() {
+		return testResult;
+	}
+}
