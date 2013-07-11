@@ -22,6 +22,7 @@ import javax.swing.WindowConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
+import org.mmarini.atc.sim.EntitySet;
 
 /**
  * @author marco.marini@mmarini.org
@@ -45,7 +46,16 @@ public class AtcFrame extends JFrame {
 		leftPane = new LeftPane();
 		radarPane = new RadarPane();
 		commandPane = new DefaultCommandController();
+
 		createContent();
+
+		radarPane.setMapListener(new MapListener() {
+
+			@Override
+			public void entitiesSelected(EntitySet set) {
+				commandPane.manageEntitiesSelection(set);
+			}
+		});
 	}
 
 	/**

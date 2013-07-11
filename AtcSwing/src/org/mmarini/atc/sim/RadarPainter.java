@@ -114,7 +114,7 @@ public class RadarPainter implements AtcConstants {
 	 * @param alignment
 	 * @param gr
 	 */
-	private void calculateLocation(Point pt, String text, String alignment,
+	private void computeLocation(Point pt, String text, String alignment,
 			Graphics gr) {
 		int va;
 		int ha;
@@ -176,7 +176,7 @@ public class RadarPainter implements AtcConstants {
 	 * @param point
 	 * @param position
 	 */
-	private void calculatePoint(Point point, Position position) {
+	private void computePoint(Point point, Position position) {
 		Dimension size = radarSize;
 		float scale = size.width / AtcConstants.RADAR_DISTANCE_RANGE * 0.5f;
 		float x0 = size.width * 0.5f;
@@ -193,13 +193,11 @@ public class RadarPainter implements AtcConstants {
 	private Graphics2D createGraphics(Graphics gr) {
 		int x = 0;
 		int y = 0;
-		Dimension size = radarSize;
-		size.setSize(this.size);
-		Insets is = insets;
-		x += is.left;
-		y += is.top;
-		size.width -= is.left + is.right;
-		size.height -= is.top + is.bottom;
+		radarSize.setSize(this.size);
+		x += insets.left;
+		y += insets.top;
+		radarSize.width -= insets.left + insets.right;
+		radarSize.height -= insets.top + insets.bottom;
 		Graphics2D gr2 = (Graphics2D) gr.create();
 		gr2.translate(x, y);
 		return gr2;
@@ -229,7 +227,7 @@ public class RadarPainter implements AtcConstants {
 	private void drawLabel(Graphics2D gr, Location loc) {
 		Point pt = new Point();
 		String txt = loc.getId();
-		calculateLocation(pt, txt, loc.getAlignment(), gr);
+		computeLocation(pt, txt, loc.getAlignment(), gr);
 		gr.drawString(txt, pt.x, pt.y);
 	}
 
@@ -290,6 +288,78 @@ public class RadarPainter implements AtcConstants {
 
 	/**
 	 * 
+	 * @param point
+	 * @return
+	 */
+	public void locateEntities(EntitySet set, Point point) {
+
+		radarSize.setSize(this.size);
+		radarSize.width -= insets.left + insets.right;
+		radarSize.height -= insets.top + insets.bottom;
+
+		int x = point.x - insets.left;
+		int y = point.y - insets.top;
+
+		set.clear();
+		Point point1 = new Point();
+
+		int dist2 = Integer.MAX_VALUE;
+		List<Plane> planes = new ArrayList<>();
+		for (Plane plane : atcHandler.retrievePlanes()) {
+			Position p = plane.getPosition();
+			computePoint(point1, p);
+			point1.translate(-x, -y);
+			int d2 = point1.x * point1.x + point1.y * point1.y;
+			if (d2 < dist2) {
+				planes.clear();
+				dist2 = d2;
+				planes.add(plane);
+			} else if (d2 == dist2) {
+				planes.add(plane);
+			}
+		}
+		set.addPlanes(planes);
+		set.setPlanesDistance((int) Math.round(Math.sqrt(dist2)));
+
+		dist2 = Integer.MAX_VALUE;
+		List<Location> locations = new ArrayList<>();
+		for (Location location : atcHandler.retrieveMapLocations()) {
+			Position p = location.getPosition();
+			computePoint(point1, p);
+			point1.translate(-x, -y);
+			int d2 = point1.x * point1.x + point1.y * point1.y;
+			if (d2 < dist2) {
+				locations.clear();
+				dist2 = d2;
+				locations.add(location);
+			} else if (d2 == dist2) {
+				locations.add(location);
+			}
+		}
+		set.addLocations(locations);
+		set.setLocationDistance((int) Math.round(Math.sqrt(dist2)));
+
+		dist2 = Integer.MAX_VALUE;
+		List<DefaultRunway> runways = new ArrayList<>();
+		for (DefaultRunway runway : atcHandler.retrieveRunways()) {
+			Position p = runway.getPosition();
+			computePoint(point1, p);
+			point1.translate(-x, -y);
+			int d2 = point1.x * point1.x + point1.y * point1.y;
+			if (d2 < dist2) {
+				runways.clear();
+				dist2 = d2;
+				runways.add(runway);
+			} else if (d2 == dist2) {
+				runways.add(runway);
+			}
+		}
+		set.addRunways(runways);
+		set.setRunwayDistance((int) Math.round(Math.sqrt(dist2)));
+	}
+
+	/**
+	 * 
 	 * @param gr
 	 */
 	public void paint(Graphics gr) {
@@ -315,7 +385,7 @@ public class RadarPainter implements AtcConstants {
 		AffineTransform transform = new AffineTransform();
 		for (Location loc : locationList) {
 			Position p = loc.getPosition();
-			calculatePoint(point, p);
+			computePoint(point, p);
 			transform.setToTranslation(point.x, point.y);
 			paintLocation(gr, loc, transform);
 		}
@@ -359,13 +429,13 @@ public class RadarPainter implements AtcConstants {
 	 * @param gr
 	 * @param locationList
 	 */
-	private void paintGateways(Graphics2D gr, List<Gateway> locationList,
-			ImageIcon icon) {
+	private void paintGateways(Graphics2D gr,
+			List<? extends Gateway> locationList, ImageIcon icon) {
 		Point point = new Point();
 		AffineTransform trans = new AffineTransform();
 		for (Gateway loc : locationList) {
 			Position p = loc.getPosition();
-			calculatePoint(point, p);
+			computePoint(point, p);
 			trans.setToTranslation(point.x, point.y);
 			paintGateway(gr, trans, loc, icon);
 		}
@@ -416,7 +486,7 @@ public class RadarPainter implements AtcConstants {
 		for (Plane plane : list) {
 			if (!plane.isHeld()) {
 				Position p = plane.getPosition();
-				calculatePoint(point, p);
+				computePoint(point, p);
 				trans.setToTranslation(point.x, point.y);
 				paintPlane(gr, plane, trans);
 			}
@@ -451,8 +521,8 @@ public class RadarPainter implements AtcConstants {
 		Point p0 = new Point();
 		Point p1 = new Point();
 		for (Route route : list) {
-			calculatePoint(p0, route.getLocation0().getPosition());
-			calculatePoint(p1, route.getLocation1().getPosition());
+			computePoint(p0, route.getLocation0().getPosition());
+			computePoint(p1, route.getLocation1().getPosition());
 			gr.setColor(getColor(route));
 			gr.drawLine(p0.x, p0.y, p1.x, p1.y);
 		}
@@ -464,7 +534,7 @@ public class RadarPainter implements AtcConstants {
 	 */
 	private void paintRunways(Graphics2D gr) {
 		gr.setColor(runwayColor);
-		List<Gateway> locationList = atcHandler.retrieveRunways();
+		List<DefaultRunway> locationList = atcHandler.retrieveRunways();
 		paintGateways(gr, locationList, runwayIcon);
 	}
 

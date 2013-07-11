@@ -13,12 +13,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
+import org.mmarini.atc.sim.EntitySet;
 
 /**
  * @author marco.marini@mmarini.org
@@ -37,14 +41,29 @@ public class RadarPane extends JComponent implements UIAtcConstants {
 	private static final long serialVersionUID = 1L;
 	private Dimension componentSize;
 	private AtcHandler atcHandler;
+	private EntitySet set;
+	private MapListener mapListener;
 
 	/**
 	 * 
 	 */
 	public RadarPane() {
 		componentSize = new Dimension();
+		set = new EntitySet();
+		addMouseListener(new MouseAdapter() {
+
+			/**
+			 * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent
+			 *      )
+			 */
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				manageMouseClick(e);
+			}
+
+		});
 		setDoubleBuffered(true);
-		setBackground(BACKGROUND_COLOR);
+		init();
 	}
 
 	/**
@@ -55,7 +74,7 @@ public class RadarPane extends JComponent implements UIAtcConstants {
 	private Graphics createGraphics(Graphics gr) {
 		int x = 0;
 		int y = 0;
-		Dimension size = getComponentSize();
+		Dimension size = componentSize;
 		getSize(size);
 		Insets is = getInsets();
 		if (is != null) {
@@ -75,27 +94,44 @@ public class RadarPane extends JComponent implements UIAtcConstants {
 	}
 
 	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
-	}
-
-	/**
-	 * @return the componentSize
-	 */
-	private Dimension getComponentSize() {
-		return componentSize;
-	}
-
-	/**
          * 
          * 
          */
-	public void init() {
+	private void init() {
 		log.debug("init");
 		setFont(ATC_FONT);
 		setBackground(BACKGROUND_COLOR);
+	}
+
+	/**
+	 * 
+	 * @param e
+	 */
+	private void manageMouseClick(MouseEvent e) {
+		if (mapListener == null)
+			return;
+		int x = 0;
+		int y = 0;
+		Dimension size = componentSize;
+		getSize(size);
+		Insets is = getInsets();
+		if (is != null) {
+			x += is.left;
+			y += is.top;
+			size.width -= is.left + is.right;
+			size.height -= is.top + is.bottom;
+		}
+		if (size.width > size.height) {
+			x += (size.width - size.height) / 2;
+			size.width = size.height;
+		} else if (size.width < size.height) {
+			y += (size.height - size.width) / 2;
+			size.height = size.width;
+		}
+		Point point = new Point(e.getPoint());
+		point.translate(-x, -y);
+		atcHandler.locateEntities(set, point, componentSize);
+		mapListener.entitiesSelected(set);
 	}
 
 	/**
@@ -107,7 +143,7 @@ public class RadarPane extends JComponent implements UIAtcConstants {
 		Dimension size = getSize();
 		gr.fillRect(0, 0, size.width, size.height);
 		gr = createGraphics(gr);
-		getAtcHandler().paintRadar(gr, getComponentSize());
+		atcHandler.paintRadar(gr, componentSize);
 	}
 
 	/**
@@ -123,5 +159,13 @@ public class RadarPane extends JComponent implements UIAtcConstants {
 	 */
 	public void setAtcHandler(AtcHandler atcHandler) {
 		this.atcHandler = atcHandler;
+	}
+
+	/**
+	 * @param listener
+	 *            the listener to set
+	 */
+	public void setMapListener(MapListener listener) {
+		this.mapListener = listener;
 	}
 }

@@ -93,10 +93,12 @@ public class PlanePane extends JPanel implements UIAtcConstants {
 		if (atcHandler != null) {
 			List<Plane> planeList = atcHandler.retrievePlanes();
 			if (planeList != null) {
-				int i = 0;
+				boolean first = true;
 				for (Plane plane : planeList) {
-					if (i > 0) {
+					if (!first) {
 						bfr.append(NEW_LINE);
+					} else {
+						first = false;
 					}
 					formatMsg(bfr, plane);
 				}

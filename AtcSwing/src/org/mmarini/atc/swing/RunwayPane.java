@@ -21,7 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.mmarini.atc.sim.AtcHandler;
-import org.mmarini.atc.sim.Gateway;
+import org.mmarini.atc.sim.DefaultRunway;
 import org.mmarini.atc.sim.Location;
 
 /**
@@ -64,7 +64,7 @@ public class RunwayPane extends AbstractCommandPane implements UIAtcConstants,
 	public void init() {
 		if (atcHandler == null)
 			return;
-		List<Gateway> locationList = atcHandler.retrieveRunways();
+		List<DefaultRunway> locationList = atcHandler.retrieveRunways();
 		removeAll();
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);

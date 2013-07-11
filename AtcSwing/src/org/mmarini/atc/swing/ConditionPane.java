@@ -30,6 +30,7 @@ import org.mmarini.atc.sim.Location;
  */
 public class ConditionPane extends AbstractCommandPane implements
 		UIAtcConstants {
+	private static final String IMMEDIATE_LOCATION_ID = "Immediate";
 
 	/**
          * 

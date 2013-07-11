@@ -77,7 +77,7 @@ public class HitsPaneNoTable extends JPanel {
 
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		for (GameRecord record: hits.getTable()) {
+		for (GameRecord record : hits.getTable()) {
 			gbc.gridx = 0;
 			gbc.anchor = GridBagConstraints.WEST;
 			String text = record.getName();

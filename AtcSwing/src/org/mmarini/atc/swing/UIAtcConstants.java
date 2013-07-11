@@ -30,7 +30,8 @@ public interface UIAtcConstants {
 
 	public static final Font ATC_FONT = Font.decode("Dialog PLAIN 11");
 
-	public static final String IMMEDIATE_LOCATION_ID = "Immediate";
+	public static final int THRESHOLD_DISTANCE = 10;
+
 	public static final String HOLD_COMMAND = "Hold";
 	public static final String LAND_COMMAND = "Land";
 	public static final String FLIGHT_LEVEL_COMMAND = "FlightLevel";

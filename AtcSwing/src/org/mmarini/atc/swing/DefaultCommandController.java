@@ -24,13 +24,13 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.ChangeFlightLevelMessage;
 import org.mmarini.atc.sim.ClearToLandMessage;
+import org.mmarini.atc.sim.EntitySet;
 import org.mmarini.atc.sim.HoldMessage;
-import org.mmarini.atc.sim.Message;
-import org.mmarini.atc.sim.MessageVisitor;
-import org.mmarini.atc.sim.MessageVisitorAdapter;
 import org.mmarini.atc.sim.TurnToMessage;
 import org.mmarini.atc.sound.Player;
 
@@ -42,7 +42,6 @@ import org.mmarini.atc.sound.Player;
  */
 public class DefaultCommandController extends JPanel implements
 		CommandController, UIAtcConstants {
-	private static final String IMMEDIATE = "Immediate";
 	public static final String CONDITION_PANE = "CONDITION_PANE";
 	public static final String LOCATION_PANE = "LOCATION_PANE";
 	public static final String FLIGHT_LEVEL_PANE = "FLIGHT_LEVEL_PANE";
@@ -50,6 +49,7 @@ public class DefaultCommandController extends JPanel implements
 	public static final String COMMAND_PANE = "COMMAND_PANE";
 	public static final String PLANE_PANE = "PLANE_PANE";
 	public static final Dimension PREFERRED_SIZE = new Dimension(180, 400);
+	private static Log log = LogFactory.getLog(DefaultCommandController.class);
 
 	/**
          * 
@@ -63,17 +63,24 @@ public class DefaultCommandController extends JPanel implements
 	private RunwayPane runwayPane;
 	private ConditionPane conditionPane;
 	private CardLayout cardLayout;
-	private String planeId;
-	private String flightLevelId;
-	private String locationId;
 	private AtcHandler atcHandler;
 	private JTextField info;
-	private Message message;
 	private JPanel panel;
 	private Player player;
 	private GameListener gameListener;
 	private Action endAction;
-	private MessageVisitor messageVisitor;
+
+	private CommanderState currentState;
+	private PlaneSelectionState planeSelectionState;
+	private CommandSelectionState commandSelectionState;
+	private TargetSelectionState targetSelectionState;
+	private RunwaySelectionState runwaySelectionState;
+	private FlightLevelSelectionState flightLevelSelectionState;
+	private HoldConditionSelectionState holdConditionSelectionState;
+	private TurnConditionSelectionState turnConditionSelectionState;
+
+	private String planeId;
+	private String targetId;
 
 	/**
 	 * 
@@ -89,6 +96,13 @@ public class DefaultCommandController extends JPanel implements
 		conditionPane = new ConditionPane();
 		locationPane = new LocationPane();
 		player = Player.getInstance();
+		planeSelectionState = new PlaneSelectionState();
+		commandSelectionState = new CommandSelectionState();
+		flightLevelSelectionState = new FlightLevelSelectionState();
+		targetSelectionState = new TargetSelectionState();
+		holdConditionSelectionState = new HoldConditionSelectionState();
+		turnConditionSelectionState = new TurnConditionSelectionState();
+		runwaySelectionState = new RunwaySelectionState();
 
 		endAction = new AbstractAction() {
 
@@ -105,73 +119,24 @@ public class DefaultCommandController extends JPanel implements
 
 		};
 
-		messageVisitor = new MessageVisitorAdapter() {
-			/**
-	         * 
-	         */
-			@Override
-			public void visit(ChangeFlightLevelMessage message) {
-				String id = flightLevelId;
-				message.setFlightLevelId(id);
-				player.spell(id);
-				sendMessage();
-				cancel();
-			}
-
-			/**
-	         * 
-	         */
-			@Override
-			public void visit(ClearToLandMessage message) {
-				String id = locationId;
-				message.setLocationId(id);
-				player.spell(id);
-				sendMessage();
-				cancel();
-			}
-
-			/**
-	         * 
-	         */
-			@Override
-			public void visit(HoldMessage message) {
-				String id = locationId;
-				message.setConditionId(id);
-				if (id != null || IMMEDIATE.equals(id)) {
-					player.playSample(Player.AT);
-					player.spell(id);
-				}
-				sendMessage();
-				cancel();
-			}
-
-			/**
-	         * 
-	         */
-			@Override
-			public void visit(TurnToMessage message) {
-				String id = locationId;
-				if (message.getLocationId() == null) {
-					message.setLocationId(id);
-					String text = MessageFormat.format(
-							"{0} turn to {1}",
-							new Object[] { message.getPlaneId(),
-									message.getLocationId() });
-					showInfo(text);
-					player.spell(id);
-					showPane(CONDITION_PANE);
-				} else {
-					message.setConditionId(id);
-					if (id != null) {
-						player.playSample(Player.AT);
-						player.spell(id);
-					}
-					sendMessage();
-					cancel();
-				}
-			}
-		};
+		buildStateFlow();
 		createContent();
+		log.debug("DefaultCommandController created.");
+	}
+
+	/**
+	 * 
+	 */
+	private void buildStateFlow() {
+		planeSelectionState.setController(this);
+		commandSelectionState.setController(this);
+		flightLevelSelectionState.setController(this);
+		targetSelectionState.setController(this);
+		holdConditionSelectionState.setController(this);
+		turnConditionSelectionState.setController(this);
+		runwaySelectionState.setController(this);
+
+		currentState = planeSelectionState;
 	}
 
 	/**
@@ -179,9 +144,10 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	@Override
 	public void cancel() {
-		showInfo("");
+		info.setText("");
 		planeButtonPane.refresh();
-		showPane(PLANE_PANE);
+		cardLayout.show(panel, PLANE_PANE);
+		currentState = planeSelectionState;
 	}
 
 	/**
@@ -234,42 +200,19 @@ public class DefaultCommandController extends JPanel implements
 	}
 
 	/**
+	 * 
+	 * @param set
+	 */
+	public void manageEntitiesSelection(EntitySet set) {
+		currentState.entitiesSelected(set);
+	}
+
+	/**
          * 
          */
 	@Override
 	public void notifyCommandSelection(String commandId) {
-		String id = planeId;
-		if (TURN_COMMAND.equals(commandId)) {
-			TurnToMessage message = new TurnToMessage();
-			message.setPlaneId(id);
-			this.message = message;
-			showInfo(id + " turn to");
-			player.playSample(Player.TURN_HEADING_TO);
-			showPane(LOCATION_PANE);
-		} else if (LAND_COMMAND.equals(commandId)) {
-			ClearToLandMessage message = new ClearToLandMessage();
-			message.setPlaneId(id);
-			this.message = message;
-			showInfo(id + " clear to land");
-			player.playSample(Player.CLEAR_TO_LAND);
-			showPane(RUNWAY_PANE);
-		} else if (HOLD_COMMAND.equals(commandId)) {
-			HoldMessage message = new HoldMessage();
-			message.setPlaneId(id);
-			this.message = message;
-			showInfo(id + " hold in circle");
-			player.playSample(Player.HOLD_ON);
-			showPane(CONDITION_PANE);
-		} else if (FLIGHT_LEVEL_COMMAND.equals(commandId)) {
-			ChangeFlightLevelMessage message = new ChangeFlightLevelMessage();
-			message.setPlaneId(id);
-			this.message = message;
-			showInfo(id + " flight level");
-			player.playSample(Player.CHANGE_FLIGHT_LEVEL);
-			showPane(FLIGHT_LEVEL_PANE);
-		} else {
-			cancel();
-		}
+		currentState.notifyCommandSelection(commandId);
 	}
 
 	/**
@@ -277,8 +220,7 @@ public class DefaultCommandController extends JPanel implements
          */
 	@Override
 	public void notifyFlightLevelSelection(String flightLevel) {
-		this.flightLevelId = flightLevel;
-		message.apply(messageVisitor);
+		currentState.notifyFlightLevelSelection(flightLevel);
 	}
 
 	/**
@@ -287,8 +229,7 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	@Override
 	public void notifyLocationSelection(String locationId) {
-		this.locationId = locationId;
-		message.apply(messageVisitor);
+		currentState.notifyLocationSelection(locationId);
 	}
 
 	/**
@@ -297,10 +238,7 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	@Override
 	public void notifyPlaneSelection(String planeId) {
-		this.planeId = planeId;
-		showInfo(planeId);
-		player.spell(planeId);
-		showPane(COMMAND_PANE);
+		currentState.notifyPlaneSelection(planeId);
 	}
 
 	/**
@@ -312,9 +250,127 @@ public class DefaultCommandController extends JPanel implements
 
 	/**
 	 * 
+	 * @param flightLevel
 	 */
-	private void sendMessage() {
+	public void selectFlightLevel(String flightLevel) {
+		ChangeFlightLevelMessage message = new ChangeFlightLevelMessage();
+		message.setPlaneId(planeId);
+		message.setFlightLevelId(flightLevel);
+		player.spell(flightLevel);
 		atcHandler.consume(message);
+		cancel();
+	}
+
+	/**
+	 * 
+	 */
+	public void selectFlightLevelCommand() {
+		info.setText(planeId + " flight level");
+		player.playSample(Player.CHANGE_FLIGHT_LEVEL);
+		cardLayout.show(panel, FLIGHT_LEVEL_PANE);
+		currentState = flightLevelSelectionState;
+	}
+
+	/**
+	 * 
+	 */
+	public void selectHoldCommand() {
+		info.setText(planeId + " hold in circle");
+		player.playSample(Player.HOLD_ON);
+		cardLayout.show(panel, CONDITION_PANE);
+		currentState = holdConditionSelectionState;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 */
+	public void selectHoldCondition(String id) {
+		HoldMessage message = new HoldMessage();
+		message.setPlaneId(planeId);
+		if (id != null) {
+			player.playSample(Player.AT);
+			player.spell(id);
+			message.setConditionId(id);
+		}
+		atcHandler.consume(message);
+		cancel();
+	}
+
+	/**
+	 * 
+	 */
+	public void selectLandCommand() {
+		info.setText(planeId + " clear to land");
+		player.playSample(Player.CLEAR_TO_LAND);
+		cardLayout.show(panel, RUNWAY_PANE);
+		currentState = runwaySelectionState;
+	}
+
+	/**
+	 * 
+	 * @param planeId
+	 */
+	public void selectPlane(String planeId) {
+		this.planeId = planeId;
+		info.setText(planeId);
+		player.spell(planeId);
+		cardLayout.show(panel, COMMAND_PANE);
+		currentState = commandSelectionState;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 */
+	public void selectRunway(String id) {
+		ClearToLandMessage message = new ClearToLandMessage();
+		message.setPlaneId(planeId);
+		message.setLocationId(id);
+		player.spell(id);
+		atcHandler.consume(message);
+		cancel();
+	}
+
+	/**
+	 * 
+	 * @param locationId2
+	 */
+	public void selectTarget(String locationId) {
+		targetId = locationId;
+		String text = MessageFormat.format("{0} turn to {1}", new Object[] {
+				planeId, targetId });
+		info.setText(text);
+		player.spell(locationId);
+		cardLayout.show(panel, CONDITION_PANE);
+		currentState = turnConditionSelectionState;
+	}
+
+	/**
+	 * 
+	 */
+	public void selectTurnCommand() {
+		info.setText(planeId + " turn to");
+		player.playSample(Player.TURN_HEADING_TO);
+		cardLayout.show(panel, LOCATION_PANE);
+		currentState = targetSelectionState;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 */
+	public void selectTurnCondition(String id) {
+		TurnToMessage message = new TurnToMessage();
+		message.setPlaneId(planeId);
+		message.setLocationId(targetId);
+		if (id != null && !id.equals(targetId)) {
+			player.playSample(Player.AT);
+			player.spell(id);
+			message.setConditionId(id);
+		}
+		atcHandler.consume(message);
+		cancel();
 	}
 
 	/**
@@ -335,21 +391,5 @@ public class DefaultCommandController extends JPanel implements
 	 */
 	public void setGameListener(GameListener gameListener) {
 		this.gameListener = gameListener;
-	}
-
-	/**
-	 * 
-	 * @param text
-	 */
-	private void showInfo(String text) {
-		info.setText(text);
-	}
-
-	/**
-	 * 
-	 * @param paneId
-	 */
-	private void showPane(String paneId) {
-		cardLayout.show(panel, paneId);
 	}
 }

@@ -2,6 +2,7 @@ package org.mmarini.atc.sim;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.List;
 
 /*
@@ -137,6 +138,18 @@ public class DefaultHandler implements AtcHandler {
 	}
 
 	/**
+	 * @param set
+	 * @see org.mmarini.atc.sim.AtcHandler#locatePlane(int, int,
+	 *      java.awt.Dimension)
+	 */
+	@Override
+	public void locateEntities(EntitySet set, Point point, Dimension size) {
+		radarPainter.setSize(size);
+		radarPainter.setAtcHandler(this);
+		radarPainter.locateEntities(set, point);
+	}
+
+	/**
          * 
          */
 
@@ -238,7 +251,7 @@ public class DefaultHandler implements AtcHandler {
          * 
          */
 	@Override
-	public List<Gateway> retrieveRunways() {
+	public List<DefaultRunway> retrieveRunways() {
 		if (session == null)
 			return null;
 		return session.getRunwayList();

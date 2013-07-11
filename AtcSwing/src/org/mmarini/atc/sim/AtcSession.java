@@ -361,7 +361,7 @@ public class AtcSession implements MessageConsumer {
 	 * 
 	 * @return
 	 */
-	public List<Gateway> getRunwayList() {
+	public List<DefaultRunway> getRunwayList() {
 		return radarMap.getRunwayList();
 	}
 

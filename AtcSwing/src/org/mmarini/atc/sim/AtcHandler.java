@@ -11,6 +11,7 @@ package org.mmarini.atc.sim;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.List;
 
 /**
@@ -73,6 +74,15 @@ public interface AtcHandler extends MessageConsumer {
 	 * @return
 	 */
 	public boolean isBetter();
+
+	/**
+	 * 
+	 * @param set
+	 * @param point
+	 * @param size
+	 */
+	public abstract void locateEntities(EntitySet set, Point point,
+			Dimension size);
 
 	/**
 	 * 
@@ -146,7 +156,7 @@ public interface AtcHandler extends MessageConsumer {
 	 * 
 	 * @return
 	 */
-	public abstract List<Gateway> retrieveRunways();
+	public abstract List<DefaultRunway> retrieveRunways();
 
 	/**
 	 * 

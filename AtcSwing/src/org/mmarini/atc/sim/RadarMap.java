@@ -23,7 +23,7 @@ public class RadarMap {
 	private String name;
 	private List<Gateway> gatewayList;
 	private List<Location> beaconList;
-	private List<Gateway> runwayList;
+	private List<DefaultRunway> runwayList;
 	private List<Gateway> exitList;
 	private List<Location> locationList;
 	private List<Route> routeList;
@@ -129,7 +129,7 @@ public class RadarMap {
 	/**
 	 * @return the runwayList
 	 */
-	public List<Gateway> getRunwayList() {
+	public List<DefaultRunway> getRunwayList() {
 		return runwayList;
 	}
 

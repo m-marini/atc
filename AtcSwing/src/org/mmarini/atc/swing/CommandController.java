@@ -15,6 +15,7 @@ package org.mmarini.atc.swing;
  * 
  */
 public interface CommandController {
+
 	/**
          * 
          * 
