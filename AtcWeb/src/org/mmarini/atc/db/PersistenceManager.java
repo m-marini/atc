@@ -41,6 +41,65 @@ public class PersistenceManager {
 	}
 
 	/**
+	 * @throws SQLException
+	 * 
+	 */
+	public void close() throws SQLException {
+		if (connection != null) {
+			try {
+				connection.close();
+			} finally {
+				connection = null;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws NamingException
+	 * @throws SQLException
+	 */
+	private void createConnection() throws NamingException, SQLException {
+		if (connection == null) {
+			Context ctx = new InitialContext();
+			Object obj = ctx.lookup(JNDI_DATASOURCE_NAME);
+			DataSource ds = (DataSource) PortableRemoteObject.narrow(obj,
+					DataSource.class);
+			connection = ds.getConnection();
+		}
+	}
+
+	/**
+	 * @throws SQLException
+	 * @throws NamingException
+	 * 
+	 */
+	public void createMemento(HitsMemento memento) throws NamingException,
+			SQLException {
+		createConnection();
+		PreparedStatement stm = connection.prepareStatement(INSERT_STATEMENT);
+		try {
+			int ord = 0;
+			for (GameRecord record : memento.getTable()) {
+				int idx = 1;
+				stm.setString(idx++, record.getName());
+				stm.setInt(idx++, record.getPlaneCount());
+				stm.setInt(idx++, record.getIterationCount());
+				stm.setString(idx++, record.getProfile());
+				stm.setLong(idx++, record.getTime());
+				stm.setInt(idx++, ord);
+				stm.setString(idx++, record.getMapName());
+
+				stm.executeUpdate();
+				++ord;
+			}
+		} finally {
+			stm.close();
+		}
+	}
+
+	/**
 	 * 
 	 * @throws NamingException
 	 * @throws SQLException
@@ -71,47 +130,6 @@ public class PersistenceManager {
 		Statement stm = connection.createStatement();
 		try {
 			stm.executeUpdate(sqlStatement);
-		} finally {
-			stm.close();
-		}
-	}
-
-	/**
-	 * 
-	 * @param memento
-	 * @throws SQLException
-	 * @throws NamingException
-	 */
-	public void updateMemento(HitsMemento memento) throws NamingException,
-			SQLException {
-		deleteMemento();
-		createMemento(memento);
-	}
-
-	/**
-	 * @throws SQLException
-	 * @throws NamingException
-	 * 
-	 */
-	public void createMemento(HitsMemento memento) throws NamingException,
-			SQLException {
-		createConnection();
-		PreparedStatement stm = connection.prepareStatement(INSERT_STATEMENT);
-		try {
-			int ord = 0;
-			for (GameRecord record : memento.getTable()) {
-				int idx = 1;
-				stm.setString(idx++, record.getName());
-				stm.setInt(idx++, record.getPlaneCount());
-				stm.setInt(idx++, record.getIterationCount());
-				stm.setString(idx++, record.getProfile());
-				stm.setLong(idx++, record.getTime());
-				stm.setInt(idx++, ord);
-				stm.setString(idx++, record.getMapName());
-
-				stm.executeUpdate();
-				++ord;
-			}
 		} finally {
 			stm.close();
 		}
@@ -161,41 +179,23 @@ public class PersistenceManager {
 	/**
 	 * 
 	 * @return
-	 * @throws NamingException
-	 * @throws SQLException
-	 */
-	private void createConnection() throws NamingException, SQLException {
-		if (connection == null) {
-			Context ctx = new InitialContext();
-			Object obj = ctx.lookup(JNDI_DATASOURCE_NAME);
-			DataSource ds = (DataSource) PortableRemoteObject.narrow(obj,
-					DataSource.class);
-			connection = ds.getConnection();
-		}
-	}
-
-	/**
-	 * @throws SQLException
-	 * 
-	 */
-	public void close() throws SQLException {
-		if (connection != null) {
-			try {
-				connection.close();
-			} finally {
-				connection = null;
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @return
 	 * @throws SQLException
 	 * @throws NamingException
 	 */
 	public String testDatabase() throws NamingException, SQLException {
 		createConnection();
 		return "OK";
+	}
+
+	/**
+	 * 
+	 * @param memento
+	 * @throws SQLException
+	 * @throws NamingException
+	 */
+	public void updateMemento(HitsMemento memento) throws NamingException,
+			SQLException {
+		deleteMemento();
+		createMemento(memento);
 	}
 }

@@ -27,6 +27,7 @@ public class RadarMapServlet extends HttpServlet implements ServletConstants {
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request,
 	 *      HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
@@ -36,6 +37,7 @@ public class RadarMapServlet extends HttpServlet implements ServletConstants {
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request,
 	 *      HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		UserGame game = (UserGame) request.getSession().getAttribute(USER_GAME);

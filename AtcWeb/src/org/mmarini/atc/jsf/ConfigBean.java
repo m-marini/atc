@@ -26,6 +26,10 @@ public class ConfigBean {
 	private static final String PASSWORD = "ATC123";
 	private static Log log = LogFactory.getLog(ConfigBean.class);
 
+	private String password;
+
+	private String testResult;
+
 	/**
 	 * 
 	 */
@@ -33,26 +37,17 @@ public class ConfigBean {
 		testResult = "";
 	}
 
-	private String password;
-	private String testResult;
-
 	/**
-	 * 
-	 * @return
-	 */
-	public String testDatabase() {
-		try {
-			PersistenceManager pm = new PersistenceManager();
-			testResult = pm.testDatabase();
-			pm.close();
-		} catch (NamingException e) {
-			log.error(e.getMessage(), e);
-			testResult = e.getMessage();
-		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
-			testResult = e.getMessage();
+         * 
+         */
+	private boolean checkForAccess() {
+		String psw = getPassword();
+		password = null;
+		if (!PASSWORD.equals(psw)) {
+			testResult = "Access Denied";
+			return false;
 		}
-		return null;
+		return true;
 	}
 
 	/**
@@ -78,23 +73,17 @@ public class ConfigBean {
 	}
 
 	/**
-         * 
-         */
-	private boolean checkForAccess() {
-		String psw = getPassword();
-		password = null;
-		if (!PASSWORD.equals(psw)) {
-			testResult = "Access Denied";
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * @return the password
 	 */
 	public String getPassword() {
 		return password;
+	}
+
+	/**
+	 * @return the testResult
+	 */
+	public String getTestResult() {
+		return testResult;
 	}
 
 	/**
@@ -106,9 +95,21 @@ public class ConfigBean {
 	}
 
 	/**
-	 * @return the testResult
+	 * 
+	 * @return
 	 */
-	public String getTestResult() {
-		return testResult;
+	public String testDatabase() {
+		try {
+			PersistenceManager pm = new PersistenceManager();
+			testResult = pm.testDatabase();
+			pm.close();
+		} catch (NamingException e) {
+			log.error(e.getMessage(), e);
+			testResult = e.getMessage();
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			testResult = e.getMessage();
+		}
+		return null;
 	}
 }

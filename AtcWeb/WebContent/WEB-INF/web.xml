@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-                         "http://java.sun.com/dtd/web-app_2_3.dtd">
-<!-- $Id: web.xml,v 1.2 2008/02/15 18:06:51 marco Exp $ -->
-<web-app>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="WebApp_ID">
 	<context-param>
 		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
 		<param-value>org.mmarini.flight.jsf.Messages</param-value>
 	</context-param>
 	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-name>FacesServlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -25,11 +23,11 @@
 		<servlet-class>org.mmarini.atc.jsf.RefreshServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-name>FacesServlet</servlet-name>
 		<url-pattern>/faces/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-name>FacesServlet</servlet-name>
 		<url-pattern>*.faces</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
@@ -63,13 +61,10 @@
 		<taglib-uri>http://java.sun.com/jsf/html</taglib-uri>
 		<taglib-location>html_basic.tld</taglib-location>
 	</taglib>
-	<taglib>
-		<taglib-uri>http://www.mmarini.org/jsf/html</taglib-uri>
-		<taglib-location>mm.tld</taglib-location>
-	</taglib>
 	<resource-ref>
 		<res-ref-name>jdbc/atcDatabase</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
 	</resource-ref>
 </web-app>

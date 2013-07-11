@@ -29,6 +29,11 @@ import org.mmarini.atc.sim.HitsMemento;
  */
 public class HitsBean {
 
+	private AtcHandler atcHandler;
+
+	private boolean init;
+	private static Log log = LogFactory.getLog(HitsBean.class);
+
 	/**
 	 * 
 	 */
@@ -36,9 +41,21 @@ public class HitsBean {
 		init = false;
 	}
 
-	private AtcHandler atcHandler;
-	private boolean init;
-	private static Log log = LogFactory.getLog(HitsBean.class);
+	/**
+	 * @return the atcHandler
+	 */
+	private AtcHandler getAtcHandler() {
+		return atcHandler;
+	}
+
+	/**
+	 * @return the table
+	 */
+	public List<GameRecord> getTable() {
+		init();
+		Hits hits = getAtcHandler().retrieveHits();
+		return hits.getTable();
+	}
 
 	/**
          * 
@@ -60,22 +77,6 @@ public class HitsBean {
 			}
 			init = true;
 		}
-	}
-
-	/**
-	 * @return the table
-	 */
-	public List<GameRecord> getTable() {
-		init();
-		Hits hits = getAtcHandler().retrieveHits();
-		return hits.getTable();
-	}
-
-	/**
-	 * @return the atcHandler
-	 */
-	private AtcHandler getAtcHandler() {
-		return atcHandler;
 	}
 
 	/**
