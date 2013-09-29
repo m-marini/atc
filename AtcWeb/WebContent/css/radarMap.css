@@ -1,0 +1,77 @@
+.fl040, .runway {
+	fill: #eceacc;
+	stroke: #eceacc;
+}
+
+.fl080 {
+	fill: #8de5e8;
+	stroke: #8de5e8;
+}
+
+.fl120 {
+	fill: #60d750;
+	stroke: #60d750;
+}
+
+.fl160 {
+	fill: #2b21e9;
+	stroke: #2b21e9;
+}
+
+.fl200 {
+	fill: #e95ada;
+	stroke: #e95ada;
+}
+
+.fl240 {
+	fill: #e98b30;
+	stroke: #e98b30;
+}
+
+.fl280,.exit {
+	fill: #ea332a;
+	stroke: #ea332a;
+}
+
+.fl320 {
+	fill: #eee450;
+	stroke: #eee450;
+}
+
+.fl360 {
+	fill: #aead97;
+	stroke: #aead97;
+}
+
+.beacon {
+	fill: #fc7e04;
+	stroke: #fc7e04;
+}
+
+.route {
+	fill: #36200b;
+	stroke: #36200b;
+}
+
+.entry {
+	fill: #8f551d;
+	stroke: #8f551d;
+}
+
+.land {
+	fill: #797429;
+	stroke: #797429;
+}
+
+svg {
+	background-color: black;
+}
+
+text {
+	font: 10px sans-serif;
+	stroke-width: 0px;
+}
+
+line {
+	stroke-width: 1px;
+}

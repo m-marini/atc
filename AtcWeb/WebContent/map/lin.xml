@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radarMap id="LIN" name="Milan (Italy)" xmlns="http://www.mmarini.org/atc/radarMap-0.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/atc/radarMap-0.1.0 ../xsd/radarMap-0.1.0.xsd ">
+	<exit id="VIC" course="271" x="99.6" y="9.2" />
+	<exit id="DJ" alignment="NW" course="124" x="-81" y="58.6" />
+	<exit id="ELB" alignment="S" course="332" x="11.7" y="-99.3" />
+	<exit id="ALB" alignment="SW" course="62" x="-51.9" y="-85.5" />
+	<exit id="ZUE" alignment="N" course="178" x="-13.7" y="99.1" />
+	<exit id="FRZ" alignment="SE" course="328" x="65.9" y="-75.2" />
+	<exit id="PIS" alignment="SE" course="358" x="44.6" y="-89.5" />
+	<exit id="BZO" alignment="NE" course="245" x="83.5" y="55" />
+	<exit id="BOA" alignment="SE" course="305" x="83.6" y="-54.9" />
+	<exit id="LSA" alignment="W" course="115" x="-99.1" y="-13.6" />
+
+	<runway id="36R" alignment="W" course="357" x="0" y="0" />
+
+	<beacon id="LIN" alignment="SE" x="0.7" y="-14" />
+	<beacon id="VOG" alignment="NW" x="-12.8" y="-29.8" />
+	<beacon id="COD" alignment="SE" x="11.2" y="-14.1" />
+	<beacon id="SRN" alignment="W" x="-10.6" y="11.2" />
+	<beacon id="TZO"  x="9.8" y="5.9" />
+	<beacon id="GEN" alignment="NE" x="-8.1" y="-62.2" />
+	<beacon id="PAR" alignment="NE" x="42.9" y="-38.3" />
+	<beacon id="TOP" alignment="NE" x="-59.5" y="-32.1" />
+
+	<route from="36R" to="LIN" type="land" />
+	<route from="VOG" to="LIN" type="land" />
+	<route from="COD" to="LIN" type="land" />
+	<route from="SRN" to="LIN" type="land" />
+	<route from="TZO" to="36R" type="takeoff" />
+	<route from="VOG" to="GEN" type="landConnection" />
+	<route from="SRN" to="GEN" />
+	<route from="TOP" to="GEN" />
+	<route from="FRZ" to="GEN" />
+	<route from="BOA" to="GEN" />
+	<route from="DJ" to="GEN" />
+	<route from="DJ" to="TOP" />
+	<route from="ALB" to="TOP" />
+	<route from="ELB" to="TOP" />
+	<route from="FRZ" to="TOP" />
+	<route from="SRN" to="VOG" />
+	<route from="ALB" to="VOG" />
+	<route from="TZO" to="VOG" />
+	<route from="SRN" to="PAR" />
+	<route from="TZO" to="PAR" />
+	<route from="COD" to="TZO" type="landConnection" />
+	<route from="VIC" to="TZO" />
+	<route from="ZUE" to="TZO" />
+	<route from="COD" to="PAR" type="landConnection" />
+	<route from="TOP" to="VOG" type="landConnection" />
+	<route from="BZO" to="TZO" />
+	<route from="BOA" to="TZO" />
+	<route from="SRN" to="TZO" />
+	<route from="LSA" to="SRN" />
+	<route from="BZO" to="SRN" type="entry" />
+	<route from="VIC" to="SRN" type="entry" />
+	<route from="ZUE" to="SRN" type="entry" />
+	<route from="BOA" to="SRN" type="entry" />
+	<route from="DJ" to="SRN" type="entry" />
+	<route from="LSA" to="TOP" type="entry" />
+	<route from="ALB" to="GEN" type="entry" />
+	<route from="ELB" to="GEN" type="entry" />
+	<route from="FRZ" to="PAR" type="entry" />
+	<route from="PIS" to="PAR" type="entry" />
+</radarMap>

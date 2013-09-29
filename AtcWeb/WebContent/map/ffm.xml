@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radarMap id="FFM" name="Frankfurt (Germany)"
+	xmlns="http://www.mmarini.org/atc/radarMap-0.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/atc/radarMap-0.1.0 ../xsd/radarMap-0.1.0.xsd ">
+
+	<exit id="TRA" alignment="S" course="32" x="16.1" y="-98.7" />
+	<exit id="STR" alignment="W" course="85" x="-39.9" y="-91.7" />
+	<exit id="LUX" alignment="W" course="31" x="-96.2" y="-27.4" />
+	<exit id="BUB" alignment="NW" course="111" x="-93.4" y="35.8" />
+	<exit id="HVL" alignment="NE" course="230" x="75.6" y="65.5" />
+	<exit id="HAM" alignment="N" course="188" x="44.1" y="89.8" />
+	<exit id="DOM" alignment="N" course="160" x="-34.2" y="94" />
+	<exit id="ERL" alignment="E" course="285" x="96.6" y="-25.9" />
+	<exit id="MUN" alignment="SE" course="313" x="74.5" y="-66.7" />
+	<runway id="25" alignment="N" course="251" x="2.7" y="1" />
+	<runway id="07" alignment="N" course="71" x="-5.0" y="-1.6" />
+
+	<beacon id="NTM" alignment="W" x="-81.1" y="-2.3" />
+	<beacon id="FFM" alignment="S" x="0" y="0" />
+	<beacon id="FR" x="13.3" y="4.7" />
+	<beacon id="FW" alignment="W" x="-15.7" y="-5.3" />
+	<beacon id="MTR" alignment="NW" x="8.2" y="13.4" />
+	<beacon id="CHA" x="15.5" y="-8" />
+	<beacon id="TAU" alignment="NW" x="-18.3" y="11.8" />
+	<beacon id="RID" alignment="SW" x="-3.7" y="-16.3" />
+	<beacon id="TGO" alignment="SE" x="23.9" y="-86.1" />
+	<beacon id="DKB" x="61.7" y="-54.7" />
+	<beacon id="FUL" alignment="NW" x="36" y="32.3" />
+
+	<route from="BUB" to="FFM" type="entry" />
+	<route from="HVL" to="FUL" type="entry" />
+	<route from="HAM" to="FUL" type="entry" />
+	<route from="DOM" to="FFM" type="entry" />
+	<route from="ERL" to="FFM" type="entry" />
+	<route from="STR" to="TGO" type="entry" />
+	<route from="LUX" to="NTM" type="entry" />
+	<route from="TRA" to="TGO" type="entry" />
+	<route from="MUN" to="DKB" type="entry" />
+	<route from="FFM" to="TGO" />
+	<route from="FFM" to="DKB" />
+	<route from="FFM" to="NTM" />
+	<route from="FFM" to="FUL" />
+	<route from="NTM" to="TGO" />
+	<route from="NTM" to="BUB" />
+	<route from="NTM" to="STR" />
+	<route from="TGO" to="FUL" />
+	<route from="TGO" to="DKB" />
+	<route from="DKB" to="FUL" />
+	<route from="DKB" to="ERL" />
+	<route from="FUL" to="ERL" />
+
+	<!-- Landing Route -->
+	<route from="FW" to="07" type="land" />
+	<route from="FW" to="TAU" type="land" />
+	<route from="FW" to="RID" type="land" />
+	<route from="FR" to="25" type="land" />
+	<route from="FR" to="CHA" type="land" />
+	<route from="FR" to="MTR" type="land" />
+
+
+	<route from="FFM" to="TAU" type="landConnection" />
+	<route from="FFM" to="MTR" type="landConnection" />
+	<route from="FFM" to="CHA" type="landConnection" />
+	<route from="FFM" to="RID" type="landConnection" />
+	<route from="FUL" to="MTR" type="landConnection" />
+	<route from="FUL" to="TAU" type="landConnection" />
+	<route from="NTM" to="MTR" type="landConnection" />
+	<route from="NTM" to="TAU" type="landConnection" />
+	<route from="RID" to="TGO" type="landConnection" />
+	<route from="CHA" to="TGO" type="landConnection" />
+	<route from="RID" to="DKB" type="landConnection" />
+	<route from="CHA" to="DKB" type="landConnection" />
+</radarMap>

@@ -136,6 +136,12 @@ SPAN.title {
 	color: 0x00ff00;
 }
 
+.planeButton {
+	font-size: 12px;
+	font-weight: bold;
+	color: 0x00ff00;
+}
+
 TD.dualWindowsRight {
 	text-align: center;
 	vertical-align: top;
@@ -187,4 +193,9 @@ TR.logPane {
 DIV.logPane {
 	border-style: none;
 	border-width: 0px;
+}
+
+PRE {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
 }

@@ -3,6 +3,7 @@
     <wb-module deploy-name="AtcWeb">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/res"/>
         <dependent-module archiveName="AtcSwing.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/AtcSwing/AtcSwing">
             <dependency-type>uses</dependency-type>
         </dependent-module>

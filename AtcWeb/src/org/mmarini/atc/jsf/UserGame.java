@@ -221,6 +221,14 @@ public class UserGame implements Logger, Serializable {
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	public String getMapUrl() {
+		return "map/" + map.toLowerCase() + ".xml";
+	}
+
+	/**
 	 * @return the planeList
 	 */
 	public List<Plane> getPlaneList() {

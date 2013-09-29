@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radarMap id="LRX" name="Lamarx (Demo)"
+	xmlns="http://www.mmarini.org/atc/radarMap-0.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/atc/radarMap-0.1.0 ../xsd/radarMap-0.1.0.xsd ">
+	<exit id="E0" alignment="NW" course="120" x="-86.6" y="50" />
+	<exit id="E1" alignment="N" course="176" x="0" y="100" />
+	<exit id="E2" alignment="SW" course="53" x="-64.3" y="-76.7" />
+	<exit id="E3" alignment="S" course="340" x="17.4" y="-98.5" />
+	<exit id="E4" course="270" x="100" y="0" />
+
+	<runway id="L19" alignment="W" course="190" x="2.8" y="15.8" />
+	<runway id="L30" alignment="S" course="300" x="-8.7" y="5" />
+
+	<beacon id="LW" alignment="W" x="-22.5" y="13" />
+	<beacon id="LS"  x="-6.6" y="-33.6" />
+	<beacon id="LN" alignment="NE" x="4.5" y="25.6" />
+	<beacon id="LRX" alignment="SE" x="0" y="0" />
+
+	<route from="E0" to="LW" type="entry" />
+	<route from="E0" to="LN" />
+	<route from="E0" to="LS" />
+	<route from="E1" to="LN" type="entry" />
+	<route from="E1" to="LW" />
+	<route from="E1" to="LS" />
+	<route from="E1" to="LRX" />
+	<route from="E2" to="LS" type="entry" />
+	<route from="E2" to="LN" />
+	<route from="E2" to="LW" />
+	<route from="E2" to="LRX" />
+	<route from="E3" to="LS" type="entry" />
+	<route from="E3" to="LN" />
+	<route from="E3" to="LRX" />
+	<route from="E4" to="LRX" type="entry" />
+	<route from="E4" to="LN" />
+	<route from="E4" to="LS" />
+	<route from="E4" to="LW" />
+	<route from="LRX" to="LS" />
+	<route from="LRX" to="LN" type="land" />
+	<route from="LRX" to="LW" type="land" />
+	<route from="LN" to="LW" />
+	<route from="LS" to="LW" />
+
+</radarMap>
