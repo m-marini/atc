@@ -22,10 +22,10 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.Plane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -37,7 +37,7 @@ public class PlaneButtonPane extends AbstractCommandPane implements
 
 	private static final int ROWS = 10;
 
-	private static Log log = LogFactory.getLog(PlaneButtonPane.class);
+	private static Logger log = LoggerFactory.getLogger(PlaneButtonPane.class);
 
 	/**
          * 

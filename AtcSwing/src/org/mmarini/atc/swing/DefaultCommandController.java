@@ -24,8 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.ChangeFlightLevelMessage;
 import org.mmarini.atc.sim.ClearToLandMessage;
@@ -33,6 +31,8 @@ import org.mmarini.atc.sim.EntitySet;
 import org.mmarini.atc.sim.HoldMessage;
 import org.mmarini.atc.sim.TurnToMessage;
 import org.mmarini.atc.sound.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -49,7 +49,8 @@ public class DefaultCommandController extends JPanel implements
 	public static final String COMMAND_PANE = "COMMAND_PANE";
 	public static final String PLANE_PANE = "PLANE_PANE";
 	public static final Dimension PREFERRED_SIZE = new Dimension(180, 400);
-	private static Log log = LogFactory.getLog(DefaultCommandController.class);
+	private static Logger log = LoggerFactory
+			.getLogger(DefaultCommandController.class);
 
 	/**
          * 

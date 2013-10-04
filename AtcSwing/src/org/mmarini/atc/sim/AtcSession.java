@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class AtcSession implements MessageConsumer {
-	private static Log log = LogFactory.getLog(AtcSession.class);
+	private static Logger log = LoggerFactory.getLogger(AtcSession.class);
 
 	private RadarMap radarMap;
 	private GameProfile gameProfile;

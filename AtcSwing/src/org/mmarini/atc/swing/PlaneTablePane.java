@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -26,7 +26,7 @@ import org.mmarini.atc.sim.AtcHandler;
  */
 public class PlaneTablePane extends JPanel {
 
-	private static Log log = LogFactory.getLog(PlaneTablePane.class);
+	private static Logger log = LoggerFactory.getLogger(PlaneTablePane.class);
 
 	/**
          * 

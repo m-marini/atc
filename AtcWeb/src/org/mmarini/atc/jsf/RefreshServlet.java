@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.Plane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -38,7 +38,7 @@ public class RefreshServlet extends HttpServlet implements ServletConstants {
          */
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog(RefreshServlet.class);
+	private static Logger log = LoggerFactory.getLogger(RefreshServlet.class);
 
 	/**
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request,

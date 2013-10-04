@@ -24,9 +24,9 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.xml.RouteMapHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -39,7 +39,7 @@ public class SessionFactory {
 	private static final String[] MAP_NAMES = { "/maps/lrx.xml",
 			"/maps/ffm.xml", "/maps/lon.xml", "/maps/lin.xml", "/maps/par.xml" };
 
-	private static Log log = LogFactory.getLog(SessionFactory.class);
+	private static Logger log = LoggerFactory.getLogger(SessionFactory.class);
 
 	private List<RadarMap> radarMap;
 	private Map<String, GameProfile> profileMap;

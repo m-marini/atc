@@ -19,10 +19,10 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.EntitySet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -33,7 +33,7 @@ public class AtcFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog(AtcFrame.class);
+	private static Logger log = LoggerFactory.getLogger(AtcFrame.class);
 
 	private RadarPane radarPane;
 	private LeftPane leftPane;

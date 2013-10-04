@@ -14,13 +14,13 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.db.PersistenceManager;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.GameRecord;
 import org.mmarini.atc.sim.Hits;
 import org.mmarini.atc.sim.HitsMemento;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -32,7 +32,7 @@ public class HitsBean {
 	private AtcHandler atcHandler;
 
 	private boolean init;
-	private static Log log = LogFactory.getLog(HitsBean.class);
+	private static Logger log = LoggerFactory.getLogger(HitsBean.class);
 
 	/**
 	 * 

@@ -20,8 +20,6 @@ import java.util.Map;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.CollisionMessage;
 import org.mmarini.atc.sim.CrashedMessage;
 import org.mmarini.atc.sim.EnteredMessage;
@@ -31,6 +29,8 @@ import org.mmarini.atc.sim.MessageVisitorAdapter;
 import org.mmarini.atc.sim.RightExitMessage;
 import org.mmarini.atc.sim.WrongExitMessage;
 import org.mmarini.atc.sim.WrongRunwayMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -54,7 +54,7 @@ public class Player extends MessageVisitorAdapter {
 
 	private static final int LOAD_BUFFER = 1024;
 
-	private static Log log = LogFactory.getLog(Player.class);
+	private static Logger log = LoggerFactory.getLogger(Player.class);
 
 	private static Player instance = new Player();
 

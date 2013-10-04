@@ -13,9 +13,9 @@ import java.sql.SQLException;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.db.PersistenceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -24,7 +24,7 @@ import org.mmarini.atc.db.PersistenceManager;
  */
 public class ConfigBean {
 	private static final String PASSWORD = "ATC123";
-	private static Log log = LogFactory.getLog(ConfigBean.class);
+	private static Logger log = LoggerFactory.getLogger(ConfigBean.class);
 
 	private String password;
 

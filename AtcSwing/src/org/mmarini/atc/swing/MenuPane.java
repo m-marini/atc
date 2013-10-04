@@ -25,10 +25,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.RadarMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -42,7 +42,7 @@ public class MenuPane extends JPanel {
          */
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog(MenuPane.class);
+	private static Logger log = LoggerFactory.getLogger(MenuPane.class);
 
 	private MenuPaneListener menuPaneListener;
 	private HitsPane hitsPane;

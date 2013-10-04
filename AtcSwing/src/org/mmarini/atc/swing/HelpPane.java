@@ -23,8 +23,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -42,7 +42,7 @@ public class HelpPane extends JOptionPane implements UIAtcConstants {
          */
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog(HelpPane.class);
+	private static Logger log = LoggerFactory.getLogger(HelpPane.class);
 	private JEditorPane pane;
 
 	/**

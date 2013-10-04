@@ -25,8 +25,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.ChangeFlightLevelMessage;
 import org.mmarini.atc.sim.ClearToLandMessage;
@@ -38,6 +36,7 @@ import org.mmarini.atc.sim.Logger;
 import org.mmarini.atc.sim.Plane;
 import org.mmarini.atc.sim.RadarMap;
 import org.mmarini.atc.sim.TurnToMessage;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -75,7 +74,8 @@ public class UserGame implements Logger, Serializable {
          */
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog(UserGame.class);
+	private static org.slf4j.Logger log = LoggerFactory
+			.getLogger(UserGame.class);
 
 	private AtcHandler atcHandler;
 

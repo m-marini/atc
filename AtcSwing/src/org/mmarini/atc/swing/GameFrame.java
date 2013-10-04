@@ -17,13 +17,13 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.DefaultHandler;
 import org.mmarini.atc.sim.Hits;
 import org.mmarini.atc.sim.HitsMemento;
 import org.mmarini.atc.xml.UserOptionsPersistenceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -32,7 +32,7 @@ import org.mmarini.atc.xml.UserOptionsPersistenceManager;
  */
 public class GameFrame extends JFrame implements MenuPaneListener, GameListener {
 	private static final long serialVersionUID = 1L;
-	private static Log log = LogFactory.getLog(GameFrame.class);
+	private static Logger log = LoggerFactory.getLogger(GameFrame.class);
 
 	/**
 	 * The entry point of the java application

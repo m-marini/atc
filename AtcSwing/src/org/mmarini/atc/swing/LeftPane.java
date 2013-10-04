@@ -17,9 +17,9 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -27,7 +27,7 @@ import org.mmarini.atc.sim.AtcHandler;
  */
 public class LeftPane extends JPanel {
 
-	private static Log log = LogFactory.getLog(LeftPane.class);
+	private static Logger log = LoggerFactory.getLogger(LeftPane.class);
 
 	/**
          * 

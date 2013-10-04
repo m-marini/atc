@@ -12,8 +12,8 @@ package org.mmarini.atc.sim;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DefaultPlane implements Plane, AtcConstants {
 
-	private static Log log = LogFactory.getLog(DefaultPlane.class);
+	private static Logger log = LoggerFactory.getLogger(DefaultPlane.class);
 
 	private DecimalFormat numberFormat = new DecimalFormat("000");
 

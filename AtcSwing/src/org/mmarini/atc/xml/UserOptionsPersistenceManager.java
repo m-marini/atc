@@ -35,10 +35,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.GameRecord;
 import org.mmarini.atc.sim.HitsMemento;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -57,8 +57,8 @@ public class UserOptionsPersistenceManager implements XmlConstants {
 	private static final String ZIP_ENTRY_NAME = "options.xml";
 	private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
-	private static Log log = LogFactory
-			.getLog(UserOptionsPersistenceManager.class);
+	private static Logger log = LoggerFactory
+			.getLogger(UserOptionsPersistenceManager.class);
 
 	private UserOptions userOptions;
 	private TransformerHandler handler;

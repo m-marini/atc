@@ -19,10 +19,10 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.EntitySet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -33,7 +33,7 @@ public class RadarPane extends JComponent implements UIAtcConstants {
 
 	public static final Color BACKGROUND_COLOR = Color.BLACK;
 
-	private static Log log = LogFactory.getLog(RadarPane.class);
+	private static Logger log = LoggerFactory.getLogger(RadarPane.class);
 
 	/**
          * 

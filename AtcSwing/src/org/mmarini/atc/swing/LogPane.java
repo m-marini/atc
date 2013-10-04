@@ -18,14 +18,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.LogTextMessageFormat;
 import org.mmarini.atc.sim.Logger;
 import org.mmarini.atc.sim.Message;
 import org.mmarini.atc.sim.MessageConsumer;
 import org.mmarini.atc.sound.Player;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -36,7 +35,8 @@ public class LogPane extends JPanel implements MessageConsumer, UIAtcConstants,
 		Logger {
 	private static final int ROWS = 10;
 
-	private static Log log = LogFactory.getLog(LogPane.class);
+	private static org.slf4j.Logger log = LoggerFactory
+			.getLogger(LogPane.class);
 
 	/**
          * 

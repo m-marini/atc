@@ -19,10 +19,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.atc.sim.AtcHandler;
 import org.mmarini.atc.sim.Plane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author marco.marini@mmarini.org
@@ -31,7 +31,7 @@ import org.mmarini.atc.sim.Plane;
 public class PlanePane extends JPanel implements UIAtcConstants {
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static Log log = LogFactory.getLog(PlanePane.class);
+	private static Logger log = LoggerFactory.getLogger(PlanePane.class);
 
 	private static final String PLANE_MESSAGE = "ID: {0}-{2}        FL {1}"
 			+ NEW_LINE + "      to {3}    Hdg {4}" + NEW_LINE + "       {5}";

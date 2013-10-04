@@ -10,13 +10,13 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BufferedPlayer {
 
 	private static final float DEFAULT_GAIN = -10f;
-	private static Log log = LogFactory.getLog(BufferedPlayer.class);
+	private static Logger log = LoggerFactory.getLogger(BufferedPlayer.class);
 	private Queue<AudioInputStream> aisBuffer;
 	private Clip clip;
 
