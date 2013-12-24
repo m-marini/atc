@@ -6,5 +6,5 @@
 
 # run
 cd ..
-java -jar "lib/atc.jar"
+java -jar "lib/${pom.build.finalName}.jar"
 cd bin
