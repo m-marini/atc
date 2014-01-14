@@ -20,6 +20,7 @@ The simulation ends when:
 Scores are sorted in order of the number of planes safe. Suspending a game is not permitted.
 
 [Select for more help](https://github.com/m-marini/atc/wiki)
+
 [Downloads](https://github.com/m-marini/atc/wiki/Downloads)
 
 ### Author
