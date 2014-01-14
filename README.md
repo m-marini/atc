@@ -21,6 +21,8 @@ Scores are sorted in order of the number of planes safe. Suspending a game is no
 
 [Select for more help](https://github.com/m-marini/atc/wiki)
 
+[Downloads](https://github.com/m-marini/atc/wiki/Downloads)
+
 ### Author
 
 Marco Marini
