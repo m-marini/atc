@@ -23,6 +23,8 @@ Scores are sorted in order of the number of planes safe. Suspending a game is no
 
 [Downloads](https://github.com/m-marini/atc/wiki/Downloads)
 
+![Ratio application sample image](https://raw.github.com/m-marini/atc/master/AtcSwing/images/atc-sample.png)
+
 ### Author
 
 Marco Marini
