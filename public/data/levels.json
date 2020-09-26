@@ -1,0 +1,24 @@
+{
+    "levels": [
+        {
+            "id": "training",
+            "name": "Training"
+        },
+        {
+            "id": "easy",
+            "name": "Easy"
+        },
+        {
+            "id": "medium",
+            "name": "Name"
+        },
+        {
+            "id": "difficult",
+            "name": "Difficult"
+        },
+        {
+            "id": "hard",
+            "name": "Hard"
+        }
+    ]
+}
