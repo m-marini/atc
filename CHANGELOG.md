@@ -12,4 +12,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Issue #1: Create Skeleton
+- Issue #2: Create Home page
 - Issue #3: Create CI

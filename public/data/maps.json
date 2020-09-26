@@ -1,0 +1,64 @@
+{
+    "maps": [
+        {
+            "id": "LRX",
+            "name": "Lamarx (Demo)"
+        },
+        {
+            "id": "FFM",
+            "name": "Frankfurt (Germany)"
+        },
+        {
+            "id": "LON",
+            "name": "London (UK)"
+        },
+        {
+            "id": "LIN",
+            "name": "Milan (Italy)",
+            "center": {
+                "lat": 45.4342909,
+                "lon": 9.2771277
+            },
+            "nodes": [
+                {
+                    "id": "36R",
+                    "type": "runway",
+                    "alignment": "W",
+                    "course": 357,
+                    "lat": 45.4342909,
+                    "lon": 9.2771277
+                },
+                {
+                    "id": "LIN",
+                    "type": "beacon",
+                    "alignment": "SE",
+                    "lat": 45.461201,
+                    "lon": 9.275320
+                },
+                {
+                    "id": "VOG",
+                    "type": "beacon",
+                    "alignment": "NW",
+                    "lat": 44.964401,
+                    "lon": 8.970280
+                }
+            ],
+            "routes": [
+                {
+                    "from": "36R",
+                    "to": "LIN",
+                    "type": "land"
+                },
+                {
+                    "from": "VOG",
+                    "to": "LIN",
+                    "type": "land"
+                }
+            ]
+        },
+        {
+            "id": "PAR",
+            "name": "Paris (France)"
+        }
+    ]
+}

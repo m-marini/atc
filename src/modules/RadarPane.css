@@ -1,0 +1,8 @@
+.radar {
+  background-color:black;
+}
+
+.beacon {
+  fill: orange;
+  r: 2
+}
