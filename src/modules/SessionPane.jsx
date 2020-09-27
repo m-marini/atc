@@ -77,18 +77,18 @@ class Session extends Component {
         alt: Math.round(Math.random() * 36000),
         status: 'wait',
         to: 'VIC'
-      },{
-      id: 'B1',
-      lat: 45.749881253281,
-      lon: 10.0216615994376,
-      hdg: Math.round(Math.random() * 360),
-      speed: Math.round(200 + Math.random() * 200),
-      type: 'plane',
-      alt: Math.round(Math.random() * 36000),
-      status: 'wait',
-      to: 'DJ'
-    },
-  ];
+      }, {
+        id: 'B1',
+        lat: 45.749881253281,
+        lon: 10.0216615994376,
+        hdg: Math.round(Math.random() * 360),
+        speed: Math.round(200 + Math.random() * 200),
+        type: 'plane',
+        alt: Math.round(Math.random() * 36000),
+        status: 'wait',
+        to: 'DJ'
+      },
+      ];
       const newSession = sessionDao.putSession(session);
       this.setState({ session: newSession });
     }
@@ -106,7 +106,10 @@ class Session extends Component {
             <Row>
               <Col xs={2}><QueuePane session={session} /></Col>
               <Col><RadarPane session={session} nodeMap={nodeMap} map={map} /></Col>
-              <Col xs={2}><CommandPane session={session} /></Col>
+              <Col xs={2}>
+                <CommandPane session={session} map={map}
+                  onCommand={cmd => console.log('cmd', cmd)} />
+              </Col>
             </Row>
             <LogPane session={session} />
             <Row>
