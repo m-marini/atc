@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import _ from 'lodash';
-import './RadarPane.css'
 import RadarMap from './RadarMap';
 import { sprintf } from 'sprintf-js';
 
