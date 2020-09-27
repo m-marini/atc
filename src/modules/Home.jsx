@@ -88,7 +88,7 @@ class Home extends Component {
   handleStart() {
     const { level, map } = this.state;
     const session = sessionDao.create(level.id, map.id);
-    window.location.href = process.env.REACT_APP_BASENAME + '/sessions/' + session.id;
+    window.location.href = process.env.REACT_APP_BASENAME + '#/sessions/' + session.id;
   }
 
   handleLevel(level) {

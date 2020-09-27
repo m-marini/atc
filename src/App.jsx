@@ -1,13 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './modules/Home';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import SessionPane from './modules/SessionPane';
 
 
 function App() {
   return (
-    <Router basename={process.env.REACT_APP_BASENAME}>
+    <Router basename=".">
       <div>
         <Switch>
           <Route exact path="/">
