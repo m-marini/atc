@@ -1,13 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Card } from 'react-bootstrap';
 
-class LogPane extends Component {
-
-    render() {
-        return (
-            <Card>Log</Card>
-        );
-    }
+function LogPane() {
+    const txt = 'a log\nbi log';
+    return (
+        <Card bg="dark" text="white">
+            <Card.Body>
+                <pre className="terminal">
+                    {txt}
+                </pre>
+            </Card.Body>
+        </Card>
+    );
 }
 
 export default LogPane;
