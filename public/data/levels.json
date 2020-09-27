@@ -2,23 +2,28 @@
     "levels": [
         {
             "id": "training",
-            "name": "Training"
+            "name": "Training",
+            "maxPlane": 1
         },
         {
             "id": "easy",
-            "name": "Easy"
+            "name": "Easy",
+            "maxPlane": 1
         },
         {
             "id": "medium",
-            "name": "Name"
+            "name": "Name",
+            "maxPlane": 1
         },
         {
             "id": "difficult",
-            "name": "Difficult"
+            "name": "Difficult",
+            "maxPlane": 1
         },
         {
             "id": "hard",
-            "name": "Hard"
+            "name": "Hard",
+            "maxPlane": 1
         }
     ]
 }

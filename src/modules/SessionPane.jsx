@@ -8,9 +8,13 @@ import RadarPane from './RadarPane';
 import LogPane from './LogPane';
 import CommandPane from './CommandPane';
 import { mapDao } from './MapDao';
-import { map, tap } from 'rxjs/operators';
+import { flatMap, map, tap } from 'rxjs/operators';
 import { Map } from 'immutable';
 import _ from 'lodash';
+import '../App.css';
+import { interval } from 'rxjs';
+
+const INTERVAL = 1000;
 
 /**
  * Returns the map data {center, nodes, xmin, xmax, ymin, ymax}
@@ -34,39 +38,83 @@ class Session extends Component {
 
   constructor(props) {
     super(props);
-    const session = sessionDao.session(props.sessionId);
-    this.session = session;
     this.state = {};
+    this.handleClock = this.handleClock.bind(this);
+    this.clock = interval(INTERVAL);
+
   }
 
   componentDidMount() {
     const self = this;
-    mapDao.map(self.session.map).pipe(
-      map(toMapData),
-      tap(map => {
-        self.setState({ map });
-      })
+
+    sessionDao.getSession(this.props.sessionId).pipe(
+      flatMap(session =>
+        mapDao.map(session.map).pipe(
+          map(map => {
+            const nodeMap = toMapData(map);
+            return { session, map, nodeMap };
+          })
+        )
+      ),
+      tap(data => self.setState(data))
     ).subscribe();
+
+    this.clock.pipe(
+      tap(this.handleClock)
+    ).subscribe()
+  }
+
+  handleClock(t) {
+    if ((t % 4) === 0) {
+      const { session } = this.state;
+      session.flights = [{
+        id: 'A1',
+        lat: 45.6449981253281,
+        lon: 9.0216665994376,
+        hdg: Math.round(Math.random() * 360),
+        speed: Math.round(200 + Math.random() * 200),
+        type: 'jet',
+        alt: Math.round(Math.random() * 36000),
+        status: 'wait',
+        to: 'VIC'
+      },{
+      id: 'B1',
+      lat: 45.749881253281,
+      lon: 10.0216615994376,
+      hdg: Math.round(Math.random() * 360),
+      speed: Math.round(200 + Math.random() * 200),
+      type: 'plane',
+      alt: Math.round(Math.random() * 36000),
+      status: 'wait',
+      to: 'DJ'
+    },
+  ];
+      const newSession = sessionDao.putSession(session);
+      this.setState({ session: newSession });
+    }
   }
 
   render() {
-    const session = this.session;
-    const { map } = this.state;
-    return (
-      <Container fluid>
-        <ATCNavbar />
-        <Container>
-          <Row>
-            <Col xs={1}><QueuePane session={session} /></Col>
-            <Col><RadarPane map={map} session={session} /></Col>
-            <Col xs={1}><CommandPane session={session} /></Col>
-          </Row>
-          <LogPane session={session} />
-          <Row>
-          </Row>
-        </Container>
-      </Container >
-    );
+    const { session, map, nodeMap } = this.state;
+    if (!nodeMap || !session || !map) {
+      return (<div></div>);
+    } else {
+      return (
+        <Container fluid>
+          <ATCNavbar />
+          <Container fluid className="ATC">
+            <Row>
+              <Col xs={2}><QueuePane session={session} /></Col>
+              <Col><RadarPane session={session} nodeMap={nodeMap} map={map} /></Col>
+              <Col xs={2}><CommandPane session={session} /></Col>
+            </Row>
+            <LogPane session={session} />
+            <Row>
+            </Row>
+          </Container>
+        </Container >
+      );
+    }
   }
 }
 

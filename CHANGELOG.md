@@ -14,3 +14,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #1: Create Skeleton
 - Issue #2: Create Home page
 - Issue #3: Create CI
+- Issue #9: Draw radar map
+

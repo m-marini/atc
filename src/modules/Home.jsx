@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, Card, CardDeck, Col, Container, Jumbotron, ListGroup, Row } from 'react-bootstrap';
 import _ from 'lodash';
 import { mapDao } from './MapDao';
-import { v4 as uuidv4 } from 'uuid';
 import ATCNavbar from './ATCNavbar';
 import { sessionDao } from './SessionDao';
 import { levelDao } from './LevelDao';
@@ -88,12 +87,7 @@ class Home extends Component {
 
   handleStart() {
     const { level, map } = this.state;
-    const session = {
-      id: uuidv4(),
-      level: level.id,
-      map: map.id
-    };
-    sessionDao.putSession(session);
+    const session = sessionDao.create(level.id, map.id);
     window.location.href = process.env.REACT_APP_BASENAME + '/sessions/' + session.id;
   }
 
