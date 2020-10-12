@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup, Card } from 'react-bootstrap';
 import _ from 'lodash';
+import { COMMAND_TYPES } from './TrafficSimulator';
 
 const FlightSelectionStatus = "flightSelection";
 const CommandSelectionStatus = "commandSelection";
@@ -15,7 +16,7 @@ const FlightLveles = ['040', '080', '120', '160', '200', '240', '280', '320', '3
 function CommandSelection({ onAbort, onChangeFlightLevel, onTurnHeading, onClearToLand, onHold }) {
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select the command</Card.Header>
+            <Card.Header>Select the instruction</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button variant="warning"
@@ -27,7 +28,7 @@ function CommandSelection({ onAbort, onChangeFlightLevel, onTurnHeading, onClear
                     <Button variant="secondary"
                         onClick={() => { if (!!onClearToLand) { onClearToLand() } }}>Clear to land</Button>
                     <Button variant="secondary"
-                        onClick={() => { if (!!onHold) { onHold() } }}>Hold in cirlce</Button>
+                        onClick={() => { if (!!onHold) { onHold() } }}>Hold</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>
@@ -38,15 +39,15 @@ function FlightSelection({ flights, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select flight</Card.Header>
+            <Card.Header>Send instruction to flight</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     {
                         _.map(flights, flight => {
                             return (
                                 <Button key={flight.id} variant="secondary"
-                                    onClick={() => { if (!!onSelect) { onSelect(flight) } }
-                                    }> Flight { flight.id}</Button>
+                                    onClick={() => { if (!!onSelect) { onSelect(flight.id) } }
+                                    }>{ flight.id}</Button>
                             );
                         })
                     }
@@ -61,7 +62,7 @@ function RunwaySelection({ map, onAbort, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select destination</Card.Header>
+            <Card.Header>Select runway</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button
@@ -70,7 +71,7 @@ function RunwaySelection({ map, onAbort, onSelect }) {
                     {nodes.map(node => {
                         return (
                             <Button key={node.id}
-                                onClick={() => { if (!!onSelect) { onSelect(node) } }}
+                                onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
                                 variant="secondary" >{node.id}</Button>
                         );
                     }).value()
@@ -86,7 +87,7 @@ function DestinationSelection({ map, onAbort, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select destination</Card.Header>
+            <Card.Header>To checkpoint</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button
@@ -95,7 +96,7 @@ function DestinationSelection({ map, onAbort, onSelect }) {
                     {nodes.map(node => {
                         return (
                             <Button key={node.id}
-                                onClick={() => { if (!!onSelect) { onSelect(node) } }}
+                                onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
                                 variant="secondary" >{node.id}</Button>
                         );
                     }).value()
@@ -111,7 +112,7 @@ function ConditionSelection({ map, onAbort, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select destination</Card.Header>
+            <Card.Header>At checkpoint</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button
@@ -123,7 +124,7 @@ function ConditionSelection({ map, onAbort, onSelect }) {
                     {nodes.map(node => {
                         return (
                             <Button key={node.id}
-                                onClick={() => { if (!!onSelect) { onSelect(node) } }}
+                                onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
                                 variant="secondary" >{node.id}</Button>
                         );
                     }).value()
@@ -138,13 +139,13 @@ function FlightLevelSelection({ onAbort, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select flight level</Card.Header>
+            <Card.Header>Flight level</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button variant="warning"
                         onClick={() => { if (!!onAbort) { onAbort() } }}>Abort</Button>
                     {
-                        _(FlightLveles).map(fl => {
+                        _(FlightLveles).orderBy(_.identity, 'desc').map(fl => {
                             return (
                                 <Button key={fl} variant="secondary"
                                     className={`fl-${fl}`}
@@ -191,12 +192,12 @@ class CommandPane extends Component {
     handleFlightLevelSelect(fl) {
         const { flight } = this.state;
         const { onCommand } = this.props;
-        const cmd = {
-            flight, type: 'ChangeLevel',
-            flightLevel: fl
-        };
         if (!!onCommand) {
-            onCommand(cmd);
+            onCommand({
+                flight,
+                type: COMMAND_TYPES.CHANGE_LEVEL,
+                flightLevel: fl
+            });
         }
         this.setState({ type: FlightSelectionStatus });
     }
@@ -212,9 +213,13 @@ class CommandPane extends Component {
     handleTurnConditionSelect(when) {
         const { flight, node } = this.state;
         const { onCommand } = this.props;
-        const cmd = { flight, type: 'TurnHeading', node, when };
         if (!!onCommand) {
-            onCommand(cmd);
+            onCommand({
+                flight,
+                type: COMMAND_TYPES.TURN_HEADING,
+                to: node,
+                when
+            });
         }
         this.setState({ type: FlightSelectionStatus });
     }
@@ -226,9 +231,12 @@ class CommandPane extends Component {
     handleRunwaySelect(node) {
         const { flight } = this.state;
         const { onCommand } = this.props;
-        const cmd = { flight, type: 'ClearToLand', node };
         if (!!onCommand) {
-            onCommand(cmd);
+            onCommand({
+                flight,
+                type: COMMAND_TYPES.CLEAR_TO_LAND,
+                to: node
+            });
         }
         this.setState({ type: FlightSelectionStatus });
     }
@@ -240,9 +248,12 @@ class CommandPane extends Component {
     handleHoldConditionSelect(when) {
         const { flight } = this.state;
         const { onCommand } = this.props;
-        const cmd = { flight, type: 'Hold', when };
         if (!!onCommand) {
-            onCommand(cmd);
+            onCommand({
+                flight,
+                type: COMMAND_TYPES.HOLD,
+                when
+            });
         }
         this.setState({ type: FlightSelectionStatus });
     }
