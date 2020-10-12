@@ -1,170 +1,159 @@
 {
-    "maps": [
-        {
+    "maps": {
+        "LRX": {
             "id": "LRX",
-            "name": "Lamarx (Demo)"
-        },
-        {
-            "id": "FFM",
-            "name": "Frankfurt (Germany)"
-        },
-        {
-            "id": "LON",
-            "name": "London (UK)"
-        },
-        {
-            "id": "LIN",
-            "name": "Milan (Italy)",
+            "name": "Lamarx",
+            "descr": "Lamarx (Demo)",
             "center": {
                 "lat": 45.6449981253281,
                 "lon": 9.0216665994376
-        },
-            "nodes": [
-                {
+            },
+            "nodes": {
+                "36R": {
                     "id": "36R",
                     "type": "runway",
                     "alignment": "W",
-                    "course": 357,
+                    "hdg": 357,
                     "lat": 45.4342909,
                     "lon": 9.28833332844079
                 },
-                {
+                "ABN": {
                     "id": "ABN",
-                    "type": "entry",
-                    "course": 62,
+                    "type": "beacon",
+                    "hdg": 59,
                     "alignment": "SW",
                     "lat": 44.0549943759842,
                     "lon": 8.22166666388513
                 },
-                {
+                "BOA": {
                     "id": "BOA",
-                    "type": "entry",
-                    "course": 305,
+                    "type": "beacon",
+                    "hdg": 305,
                     "alignment": "SE",
                     "lat": 44.5366620841353,
                     "lon": 11.2916666083038
                 },
-                {
+                "BZO": {
                     "id": "BZO",
-                    "type": "entry",
-                    "course": 245,
+                    "type": "beacon",
+                    "hdg": 243,
                     "alignment": "NE",
                     "lat": 46.4633329167396,
                     "lon": 11.3216666132212
                 },
-                {
+                "COD": {
                     "id": "COD",
                     "type": "beacon",
                     "alignment": "SE",
                     "lat": 45.2249966255906,
                     "lon": 9.54166662879289
                 },
-                {
+                "DJ": {
                     "id": "DJ",
-                    "type": "entry",
-                    "course": 124,
+                    "type": "beacon",
+                    "hdg": 121,
                     "alignment": "NW",
                     "lat": 47.2716614592447,
                     "lon": 5.09833325631917
                 },
-                {
+                "ELB": {
                     "id": "ELB",
-                    "type": "entry",
-                    "course": 332,
+                    "type": "beacon",
+                    "hdg": 331,
                     "alignment": "S",
                     "lat": 42.7299942510061,
                     "lon": 10.3966666013003
                 },
-                {
+                "FRZ": {
                     "id": "FRZ",
-                    "type": "entry",
-                    "course": 328,
+                    "type": "beacon",
+                    "hdg": 328,
                     "alignment": "SE",
                     "lat": 44.0266583347915,
                     "lon": 11.0033333301544
                 },
-                {
+                "GEN": {
                     "id": "GEN",
                     "type": "beacon",
                     "alignment": "NE",
                     "lat": 44.4233269177894,
                     "lon": 9.083333266899
                 },
-                {
+                "LIN": {
                     "id": "LIN",
                     "type": "beacon",
                     "alignment": "W",
                     "lat": 45.2249966255906,
                     "lon": 9.28833332844079
                 },
-                {
+                "LSA": {
                     "id": "LSA",
-                    "type": "entry",
-                    "course": 115,
+                    "type": "beacon",
+                    "hdg": 112,
                     "alignment": "W",
                     "lat": 45.726658834704,
                     "lon": 5.09833325631917
                 },
-                {
+                "PAR": {
                     "id": "PAR",
                     "type": "beacon",
                     "alignment": "NE",
                     "lat": 44.8216602094634,
                     "lon": 10.2933333255351
                 },
-                {
+                "PIS": {
                     "id": "PIS",
-                    "type": "entry",
-                    "course": 358,
+                    "type": "beacon",
+                    "hdg": 357,
                     "alignment": "SE",
                     "lat": 43.6766645836979,
                     "lon": 10.3916666284204
                 },
-                {
+                "SRN": {
                     "id": "SRN",
                     "type": "beacon",
                     "alignment": "SW",
                     "lat": 45.6449981253281,
                     "lon": 9.0216665994376
                 },
-                {
+                "TOP": {
                     "id": "TOP",
                     "type": "beacon",
                     "alignment": "NE",
                     "lat": 44.9249981253281,
                     "lon": 7.86166660487653
                 },
-                {
+                "TZO": {
                     "id": "TZO",
                     "type": "beacon",
                     "alignment": "E",
                     "lat": 45.5583252930738,
                     "lon": 9.50833330862225
                 },
-                {
+                "VIC": {
                     "id": "VIC",
-                    "type": "entry",
-                    "course": 271,
+                    "type": "beacon",
+                    "hdg": 270,
                     "alignment": "E",
                     "lat": 45.6366655835229,
                     "lon": 11.6766666155309
                 },
-                {
+                "VOG": {
                     "id": "VOG",
                     "type": "beacon",
                     "alignment": "NW",
                     "lat": 44.9633314170021,
                     "lon": 8.96999996155501
                 },
-                {
+                "ZUE": {
                     "id": "ZUE",
-                    "type": "entry",
-                    "course": 178,
+                    "type": "beacon",
+                    "hdg": 176,
                     "alignment": "N",
                     "lat": 47.5933281675707,
                     "lon": 8.81833327934147
                 }
-            ],
+            },
             "routes": [
                 {
                     "type": "entry",
@@ -434,9 +423,443 @@
                 }
             ]
         },
-        {
+        "FFM": {
+            "id": "FFM",
+            "name": "Frankfurt",
+            "descr": "Frankfurt (Germany)"
+        },
+        "LON": {
+            "id": "LON",
+            "name": "London",
+            "descr": "London (UK)"
+        },
+        "LIN": {
+            "id": "LIN",
+            "name": "Linate",
+            "descr": "Milan Linate (Italy)",
+            "center": {
+                "lat": 45.6449981253281,
+                "lon": 9.0216665994376
+            },
+            "nodes": {
+                "36R": {
+                    "id": "36R",
+                    "type": "runway",
+                    "alignment": "W",
+                    "hdg": 357,
+                    "lat": 45.4342909,
+                    "lon": 9.28833332844079
+                },
+                "ABN": {
+                    "id": "ABN",
+                    "type": "entry",
+                    "hdg": 59,
+                    "alignment": "SW",
+                    "lat": 44.0549943759842,
+                    "lon": 8.22166666388513
+                },
+                "BOA": {
+                    "id": "BOA",
+                    "type": "entry",
+                    "hdg": 305,
+                    "alignment": "SE",
+                    "lat": 44.5366620841353,
+                    "lon": 11.2916666083038
+                },
+                "BZO": {
+                    "id": "BZO",
+                    "type": "entry",
+                    "hdg": 243,
+                    "alignment": "NE",
+                    "lat": 46.4633329167396,
+                    "lon": 11.3216666132212
+                },
+                "COD": {
+                    "id": "COD",
+                    "type": "beacon",
+                    "alignment": "SE",
+                    "lat": 45.2249966255906,
+                    "lon": 9.54166662879289
+                },
+                "DJ": {
+                    "id": "DJ",
+                    "type": "entry",
+                    "hdg": 121,
+                    "alignment": "NW",
+                    "lat": 47.2716614592447,
+                    "lon": 5.09833325631917
+                },
+                "ELB": {
+                    "id": "ELB",
+                    "type": "entry",
+                    "hdg": 331,
+                    "alignment": "S",
+                    "lat": 42.7299942510061,
+                    "lon": 10.3966666013003
+                },
+                "FRZ": {
+                    "id": "FRZ",
+                    "type": "entry",
+                    "hdg": 328,
+                    "alignment": "SE",
+                    "lat": 44.0266583347915,
+                    "lon": 11.0033333301544
+                },
+                "GEN": {
+                    "id": "GEN",
+                    "type": "beacon",
+                    "alignment": "NE",
+                    "lat": 44.4233269177894,
+                    "lon": 9.083333266899
+                },
+                "LIN": {
+                    "id": "LIN",
+                    "type": "beacon",
+                    "alignment": "W",
+                    "lat": 45.2249966255906,
+                    "lon": 9.28833332844079
+                },
+                "LSA": {
+                    "id": "LSA",
+                    "type": "entry",
+                    "hdg": 112,
+                    "alignment": "W",
+                    "lat": 45.726658834704,
+                    "lon": 5.09833325631917
+                },
+                "PAR": {
+                    "id": "PAR",
+                    "type": "beacon",
+                    "alignment": "NE",
+                    "lat": 44.8216602094634,
+                    "lon": 10.2933333255351
+                },
+                "PIS": {
+                    "id": "PIS",
+                    "type": "entry",
+                    "hdg": 357,
+                    "alignment": "SE",
+                    "lat": 43.6766645836979,
+                    "lon": 10.3916666284204
+                },
+                "SRN": {
+                    "id": "SRN",
+                    "type": "beacon",
+                    "alignment": "SW",
+                    "lat": 45.6449981253281,
+                    "lon": 9.0216665994376
+                },
+                "TOP": {
+                    "id": "TOP",
+                    "type": "beacon",
+                    "alignment": "NE",
+                    "lat": 44.9249981253281,
+                    "lon": 7.86166660487653
+                },
+                "TZO": {
+                    "id": "TZO",
+                    "type": "beacon",
+                    "alignment": "E",
+                    "lat": 45.5583252930738,
+                    "lon": 9.50833330862225
+                },
+                "VIC": {
+                    "id": "VIC",
+                    "type": "entry",
+                    "hdg": 270,
+                    "alignment": "E",
+                    "lat": 45.6366655835229,
+                    "lon": 11.6766666155309
+                },
+                "VOG": {
+                    "id": "VOG",
+                    "type": "beacon",
+                    "alignment": "NW",
+                    "lat": 44.9633314170021,
+                    "lon": 8.96999996155501
+                },
+                "ZUE": {
+                    "id": "ZUE",
+                    "type": "entry",
+                    "hdg": 176,
+                    "alignment": "N",
+                    "lat": 47.5933281675707,
+                    "lon": 8.81833327934147
+                }
+            },
+            "routes": [
+                {
+                    "type": "entry",
+                    "edges": [
+                        "BOA",
+                        "SRN"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "BZO",
+                        "SRN"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "SRN",
+                        "DJ"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "SRN",
+                        "VIC"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "SRN",
+                        "ZUE"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "PAR",
+                        "FRZ"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "PAR",
+                        "PIS"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "TZO",
+                        "COD"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "COD",
+                        "PAR"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "COD",
+                        "LIN"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "SRN",
+                        "LIN"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "VOG",
+                        "LIN"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "LIN",
+                        "36R"
+                    ]
+                },
+                {
+                    "type": "takeoff",
+                    "edges": [
+                        "36R",
+                        "TZO"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "BOA"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "BZO"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "PAR"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "SRN"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "VIC"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "VOG"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TZO",
+                        "ZUE"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "ABN",
+                        "VOG"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "SRN",
+                        "VOG"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "SRN",
+                        "LSA"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "TOP",
+                        "LSA"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TOP",
+                        "ABN"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TOP",
+                        "DJ"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TOP",
+                        "ELB"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "TOP",
+                        "FRZ"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "TOP",
+                        "VOG"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "GEN",
+                        "ABN"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "GEN",
+                        "DJ"
+                    ]
+                },
+                {
+                    "type": "entry",
+                    "edges": [
+                        "GEN",
+                        "ELB"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "GEN",
+                        "BOA"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "GEN",
+                        "FRZ"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "GEN",
+                        "SRN"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "GEN",
+                        "TOP"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "GEN",
+                        "VOG"
+                    ]
+                }
+            ]
+        },
+        "PAR": {
             "id": "PAR",
-            "name": "Paris (France)"
+            "name": "Paris",
+            "descr": "Paris (France)"
         }
-    ]
+    }
 }

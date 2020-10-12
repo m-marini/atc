@@ -7,6 +7,7 @@ import { AsyncSubject } from 'rxjs';
 const url = process.env.REACT_APP_BASENAME + '/data/maps.json';
 const NMS_PER_DEG = 60;
 const RADS_PER_DEG = Math.PI / 180;
+const DEGS_PER_RAD = 180 / Math.PI;
 const NMS_PER_RAD = NMS_PER_DEG / RADS_PER_DEG;
 
 class MapDao {
@@ -25,11 +26,8 @@ class MapDao {
 
     map(id) {
         return this.maps().pipe(
-            map(maps =>
-                _(maps.maps)
-                    .filter(map => map.id === id)
-                    .first()
-            ));
+            map(maps => maps.maps[id])
+        );
     }
 
     /**
@@ -53,11 +51,51 @@ class MapDao {
      * @param {*} from source location {lat, lon}
      * @param {*} to  destination location {lat, lon}
      */
-    distance(from, to) {
+    distance(to, from) {
         const v0 = this.versor(from);
         const v1 = this.versor(to);
         const c = v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
-        return Math.acos(c) * NMS_PER_RAD;
+        const result = Math.acos(Math.min(Math.max(-1, c), 1)) * NMS_PER_RAD;
+        return result;
+    }
+
+    /**
+     * 
+     * @param {*} to 
+     * @param {*} from 
+     */
+    hdg(to, from) {
+        const nms = this.xy(to, from);
+        const deg = this.normHdg(Math.round(Math.atan2(nms[0], nms[1]) * DEGS_PER_RAD));
+        return deg;
+    }
+
+    normHdg(hdg) {
+        return hdg > 360 ? hdg - 360 : hdg <= 0 ? hdg + 360 : hdg;
+    }
+
+    normAngle(a) {
+        return a >= 180 ? a - 360 : a < -180 ? a + 360 : a;
+    }
+
+    /**
+     * Returns the route info to fly to a location {d, hdg, angle, from, to}
+     * 
+     * @param {*} from the origin location or flight
+     * @param {*} loc the target location
+     * @param {*} loc the target location
+     * 
+     */
+    route(from, to, hdg) {
+        if (hdg === undefined) {
+            hdg = from.hdg;
+        }
+        const hdgTo = this.hdg(to, from);
+        const d = this.distance(from, to);
+        const angle = this.normAngle(Math.round(hdgTo - hdg));
+        const toFlag = angle < 90 && angle > -90;
+        const fromFlag = angle > 90 || angle < -90;
+        return { hdg: hdgTo, d, angle, from: fromFlag, to: toFlag };
     }
 
     /**
@@ -121,17 +159,42 @@ class MapDao {
 
     /**
      * Returns the coordinates in nm {center:{lat, lon}, nodes:[{node:any, coords:[double]}]}
-     * @param {*} locations locations {lat, long}
+     * @param {*} nodes locations {id:{lat, long}, ...}
      * @param {*} center center {lat, long}
      */
-    coords(locations, center) {
-        const nodes = _.map(locations, l => {
-            return {
-                node: l,
-                coords: this.xy(l, center)
-            };
-        });
-        return { nodes };
+    coords(nodes, center) {
+        const _nodes = _(nodes)
+            .mapValues(node => {
+                return {
+                    node: node,
+                    coords: this.xy(node, center)
+                };
+            })
+        const x = _nodes.map(node => node.coords[0]);
+        const y = _nodes.map(node => node.coords[1]);
+
+        const range = _(nodes).values().map(node =>
+            this.distance(center, node)
+        ).max();
+        const result = {
+            nodes: _nodes.value(),
+            xmin: x.min(),
+            xmax: x.max(),
+            ymin: y.min(),
+            ymax: y.max(),
+            range
+        };
+        return result;
+    }
+
+    radial(location, hdg, ds) {
+        const { lat, lon } = location;
+        const hdgRad = hdg * RADS_PER_DEG;
+        const dlat = ds * Math.cos(hdgRad) / NMS_PER_DEG;
+        const dlon = ds * Math.sin(hdgRad) / Math.cos(lat * RADS_PER_DEG) / NMS_PER_DEG;
+        const newLat = lat + dlat;
+        const newLon = lon + dlon;
+        return { lat: newLat, lon: newLon };
     }
 }
 

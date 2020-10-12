@@ -9,39 +9,24 @@ import LogPane from './LogPane';
 import CommandPane from './CommandPane';
 import { mapDao } from './MapDao';
 import { flatMap, map, tap } from 'rxjs/operators';
-import { Map } from 'immutable';
-import _ from 'lodash';
 import '../App.css';
 import { interval } from 'rxjs';
+import { TrafficSimulator } from './TrafficSimulator';
+import { levelDao } from './LevelDao';
+import { cockpitLogger } from './CockpitLogger';
 
 const INTERVAL = 1000;
-
-/**
- * Returns the map data {center, nodes, xmin, xmax, ymin, ymax}
- * @param {*} map the map
- */
-function toMapData(map) {
-  const data = mapDao.coords(map.nodes, map.center);
-  const nodes = _(data.nodes);
-  const x = nodes.map(node => node.coords[0]);
-  const y = nodes.map(node => node.coords[1]);
-
-  const map1 = Map(data)
-    .set('xmin', x.min())
-    .set('xmax', x.max())
-    .set('ymin', y.min())
-    .set('ymax', y.max());
-  return map1.toObject();
-}
+const SIM_INTERVAL = 10;
 
 class Session extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    const logger = cockpitLogger();
+    this.state = { logger };
     this.handleClock = this.handleClock.bind(this);
+    this.handleCommand = this.handleCommand.bind(this);
     this.clock = interval(INTERVAL);
-
   }
 
   componentDidMount() {
@@ -49,14 +34,18 @@ class Session extends Component {
 
     sessionDao.getSession(this.props.sessionId).pipe(
       flatMap(session =>
-        mapDao.map(session.map).pipe(
-          map(map => {
-            const nodeMap = toMapData(map);
-            return { session, map, nodeMap };
-          })
+        levelDao.level(session.level).pipe(
+          flatMap(level =>
+            mapDao.map(session.map).pipe(
+              map(map => {
+                const nodeMap = mapDao.coords(map.nodes, map.center);
+                return { session, map, nodeMap, level };
+              })
+            )
+          )
         )
       ),
-      tap(data => self.setState(data))
+      tap(data => { self.setState(data) })
     ).subscribe();
 
     this.clock.pipe(
@@ -64,54 +53,49 @@ class Session extends Component {
     ).subscribe()
   }
 
+  handleCommand(cmd) {
+    console.log('cmd', cmd);
+    const { session, map, level, logger } = this.state;
+    const sim = new TrafficSimulator({
+      session, map, level,
+      sendMessage: logger.sendMessage
+    });
+    const next = sim.processCommand(cmd).sessionJS;
+    const newSession = sessionDao.putSession(next);
+    this.setState({ session: newSession });
+  }
+
   handleClock(t) {
-    if ((t % 4) === 0) {
-      const { session } = this.state;
-      session.flights = [{
-        id: 'A1',
-        lat: 45.6449981253281,
-        lon: 9.0216665994376,
-        hdg: Math.round(Math.random() * 360),
-        speed: Math.round(200 + Math.random() * 200),
-        type: 'jet',
-        alt: Math.round(Math.random() * 36000),
-        status: 'wait',
-        to: 'VIC'
-      }, {
-        id: 'B1',
-        lat: 45.749881253281,
-        lon: 10.0216615994376,
-        hdg: Math.round(Math.random() * 360),
-        speed: Math.round(200 + Math.random() * 200),
-        type: 'plane',
-        alt: Math.round(Math.random() * 36000),
-        status: 'wait',
-        to: 'DJ'
-      },
-      ];
-      const newSession = sessionDao.putSession(session);
-      this.setState({ session: newSession });
-    }
+    const { session, map, level, logger } = this.state;
+    const sim = new TrafficSimulator({
+      session, map, level, dt: SIM_INTERVAL,
+      sendMessage: logger.sendMessage
+    });
+    const next = sim.transition().sessionJS;
+    const newSession = sessionDao.putSession(next);
+    this.setState({ session: newSession });
   }
 
   render() {
-    const { session, map, nodeMap } = this.state;
-    if (!nodeMap || !session || !map) {
+    const { session, map, nodeMap, level, logger } = this.state;
+    if (!nodeMap || !session || !map || !level) {
       return (<div></div>);
     } else {
       return (
         <Container fluid>
-          <ATCNavbar />
+          <ATCNavbar session={session} />
           <Container fluid className="ATC">
             <Row>
-              <Col xs={2}><QueuePane session={session} /></Col>
+              <Col xs={2}>
+                <QueuePane session={session} />
+              </Col>
               <Col><RadarPane session={session} nodeMap={nodeMap} map={map} /></Col>
               <Col xs={2}>
                 <CommandPane session={session} map={map}
-                  onCommand={cmd => console.log('cmd', cmd)} />
+                  onCommand={this.handleCommand} />
               </Col>
             </Row>
-            <LogPane session={session} />
+            <LogPane logger={logger} />
             <Row>
             </Row>
           </Container>

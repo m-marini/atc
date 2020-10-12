@@ -49,7 +49,7 @@ function MapSelection({ value, values = {}, onSelect }) {
               eventKey={map.id}
               active={value.id === map.id}
               action onClick={onClick(map)}>
-              {map.name}
+              {map.descr}
             </ListGroup.Item>
           );
         })
@@ -73,7 +73,7 @@ class Home extends Component {
     const th = this;
     mapDao.maps().pipe(
       tap(maps => {
-        const map = maps.maps[0];
+        const map = maps.maps.LRX;
         th.setState({ maps, map });
       })
     ).subscribe();

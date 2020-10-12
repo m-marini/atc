@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import RadarMap from './RadarMap';
 import { sprintf } from 'sprintf-js';
+import { FLIGHT_STATES } from './Flight';
 
 const RadarConf = {
     width: 900,
@@ -82,32 +83,37 @@ function translate(x, y) {
 }
 
 function Flight({ flight, radarMap }) {
-    const pt = radarMap.pointByGeo(flight);
-    const fl = flightLevel(flight.alt);
-    const trans = translate(pt[0] - ImageConf.width / 2, pt[1] - ImageConf.height / 2)
-        + rotate(flight.hdg, ImageConf.width / 2, ImageConf.height / 2);
-    const url = `${process.env.REACT_APP_BASENAME}/images/${flight.type}-${fl}.png`;
-    const txt1 = sprintf("%s %s", flight.id, flight.type === 'jet' ? 'J' : 'A');
-    const txt2 = sprintf('%03d %02d', Math.round(flight.alt / 100), Math.round(flight.speed / 10));
-    const x1 = pt[0] + PlaneConf.text1.x;
-    const x2 = pt[0] + PlaneConf.text2.x;
-    const y1 = pt[1] + PlaneConf.text1.y;
-    const y2 = pt[1] + PlaneConf.text2.y;
-    const x3 = pt[0] + PlaneConf.bar.x1;
-    const x4 = pt[0] + PlaneConf.bar.x2;
-    const y3 = pt[1] + PlaneConf.bar.y1;
-    const y4 = pt[1] + PlaneConf.bar.y2;
-    const txtClassName = 'fl-' + fl;
-    return (
-        <g>
-            <image href={url}
-                x={0} y={0}
-                width={ImageConf.width} height={ImageConf.height}
-                transform={trans} />
-            <line x1={x3} y1={y3} x2={x4} y2={y4} className={txtClassName} />
-            <text x={x1} y={y1} className={txtClassName}>{txt1}</text>
-            <text x={x2} y={y2} className={txtClassName}>{txt2}</text>
-        </g>);
+    if (flight.status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
+        return (<g />);
+    } else {
+        const pt = radarMap.pointByGeo(flight);
+        const fl = flightLevel(flight.alt);
+        const trans = translate(pt[0] - ImageConf.width / 2, pt[1] - ImageConf.height / 2)
+            + rotate(flight.hdg, ImageConf.width / 2, ImageConf.height / 2);
+        const url = `${process.env.REACT_APP_BASENAME}/images/${flight.type === 'J' ? 'jet' : 'plane'
+            }-${fl}.png`;
+        const txt1 = sprintf("%s %s", flight.id, flight.type);
+        const txt2 = sprintf('%03d %02d', Math.round(flight.alt / 100), Math.round(flight.speed / 10));
+        const x1 = pt[0] + PlaneConf.text1.x;
+        const x2 = pt[0] + PlaneConf.text2.x;
+        const y1 = pt[1] + PlaneConf.text1.y;
+        const y2 = pt[1] + PlaneConf.text2.y;
+        const x3 = pt[0] + PlaneConf.bar.x1;
+        const x4 = pt[0] + PlaneConf.bar.x2;
+        const y3 = pt[1] + PlaneConf.bar.y1;
+        const y4 = pt[1] + PlaneConf.bar.y2;
+        const txtClassName = 'fl-' + fl;
+        return (
+            <g>
+                <image href={url}
+                    x={0} y={0}
+                    width={ImageConf.width} height={ImageConf.height}
+                    transform={trans} />
+                <line x1={x3} y1={y3} x2={x4} y2={y4} className={txtClassName} />
+                <text x={x1} y={y1} className={txtClassName}>{txt1}</text>
+                <text x={x2} y={y2} className={txtClassName}>{txt2}</text>
+            </g>);
+    }
 }
 
 function Route({ route, radarMap }) {
@@ -134,6 +140,7 @@ class RadarPane extends Component {
                 width: RadarConf.width,
                 height: RadarConf.height
             });
+            const flights = (session || { flights: {} }).flights;
             return (
                 <svg width={RadarConf.width} height={RadarConf.height} className="radar">
                     {
@@ -142,18 +149,19 @@ class RadarPane extends Component {
                         })
                     }
                     {
-                        _.map(nodeMap.nodes, node => {
+                        _(nodeMap.nodes).values().map(node => {
                             return (
                                 <Node key={node.node.id} radarMap={radarMap} node={node} />
                             );
-                        })
+                        }).value()
                     }
                     {
-                        _.map(session.flights || [], flight => {
+                        _(flights).values().orderBy('alt', 'asc').map(flight => {
                             return (
                                 <Flight key={flight.id} radarMap={radarMap} flight={flight} />
                             );
-                        })
+                        }).value()
+                    })
 
                     }
                 </svg>

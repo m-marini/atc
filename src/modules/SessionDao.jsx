@@ -27,7 +27,15 @@ class SessionDao {
             id: uuidv4(),
             level: levelId,
             map: mapId,
-            flights: []
+            t: 0,
+            entries: {},
+            flights: {},
+            noFlights: 0,
+            noLandedOk: 0,
+            noLandedKo: 0,
+            noExitOk: 0,
+            noExitKo: 0,
+            noCollision: 0
         };
         return this.putSession(session);
     }

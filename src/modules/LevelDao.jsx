@@ -1,7 +1,8 @@
 
 import { AsyncSubject } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import _ from 'lodash';
 
 const url = process.env.REACT_APP_BASENAME + '/data/levels.json';
 
@@ -16,6 +17,12 @@ class LevelDao {
 
     levels() {
         return this._subj;
+    }
+
+    level(id) {
+        return this.levels().pipe(
+            map(data => _.find(data.levels, { id: id }))
+        );
     }
 }
 

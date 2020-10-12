@@ -15,4 +15,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #2: Create Home page
 - Issue #3: Create CI
 - Issue #9: Draw radar map
+- Issue #11: Simulation engine
 - Issue #12: Command panel
