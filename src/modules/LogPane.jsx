@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { Card } from 'react-bootstrap';
 
 function LogPane({ logger }) {
-    console.log(logger.log);
     return (
         <Card bg="dark" text="white">
             <Card.Body>
