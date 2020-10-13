@@ -9,7 +9,6 @@ class CockpitLogger {
     constructor(props = {}) {
         this._log = [];
         this.props = _.defaults({}, props, DEFAULT_CONF);
-        console.log(this.props);
         _.bindAll(this, ['sendMessage']);
     }
 
@@ -24,8 +23,6 @@ class CockpitLogger {
      * 
      */
     sendMessage(msg) {
-        console.log(msg.msg);
-        console.log(this.props);
         const { maxMessage } = this.props;
         this._log = _(this.log).concat(msg).takeRight(maxMessage).value();
         return this;

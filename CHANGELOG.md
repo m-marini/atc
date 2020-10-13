@@ -17,3 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #9: Draw radar map
 - Issue #11: Simulation engine
 - Issue #12: Command panel
+- Issue #16: Frankfurt map
+- Issue #17: Paris map
+- Issue #18: London map

@@ -6,25 +6,40 @@ function map(mapId, nodeId) {
   return maps.maps[mapId].nodes[nodeId];
 }
 
-function testHdgEntry(from, to) {
-  const fromNode = map('LIN', from);
-  const toNode = map('LIN', to);
-  const hdg = mapDao.hdg(toNode, fromNode);
-  expect(hdg).toBe(fromNode.hdg);
+function createTestHdgMapEntry(mapId) {
+  const map = maps.maps[mapId];
+  _(map.nodes)
+    .filter({ type: 'entry' }).forEach(from => {
+      const route = _(map.routes).find(node => {
+        return node.type === 'entry' && (
+          node.edges[0] === from.id
+          || node.edges[1] === from.id);
+      });
+      const toId = route.edges[0] === from.id
+        ? route.edges[1]
+        : route.edges[0];
+      const to = map.nodes[toId];
+      test(`${from.id} -> ${to.id}`, () => {
+        const hdg = mapDao.hdg(to, from);
+        expect(hdg).toBe(from.hdg);
+      });
+    });
 }
 
-describe('MapDao LIN entries', () => {
+describe('MapDao FFM entries1', () => {
+  createTestHdgMapEntry('FFM');
+});
 
-  test('ABN', () => { testHdgEntry('ABN', 'GEN'); });
-  test('BOA', () => { testHdgEntry('BOA', 'SRN'); });
-  test('BZO', () => { testHdgEntry('BZO', 'SRN'); });
-  test('DJ', () => { testHdgEntry('DJ', 'SRN'); });
-  test('ELB', () => { testHdgEntry('ELB', 'GEN'); });
-  test('FRZ', () => { testHdgEntry('FRZ', 'PAR'); });
-  test('LSA', () => { testHdgEntry('LSA', 'TOP'); });
-  test('PIS', () => { testHdgEntry('PIS', 'PAR'); });
-  test('VIC', () => { testHdgEntry('VIC', 'SRN'); });
-  test('ZUE', () => { testHdgEntry('ZUE', 'SRN'); });
+describe('MapDao LON entries1', () => {
+  createTestHdgMapEntry('LON');
+});
+
+describe('MapDao LIN entries', () => {
+  createTestHdgMapEntry('LIN');
+});
+
+describe('MapDao PAR entries', () => {
+  createTestHdgMapEntry('PAR');
 });
 
 describe('MapDao should generate heading', () => {

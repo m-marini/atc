@@ -1290,7 +1290,7 @@ describe('Flight should process time when holding', () => {
     expect(result).toBeAlt(36000);
     expect(result).toBeToAlt(36000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeRadial(map.center, 2 * len - ds - d0, hdg);
+    expect(result).toBeRadial(map.center, 2 * len - ds - d0, hdg, 0.1);
     expect(result).toBeStatus(FLIGHT_STATES.HOLDING_TO);
   });
 
