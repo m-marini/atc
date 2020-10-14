@@ -23,6 +23,8 @@ const FLIGHT_STATES = {
     TURNING: 'turning',
     APPROACHING: 'approaching',
     LANDING: 'landing',
+    HOLDING_FROM_AT: 'holdingFromAt',
+    HOLDING_TO_AT: 'holdingToAt',
     HOLDING_FROM: 'holdingFrom',
     HOLDING_TO: 'holdingTo',
     LANDED: 'landed',
@@ -188,6 +190,7 @@ class Flight {
             const newFlight = this.flight
                 .set('status', FLIGHT_STATES.HOLDING_FROM)
                 .set('hdg', mapDao.normHdg(hdg + 180))
+                .set('holdHdg', mapDao.normHdg(hdg + 180))
                 .set('fix', fix);
             this.readbackMessage(`holding at current position`);
             return this.with(newFlight);
@@ -197,10 +200,13 @@ class Flight {
                 this.flightEmergency(`negative, unable to hold at ${when} at ground`);
                 return this;
             }
-            const fix = map.nodes[when];
+            const at = map.nodes[when];
+            const hdg = mapDao.hdg(at, flight);
             const newFlight = this.flight
-                .set('status', FLIGHT_STATES.HOLDING_TO)
-                .set('fix', fix);
+                .set('status', FLIGHT_STATES.HOLDING_TO_AT)
+                .set('hdg', hdg)
+                .set('holdHdg', mapDao.normHdg(hdg + 180))
+                .set('at', when);
             this.readbackMessage(`holding at ${when}`);
             return this.with(newFlight);
         }
@@ -368,51 +374,100 @@ class Flight {
                 return this.holdingFrom();
             case FLIGHT_STATES.HOLDING_TO:
                 return this.holdingTo();
+            case FLIGHT_STATES.HOLDING_FROM_AT:
+                return this.holdingFromNode();
+            case FLIGHT_STATES.HOLDING_TO_AT:
+                return this.holdingToNode();
             default:
                 return this;
+        }
+    }
+
+    holdingFromNode() {
+        const { map, holdingDuration, dt } = this.props;
+        const flight = this.flightJS;
+        const { speed, at, holdHdg } = flight;
+        const dl = speed * holdingDuration / SECS_PER_HOUR / 2;
+        const node = map.nodes[at];
+        const { d, hdg: fixHdg } = mapDao.route(flight, node);
+        const ds = speed * dt / SECS_PER_HOUR;
+        if (d + ds >= dl) {
+            const d1 = 2 * dl - d - ds;
+            const { lat, lon } = mapDao.radial(node, fixHdg + 180, d1);
+            // Reverse circle
+            const newFlight = this.flight
+                .set('lat', lat)
+                .set('lon', lon)
+                .set('status', FLIGHT_STATES.HOLDING_TO_AT)
+                .set('hdg', fixHdg);
+            return this.with(newFlight).moveVert();
+        } else {
+            return this.hdg(holdHdg).moveHoriz().moveVert();
+        }
+    }
+
+    holdingToNode() {
+        const { map, dt } = this.props;
+        const flight = this.flightJS;
+        const { speed, at, holdHdg } = flight;
+        const node = map.nodes[at];
+        const { d, hdg: fixHdg } = mapDao.route(flight, node);
+        const ds = speed * dt / SECS_PER_HOUR;
+        if (ds >= d) {
+            const d1 = ds - d;
+            const { lat, lon } = mapDao.radial(node, holdHdg, d1);
+            // Reverse circle
+            const newFlight = this.flight
+                .set('lat', lat)
+                .set('lon', lon)
+                .set('status', FLIGHT_STATES.HOLDING_FROM_AT)
+                .set('hdg', holdHdg);
+            return this.with(newFlight).moveVert();
+        } else {
+            return this.hdg(fixHdg).moveHoriz().moveVert();
         }
     }
 
     holdingFrom() {
         const { holdingDuration, dt } = this.props;
         const flight = this.flightJS;
-        const { speed, fix } = flight;
+        const { speed, fix, holdHdg } = flight;
         const dl = speed * holdingDuration / SECS_PER_HOUR / 2;
-        const { d, hdg: fixHdg } = mapDao.route(fix, flight);
+        const { d, hdg: fixHdg } = mapDao.route(flight, fix);
         const ds = speed * dt / SECS_PER_HOUR;
-        if (d + ds > dl) {
+        if (d + ds >= dl) {
             const d1 = 2 * dl - d - ds;
-            const { lat, lon } = mapDao.radial(fix, fixHdg, d1);
+            const { lat, lon } = mapDao.radial(fix, fixHdg + 180, d1);
             // Reverse circle
             const newFlight = this.flight
                 .set('lat', lat)
                 .set('lon', lon)
                 .set('status', FLIGHT_STATES.HOLDING_TO)
-                .set('hdg', mapDao.normHdg(fixHdg + 180));
+                .set('hdg', fixHdg);
             return this.with(newFlight).moveVert();
         } else {
-            return this.moveHoriz().moveVert();
+            return this.hdg(holdHdg).moveHoriz().moveVert();
         }
     }
 
     holdingTo() {
         const { dt } = this.props;
         const flight = this.flightJS;
-        const { speed, fix } = flight;
+        const { speed, fix, holdHdg } = flight;
         const { d, hdg: fixHdg } = mapDao.route(flight, fix);
         const ds = speed * dt / SECS_PER_HOUR;
         if (ds > d) {
             const d1 = ds - d;
-            const { lat, lon } = mapDao.radial(fix, fixHdg, d1);
+            const { lat, lon } = mapDao.radial(fix, holdHdg, d1);
             // Reverse circle
             const newFlight = this.flight
                 .set('lat', lat)
                 .set('lon', lon)
                 .set('status', FLIGHT_STATES.HOLDING_FROM)
-                .set('hdg', mapDao.normHdg(fixHdg + 180));
+                .set('hdg', holdHdg);
             return this.with(newFlight).moveVert();
         } else {
-            return this.moveHoriz().moveVert();
+            return this.hdg(fixHdg).moveHoriz().moveVert();
         }
     }
 

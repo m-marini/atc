@@ -220,6 +220,23 @@ function toBeHdg(received, hdg) {
   }
 }
 
+function toBeHoldHdg(received, holdHdg) {
+  const pass = received.holdHdg === holdHdg;
+  if (pass) {
+    return {
+      message: () =>
+        `Expected not {\n  holdHdg: ${holdHdg}\n}\nReceived: {\n  holdHdg: ${received.holdHdg}\n}`,
+      pass: pass
+    };
+  } else {
+    return {
+      message: () =>
+      `Expected {\n  holdHdg: ${holdHdg}\n}\nReceived: {\n  holdHdg: ${received.holdHdg}\n}`,
+      pass: pass
+    };
+  }
+}
+
 function toBeStatus(received, status) {
   const pass = received.status === status;
   if (pass) {
@@ -232,23 +249,6 @@ function toBeStatus(received, status) {
     return {
       message: () =>
         `Expected {\n  status: ${status}\n}\nReceived:\n{\n  status: ${received.status}\n}`,
-      pass: pass
-    };
-  }
-}
-
-function toBeTo(received, to) {
-  const pass = received.to === to;
-  if (pass) {
-    return {
-      message: () =>
-        `Expected not {\n  to: ${to}\n}\nReceived:\n{\n  to: ${received.to}\n}`,
-      pass: pass
-    };
-  } else {
-    return {
-      message: () =>
-        `Expected {\n  to: ${to}\n}\nReceived:\n{\n  to: ${received.to}\n}`,
       pass: pass
     };
   }
@@ -343,7 +343,7 @@ expect.extend({
   toBeAlt, toBePos, toBeRadial, toBeStatus, toBeSpeed, toBeTurnTo,
   toBeHdg, toBeSpeedAtAlt, toBeApproachAlt, toBeToAlt, toBeAt, toBeRunway,
   toBeDescentFrom, toBeClimbedFrom, toBeOm, toBeLandingAlt, toBeFrom,
-  toBeExit, toBeFix
+  toBeExit, toBeFix, toBeHoldHdg
 });
 
 class FlightBuilder {
@@ -408,6 +408,10 @@ class FlightBuilder {
 
   hdg(hdg) {
     return new FlightBuilder(_.defaults({ hdg }, this.flight));
+  }
+
+  holdHdg(holdHdg) {
+    return new FlightBuilder(_.defaults({ holdHdg }, this.flight));
   }
 
   turnTo(turnTo) {
