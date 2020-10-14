@@ -520,13 +520,6 @@
                     "lat": 49.9266648336542,
                     "lon": 1.17166659794748
                 },
-                "DTY": {
-                    "id": "DTY",
-                    "type": "beacon",
-                    "alignment": "NE",
-                    "lat": 52.1799965006124,
-                    "lon": -1.11166658811271
-                },
                 "GUR": {
                     "id": "GUR",
                     "type": "entry",
@@ -654,57 +647,57 @@
                 {
                     "type": "landConnection",
                     "edges": [
-                        "DTY",
+                        "CLN",
                         "BKY"
                     ]
                 },
                 {
                     "type": "landConnection",
                     "edges": [
-                        "DTY",
+                        "CLN",
+                        "BIG"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "CLN",
+                        "MAY"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "SFD",
+                        "BKY"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "SFD",
+                        "BIG"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "SFD",
+                        "MAY"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "HON",
+                        "BKY"
+                    ]
+                },
+                {
+                    "type": "landConnection",
+                    "edges": [
+                        "HON",
                         "BNN"
-                    ]
-                },
-                {
-                    "type": "landConnection",
-                    "edges": [
-                        "CLN",
-                        "BKY"
-                    ]
-                },
-                {
-                    "type": "landConnection",
-                    "edges": [
-                        "CLN",
-                        "BIG"
-                    ]
-                },
-                {
-                    "type": "landConnection",
-                    "edges": [
-                        "CLN",
-                        "MAY"
-                    ]
-                },
-                {
-                    "type": "landConnection",
-                    "edges": [
-                        "SFD",
-                        "BKY"
-                    ]
-                },
-                {
-                    "type": "landConnection",
-                    "edges": [
-                        "SFD",
-                        "BIG"
-                    ]
-                },
-                {
-                    "type": "landConnection",
-                    "edges": [
-                        "SFD",
-                        "MAY"
                     ]
                 },
                 {
@@ -718,7 +711,7 @@
                     "type": "connection",
                     "edges": [
                         "CLN",
-                        "DTY"
+                        "CPT"
                     ]
                 },
                 {
@@ -726,6 +719,13 @@
                     "edges": [
                         "CLN",
                         "MID"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "CLN",
+                        "SFD"
                     ]
                 },
                 {
@@ -746,14 +746,14 @@
                     "type": "connection",
                     "edges": [
                         "HON",
-                        "DTY"
+                        "MID"
                     ]
                 },
                 {
                     "type": "connection",
                     "edges": [
                         "HON",
-                        "MID"
+                        "CLN"
                     ]
                 },
                 {
@@ -1124,6 +1124,13 @@
                     ]
                 },
                 {
+                    "type": "connection",
+                    "edges": [
+                        "SRN",
+                        "TOP"
+                    ]
+                },
+                {
                     "type": "entry",
                     "edges": [
                         "TOP",
@@ -1478,6 +1485,13 @@
                     "edges": [
                         "BNE",
                         "CTL"
+                    ]
+                },
+                {
+                    "type": "connection",
+                    "edges": [
+                        "DVL",
+                        "ABB"
                     ]
                 },
                 {

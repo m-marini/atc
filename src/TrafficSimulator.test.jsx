@@ -588,54 +588,6 @@ describe('Traffic simulation should processCommand for change flight level', () 
 
 describe('Traffic simulation should processCommand for turn heading', () => {
 
-  test('immediate', () => {
-    const hdg = Math.floor(Math.random() * 360 + 1);
-    const A1 = flightBuilder()
-      .radial(BEACON, 40, hdg + 180)
-      .hdg(360)
-      .alt(28000)
-      .toAlt(28000)
-      .status(FLIGHT_STATES.FLYING).flight;
-
-    const cmd = {
-      flight: A1.id, type: COMMAND_TYPES.TURN_HEADING, when: COMMAND_CONDITIONS.IMMEDIATE, to: BEACON.id
-    };
-    const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
-
-    expect(result.flights.A1).toBePos(A1);
-    expect(result.flights.A1).toBeHdg(hdg);
-    expect(result.flights.A1).toBeTurnTo(undefined);
-    expect(result.flights.A1).toBeStatus(FLIGHT_STATES.FLYING);
-  });
-
-  test('immediate from condition', () => {
-    const hdg = Math.floor(Math.random() * 360 + 1);
-    const A1 = flightBuilder()
-      .radial(BEACON, 40, hdg + 180)
-      .hdg(hdg + 10)
-      .alt(28000)
-      .toAlt(28000)
-      .at(BEACON.id)
-      .turnTo(ENTRY.id)
-      .status(FLIGHT_STATES.TURNING).flight;
-
-    const cmd = {
-      flight: A1.id, type: COMMAND_TYPES.TURN_HEADING, when: COMMAND_CONDITIONS.IMMEDIATE, to: BEACON.id
-    };
-    const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
-
-    expect(result.flights.A1).toBePos(A1);
-    expect(result.flights.A1).toBeHdg(hdg);
-    expect(result.flights.A1).toBeTurnTo(undefined);
-    expect(result.flights.A1).toBeAt(undefined);
-    expect(result.flights.A1).toBeStatus(FLIGHT_STATES.FLYING);
-
-  });
-
   test('to ENTRY at BEACON', () => {
     const hdg = Math.floor(Math.random() * 360 + 1);
     const A1 = flightBuilder()
@@ -746,34 +698,6 @@ describe('Traffic simulation should processCommand for clear to land', () => {
 });
 
 describe('Traffic simulation should processFlight turning at', () => {
-
-  test('BEACON from', () => {
-    const hdg = Math.floor(Math.random() * 360 + 1);
-    const A1 = flightBuilder()
-      .radial(BEACON, 0.1, hdg)
-      .hdg(hdg)
-      .alt(36000)
-      .toAlt(36000)
-      .turnTo(ENTRY.id)
-      .at(BEACON.id)
-      .status(FLIGHT_STATES.TURNING).flight;
-    const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights()
-      .sessionJS;
-
-    const hdg1 = mapDao.hdg(ENTRY, A1);
-    const ds = distance(A1.speed, DT);
-    expect(result.flights.A1).toBeHdg(hdg1);
-    expect(result.flights.A1).toBeAlt(36000);
-    expect(result.flights.A1).toBeToAlt(36000);
-    expect(result.flights.A1).toBeSpeedAtAlt();
-    expect(result.flights.A1).toBeTurnTo(undefined);
-    expect(result.flights.A1).toBeAt(undefined);
-    expect(result.flights.A1).toBeStatus(FLIGHT_STATES.FLYING);
-    expect(result.flights.A1).toBeRadial(A1, ds, hdg1);
-  });
-
   test('BEACON to', () => {
     const hdg = Math.floor(Math.random() * 360 + 1);
     const A1 = flightBuilder()
@@ -787,32 +711,6 @@ describe('Traffic simulation should processFlight turning at', () => {
 
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights()
-      .sessionJS;
-
-    const ds = distance(A1.speed, DT);
-    expect(result.flights.A1).toBeHdg(hdg);
-    expect(result.flights.A1).toBeAlt(36000);
-    expect(result.flights.A1).toBeToAlt(36000);
-    expect(result.flights.A1).toBeSpeedAtAlt();
-    expect(result.flights.A1).toBeTurnTo(ENTRY.id);
-    expect(result.flights.A1).toBeAt(BEACON.id);
-    expect(result.flights.A1).toBeStatus(FLIGHT_STATES.TURNING);
-    expect(result.flights.A1).toBeRadial(A1, ds, hdg);
-  });
-
-  test('BEACON to out of range', () => {
-    const hdg = Math.floor(Math.random() * 360 + 1);
-    const A1 = flightBuilder()
-      .radial(BEACON, 2, hdg)
-      .hdg(hdg)
-      .alt(36000)
-      .toAlt(36000)
-      .turnTo(ENTRY.id)
-      .at(BEACON.id)
-      .status(FLIGHT_STATES.TURNING).flight;
-    const session = createSession(A1);
     const result = new TrafficSimulator({ session, map, level, dt: DT })
       .processFlights()
       .sessionJS;

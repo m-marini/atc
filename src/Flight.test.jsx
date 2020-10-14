@@ -39,6 +39,14 @@ const map = {
   }
 };
 
+function rndHdg() {
+  return Math.floor(Math.random() * 360 + 1);
+}
+
+function rndFL() {
+  return Math.floor(Math.random() * 9 + 1) * 4000;
+}
+
 function props(props = {}, withMessages) {
   if (!withMessages) {
     return _.defaults({}, props, {
@@ -54,56 +62,53 @@ function props(props = {}, withMessages) {
   }
 }
 
-describe('Flight should process hold command', () => {
-
+describe('Flight should process time when flying to', () => {
   const hdg = Math.floor(Math.random() * 360 + 1);
+  const fixHdg = Math.floor(Math.random() * 360 + 1);
 
-  test('immediate', () => {
+  test(`BEACON D10 R${fixHdg} heading ${hdg}`, () => {
+    const d0 = 10;
     const A1 = flightBuilder()
-      .pos(map.center)
+      .radial(BEACON, d0, fixHdg)
       .hdg(hdg)
-      .alt(36000)
-      .toAlt(36000)
-      .status(FLIGHT_STATES.FLYING).flight;
+      .at(BEACON.id)
+      .alt(28000)
+      .toAlt(28000)
+      .status(FLIGHT_STATES.FLYING_TO).flight;
 
-    const result = new Flight(A1, props()).processCommand({
-      flight: 'A1',
-      type: COMMAND_TYPES.HOLD,
-      when: COMMAND_CONDITIONS.IMMEDIATE
-    }).flightJS;
+    const result = new Flight(A1, props())
+      .processTime().flightJS;
 
-    const hdg1 = mapDao.normHdg(hdg + 180);
+    const hdg1 = mapDao.normHdg(fixHdg + 180);
     expect(result).toBeHdg(hdg1);
-    expect(result).toBeAlt(36000);
-    expect(result).toBeToAlt(36000);
+    expect(result).toBeAlt(28000);
+    expect(result).toBeToAlt(28000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeFix(A1);
-    expect(result).toBePos(A1);
-    expect(result).toBeStatus(FLIGHT_STATES.HOLDING_FROM);
+    expect(result).toBeAt(BEACON.id);
+    expect(result).toBeRadial(A1, distance(A1.speed, DT), hdg1);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
   });
 
-  test('at BEACON', () => {
+  test(`BEACON D0.1 R${fixHdg} heading ${hdg}`, () => {
+    const d0 = 0.1;
     const A1 = flightBuilder()
-      .radial(BEACON, 20, hdg + 180)
+      .radial(BEACON, d0, fixHdg)
       .hdg(hdg)
-      .alt(36000)
-      .toAlt(36000)
-      .status(FLIGHT_STATES.FLYING).flight;
+      .alt(28000)
+      .toAlt(28000)
+      .at(BEACON.id)
+      .status(FLIGHT_STATES.FLYING_TO).flight;
 
-    const result = new Flight(A1, props()).processCommand({
-      flight: 'A1',
-      type: COMMAND_TYPES.HOLD,
-      when: BEACON.id
-    }).flightJS;
+    const result = new Flight(A1, props())
+      .processTime().flightJS;
 
-    const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(hdg);
-    expect(result).toBeAlt(36000);
-    expect(result).toBeToAlt(36000);
+    expect(result).toBeAlt(28000);
+    expect(result).toBeToAlt(28000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeFix(BEACON);
-    expect(result).toBePos(A1);
-    expect(result).toBeStatus(FLIGHT_STATES.HOLDING_TO);
+    expect(result).toBeAt(undefined);
+    expect(result).toBeRadial(A1, distance(A1.speed, DT), hdg);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
   });
 });
 
@@ -214,15 +219,18 @@ describe('Flight should process time when flying', () => {
   });
 });
 
-describe('Flight should process time when turning', () => {
-  test('before BEACON', () => {
+describe('Flight should process time when turning to ENTRY', () => {
+  const hdg = rndHdg();
+  const radial = rndHdg();
+  const alt = rndFL();
+
+  test(`flying ${alt}\' hdg ${hdg} D1.5 R${radial} BEACON`, () => {
     const d0 = 1.5;
-    const hdg = 30;
     const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 180)
+      .radial(BEACON, d0, radial)
       .hdg(hdg)
-      .alt(28000)
-      .toAlt(28000)
+      .alt(alt)
+      .toAlt(alt)
       .turnTo(ENTRY.id)
       .at(BEACON.id)
       .status(FLIGHT_STATES.TURNING).flight;
@@ -230,14 +238,16 @@ describe('Flight should process time when turning', () => {
     const result = new Flight(A1, props())
       .processTime().flightJS;
 
-    const d1 = distance(A1.speed, DT) - d0;
-    expect(result).toBeRadial(BEACON, d1, hdg);
-    expect(result).toBeAlt(28000);
-    expect(result).toBeToAlt(28000);
+    const ds = distance(A1.speed, DT);
+    const hdg1 = mapDao.normHdg(radial + 180);
+    expect(result).toBeHdg(hdg1);
+    expect(result).toBeAlt(alt);
+    expect(result).toBeToAlt(alt);
     expect(result).toBeSpeedAtAlt();
     expect(result).toBeAt(BEACON.id);
     expect(result).toBeTurnTo(ENTRY.id);
     expect(result).toBeStatus(FLIGHT_STATES.TURNING);
+    expect(result).toBeRadial(A1, ds, hdg1);
   });
 
   test('before BEACON climb', () => {
@@ -340,39 +350,37 @@ describe('Flight should process time when turning', () => {
     expect(result).toBeStatus(FLIGHT_STATES.TURNING);
   });
 
-  test('crossing BEACON', () => {
+  test(`passing BEACON flying ${alt}\' hdg ${hdg} D0.1 R${radial} BEACON`, () => {
     const d0 = 0.1;
-    const hdg = 30;
     const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 180)
+      .radial(BEACON, d0, radial)
       .hdg(hdg)
-      .alt(28000)
-      .toAlt(28000)
+      .alt(alt)
+      .toAlt(alt)
       .turnTo(ENTRY.id)
       .at(BEACON.id)
       .status(FLIGHT_STATES.TURNING).flight;
 
+    const ds = distance(A1.speed, DT);
+    const hdg1 = mapDao.hdg(ENTRY, A1);
+
     const result = new Flight(A1, props())
       .processTime().flightJS;
 
-    const ds = distance(A1.speed, DT);
-    const hdg1 = mapDao.hdg(ENTRY, A1);
-    const pos1 = mapDao.radial(A1, hdg1, ds);
     expect(result).toBeHdg(hdg1);
-    expect(result).toBeAlt(28000);
-    expect(result).toBeToAlt(28000);
+    expect(result).toBeAlt(alt);
+    expect(result).toBeToAlt(alt);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeAt(undefined);
+    expect(result).toBeAt(ENTRY.id);
     expect(result).toBeTurnTo(undefined);
-    expect(result).toBePos(pos1);
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
+    expect(result).toBeRadial(A1, ds, hdg1);
   });
 
-  test('crossing BEACON climb', () => {
+  test(`passing BEACON climb hdg ${hdg} D0.1 R${radial}`, () => {
     const d0 = 0.1;
-    const hdg = 30;
     const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 180)
+      .radial(BEACON, d0, radial)
       .hdg(hdg)
       .alt(28000)
       .toAlt(32000)
@@ -380,27 +388,26 @@ describe('Flight should process time when turning', () => {
       .at(BEACON.id)
       .status(FLIGHT_STATES.TURNING).flight;
 
+    const ds = distance(A1.speed, DT);
+    const hdg1 = mapDao.hdg(ENTRY, A1);
+
     const result = new Flight(A1, props())
       .processTime().flightJS;
 
-    const ds = distance(A1.speed, DT);
-    const hdg1 = mapDao.hdg(ENTRY, A1);
-    const pos1 = mapDao.radial(A1, hdg1, ds);
     expect(result).toBeHdg(hdg1);
     expect(result).toBeClimbedFrom(28000, DT);
     expect(result).toBeToAlt(32000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeAt(undefined);
+    expect(result).toBeAt(ENTRY.id);
     expect(result).toBeTurnTo(undefined);
-    expect(result).toBePos(pos1);
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
+    expect(result).toBeRadial(A1, ds, hdg1);
   });
 
-  test('crossing BEACON climb to 320', () => {
+  test(`passing BEACON climb 32000' hdg ${hdg} D0.1 R${radial}`, () => {
     const d0 = 0.1;
-    const hdg = 30;
     const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 180)
+      .radial(BEACON, d0, radial)
       .hdg(hdg)
       .alt(31900)
       .toAlt(32000)
@@ -413,22 +420,20 @@ describe('Flight should process time when turning', () => {
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.hdg(ENTRY, A1);
-    const pos1 = mapDao.radial(A1, hdg1, ds);
     expect(result).toBeHdg(hdg1);
     expect(result).toBeAlt(32000);
     expect(result).toBeToAlt(32000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeAt(undefined);
+    expect(result).toBeAt(ENTRY.id);
     expect(result).toBeTurnTo(undefined);
-    expect(result).toBePos(pos1);
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeRadial(A1, ds, hdg1);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
   });
 
-  test('crossing BEACON descend', () => {
+  test(`passing BEACON descend hdg ${hdg} D0.1 R${radial}`, () => {
     const d0 = 0.1;
-    const hdg = 30;
     const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 180)
+      .radial(BEACON, d0, radial)
       .hdg(hdg)
       .alt(28000)
       .toAlt(24000)
@@ -441,22 +446,20 @@ describe('Flight should process time when turning', () => {
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.hdg(ENTRY, A1);
-    const pos1 = mapDao.radial(A1, hdg1, ds);
     expect(result).toBeHdg(hdg1);
     expect(result).toBeDescentFrom(28000, DT);
     expect(result).toBeToAlt(24000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeAt(undefined);
+    expect(result).toBeAt(ENTRY.id);
     expect(result).toBeTurnTo(undefined);
-    expect(result).toBePos(pos1);
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
+    expect(result).toBeRadial(A1, ds, hdg1);
   });
 
-  test('crossing BEACON descend to 240', () => {
+  test(`passing BEACON descend 24000' hdg ${hdg} D0.1 R${radial}`, () => {
     const d0 = 0.1;
-    const hdg = 30;
     const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 180)
+      .radial(BEACON, d0, radial)
       .hdg(hdg)
       .alt(24100)
       .toAlt(24000)
@@ -469,43 +472,15 @@ describe('Flight should process time when turning', () => {
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.hdg(ENTRY, A1);
-    const pos1 = mapDao.radial(A1, hdg1, ds);
     expect(result).toBeHdg(hdg1);
     expect(result).toBeAlt(24000);
     expect(result).toBeToAlt(24000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeAt(undefined);
+    expect(result).toBeAt(ENTRY.id);
     expect(result).toBeTurnTo(undefined);
-    expect(result).toBePos(pos1);
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
+    expect(result).toBeRadial(A1, ds, hdg1);
   });
-
-  test('after BEACON', () => {
-    const d0 = 1.5;
-    const hdg = 30;
-    const A1 = flightBuilder()
-      .radial(BEACON, d0, hdg + 89)
-      .hdg(hdg)
-      .alt(28000)
-      .toAlt(28000)
-      .turnTo(ENTRY.id)
-      .at(BEACON.id)
-      .status(FLIGHT_STATES.TURNING).flight;
-
-    const result = new Flight(A1, props())
-      .processTime().flightJS;
-
-    const ds = distance(A1.speed, DT);
-    expect(result).toBeHdg(hdg);
-    expect(result).toBeAlt(28000);
-    expect(result).toBeToAlt(28000);
-    expect(result).toBeSpeedAtAlt();
-    expect(result).toBeAt(BEACON.id);
-    expect(result).toBeTurnTo(ENTRY.id);
-    expect(result).toBePos(mapDao.radial(A1, A1.hdg, ds));
-    expect(result).toBeStatus(FLIGHT_STATES.TURNING);
-  });
-
 });
 
 describe('Flight should process time when approaching', () => {
@@ -986,7 +961,8 @@ describe('Flight should process turn command', () => {
     expect(result).toBeAlt(28000);
     expect(result).toBeToAlt(28000);
     expect(result).toBeSpeedAtAlt();
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeAt(ENTRY.id)
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
     expect(result).toBePos(A1);
   });
 
@@ -1063,7 +1039,8 @@ describe('Flight should process turn command', () => {
     expect(result).toBeAlt(A1.alt);
     expect(result).toBeToAlt(A1.toAlt);
     expect(result).toBeSpeed(A1.speed);
-    expect(result).toBeStatus(FLIGHT_STATES.FLYING);
+    expect(result).toBeAt(ENTRY.id);
+    expect(result).toBeStatus(FLIGHT_STATES.FLYING_TO);
     expect(result).toBePos(A1);
   });
 });
@@ -1151,6 +1128,7 @@ describe('Flight should process clear to land command', () => {
     expect(result).toBePos(A1);
   });
 });
+
 describe('Flight should process exit', () => {
 
   test('flying hdg+91', () => {
@@ -1338,3 +1316,56 @@ describe('Flight should process time when holding', () => {
     expect(result).toBeStatus(FLIGHT_STATES.HOLDING_TO);
   });
 });
+describe('Flight should process hold command', () => {
+
+  const hdg = Math.floor(Math.random() * 360 + 1);
+
+  test('immediate', () => {
+    const A1 = flightBuilder()
+      .pos(map.center)
+      .hdg(hdg)
+      .alt(36000)
+      .toAlt(36000)
+      .status(FLIGHT_STATES.FLYING).flight;
+
+    const result = new Flight(A1, props()).processCommand({
+      flight: 'A1',
+      type: COMMAND_TYPES.HOLD,
+      when: COMMAND_CONDITIONS.IMMEDIATE
+    }).flightJS;
+
+    const hdg1 = mapDao.normHdg(hdg + 180);
+    expect(result).toBeHdg(hdg1);
+    expect(result).toBeAlt(36000);
+    expect(result).toBeToAlt(36000);
+    expect(result).toBeSpeedAtAlt();
+    expect(result).toBeFix(A1);
+    expect(result).toBePos(A1);
+    expect(result).toBeStatus(FLIGHT_STATES.HOLDING_FROM);
+  });
+
+  test('at BEACON', () => {
+    const A1 = flightBuilder()
+      .radial(BEACON, 20, hdg + 180)
+      .hdg(hdg)
+      .alt(36000)
+      .toAlt(36000)
+      .status(FLIGHT_STATES.FLYING).flight;
+
+    const result = new Flight(A1, props()).processCommand({
+      flight: 'A1',
+      type: COMMAND_TYPES.HOLD,
+      when: BEACON.id
+    }).flightJS;
+
+    const ds = distance(A1.speed, DT);
+    expect(result).toBeHdg(hdg);
+    expect(result).toBeAlt(36000);
+    expect(result).toBeToAlt(36000);
+    expect(result).toBeSpeedAtAlt();
+    expect(result).toBeFix(BEACON);
+    expect(result).toBePos(A1);
+    expect(result).toBeStatus(FLIGHT_STATES.HOLDING_TO);
+  });
+});
+

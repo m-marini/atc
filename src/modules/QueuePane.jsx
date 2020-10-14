@@ -10,6 +10,8 @@ function status(flight) {
     switch (status) {
         case FLIGHT_STATES.FLYING:
             return '';
+        case FLIGHT_STATES.FLYING_TO:
+            return `flying to ${at}`;
         case FLIGHT_STATES.WAITING_FOR_TAKEOFF:
             return sprintf('hold short runway %s', from);
         case FLIGHT_STATES.LANDING:
@@ -20,7 +22,7 @@ function status(flight) {
         case FLIGHT_STATES.HOLDING_TO:
             return 'holding';
         case FLIGHT_STATES.TURNING:
-            return sprintf('turn to %s passing %s', turnTo, at);
+            return sprintf('turn to %s via %s', turnTo, at);
         default:
             return status;
     }
