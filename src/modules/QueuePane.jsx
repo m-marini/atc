@@ -21,6 +21,9 @@ function status(flight) {
         case FLIGHT_STATES.HOLDING_FROM:
         case FLIGHT_STATES.HOLDING_TO:
             return 'holding';
+        case FLIGHT_STATES.HOLDING_FROM_AT:
+        case FLIGHT_STATES.HOLDING_TO_AT:
+            return `holding at ${at}`;
         case FLIGHT_STATES.TURNING:
             return sprintf('turn to %s via %s', turnTo, at);
         default:

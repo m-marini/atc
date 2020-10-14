@@ -7,7 +7,7 @@ function LogPane({ logger }) {
         <Card bg="dark" text="white">
             <Card.Body>
                 {
-                    _.map(logger.log, (msg, i) => {
+                    _.clone(logger.log).map( (msg, i) => {
                         return (
                             <pre key={i} className={msg.type}>{msg.msg}</pre>
                         );
