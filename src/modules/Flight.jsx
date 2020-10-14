@@ -19,6 +19,7 @@ const FLIGHT_TYPES = {
 const FLIGHT_STATES = {
     WAITING_FOR_TAKEOFF: 'waitingForTakeoff',
     FLYING: 'flying',
+    FLYING_TO: 'flyingTo',
     TURNING: 'turning',
     APPROACHING: 'approaching',
     LANDING: 'landing',
@@ -272,10 +273,10 @@ class Flight {
             }
             const newFlight = this.flight
                 .set('hdg', hdg)
-                .set('status', FLIGHT_STATES.FLYING)
+                .set('at', to)
+                .set('status', FLIGHT_STATES.FLYING_TO)
                 .delete('rwy')
                 .delete('om')
-                .delete('at')
                 .delete('turnTo');
             this.readbackMessage(`flying heading ${sprintf('%03d', hdg)} to ${to}`);
             return this.with(newFlight);
@@ -353,6 +354,8 @@ class Flight {
 
     processTimePhase1() {
         switch (this.flight.get('status')) {
+            case FLIGHT_STATES.FLYING_TO:
+                return this.flyingTo();
             case FLIGHT_STATES.FLYING:
                 return this.flying();
             case FLIGHT_STATES.TURNING:
@@ -637,15 +640,20 @@ class Flight {
         // Check position
         const { map, dt } = this.props;
         const flight = this.flightJS;
-        const { speed } = flight;
-        const atNode = map.nodes[flight.at];
-        const d = mapDao.distance(flight, atNode);
+        const { speed, at, hdg } = flight;
+        const atNode = map.nodes[at];
+        const { d, hdg: hdgTo } = mapDao.route(flight, atNode);
         const ds = speed * dt / SECS_PER_HOUR;
         if (d < ds) {
-            // Turn to
+            // Passing
             return this.turnTo().moveHoriz().moveVert();
-        } else {
+        } else if (hdgTo === hdg) {
             return this.moveHoriz().moveVert();
+        } else {
+            // correct
+            return this.hdg(hdgTo)
+                .moveHoriz()
+                .moveVert();
         }
     }
 
@@ -659,13 +667,17 @@ class Flight {
         const hdg = mapDao.hdg(toNode, flight);
         const newFlight = this.flight
             .set('hdg', hdg)
-            .set('status', FLIGHT_STATES.FLYING)
-            .delete('turnTo')
-            .delete('at');
+            .set('status', FLIGHT_STATES.FLYING_TO)
+            .set('at', flight.turnTo)
+            .delete('turnTo');
         this.flightMessage(`flying heading ${sprintf('%03d', hdg)}, ${flight.id}`);
         this.atcMessage(`maintain heading ${sprintf('%03d', hdg)}`);
         this.readbackMessage(`maintaining heading ${sprintf('%03d', hdg)}`);
         return this.with(newFlight);
+    }
+
+    hdg(hdg) {
+        return this.with(this.flight.set('hdg', hdg));
     }
 
     /**
@@ -729,6 +741,38 @@ class Flight {
      */
     flying() {
         return this.moveHoriz().moveVert();
+    }
+
+    /**
+     * 
+     */
+    flyingTo() {
+        const { map, dt } = this.props;
+        const flight = this.flightJS;
+        const { at, speed, hdg } = flight;
+        // compute heading
+        const atNode = map.nodes[at];
+        const { d, hdg: hdgTo } = mapDao.route(flight, atNode);
+        const ds = speed * dt / SECS_PER_HOUR;
+        if (ds >= d) {
+            // Passing
+            const flight1 = this.flight
+                .delete('at')
+                .set('status', FLIGHT_STATES.FLYING);
+            // Messages
+            return this.with(flight1)
+                .moveHoriz()
+                .moveVert();
+        } else if (hdgTo === hdg) {
+            return this.moveHoriz().moveVert();
+        } else {
+            // correct
+            const flight1 = this.flight
+                .set('hdg', hdgTo);
+            return this.with(flight1)
+                .moveHoriz()
+                .moveVert();
+        }
     }
 
     speedByAlt(alt) {
