@@ -251,7 +251,7 @@ describe('Flight should process time when holding', () => {
     expect(result).toBeHoldHdg(holdHdg);
     expect(result).toBeAt(BEACON.id);
     expect(result).toBeStatus(FLIGHT_STATES.HOLDING_TO_AT);
-    expect(result).toBeRadial(BEACON, 2 * len - outbound - ds, radial, 0.01);
+    expect(result).toBeRadial(BEACON, 2 * len - outbound - ds, radial, 0.05);
   });
 
   test(`flying from BEACON at inbound hdg ${hdg}, D${inbound} R${radial}, holdHdg ${holdHdg}`, () => {

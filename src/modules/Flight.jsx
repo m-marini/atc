@@ -2,7 +2,8 @@ import { fromJS, Map } from 'immutable';
 import { mapDao } from './MapDao';
 import { sprintf } from 'sprintf-js';
 import _ from 'lodash';
-import { COMMAND_CONDITIONS, COMMAND_TYPES, NODE_TYPES, MESSAGE_TYPES } from './TrafficSimulator';
+import { MessageUtils } from './MessagesUtils';
+import { COMMAND_CONDITIONS, COMMAND_TYPES, NODE_TYPES } from './TrafficSimulator';
 
 const SECS_PER_HOUR = 3600;
 const MINS_PER_SEC = 1.0 / 60;
@@ -58,58 +59,28 @@ class Flight {
         }
         this.props = props;
         this.with = this.with.bind(this);
+        this.messager = new MessageUtils(props);
     }
 
-    sendMessage(build) {
-        const { sendMessage } = this.props;
-        if (!!sendMessage) {
-            sendMessage(build());
-        }
-    }
 
     atcMessage(msg) {
-        this.sendMessage(() => {
-            return {
-                type: MESSAGE_TYPES.ATC,
-                msg: `${this.flight.get('id')}, ${this.props.map.name} ATC, ${msg}`
-            }
-        });
+        this.messager.atcMessage(this.flightJS, msg);
     }
 
     flightMessage(msg) {
-        this.sendMessage(() => {
-            return {
-                type: MESSAGE_TYPES.FLIGHT,
-                msg: `${this.props.map.name} ATC, ${this.flight.get('id')}, ${msg}`
-            }
-        });
+        this.messager.flightMessage(this.flightJS, msg);
     }
 
     readbackMessage(msg) {
-        this.sendMessage(() => {
-            return {
-                type: MESSAGE_TYPES.READBACK,
-                msg: `${msg}, ${this.flight.get('id')}`
-            }
-        });
+        this.messager.readbackMessage(this.flightJS, msg);
     }
 
     atcEmergency(msg) {
-        this.sendMessage(() => {
-            return {
-                type: MESSAGE_TYPES.EMERGENCY,
-                msg: `${this.flight.get('id')}, ${this.props.map.name} ATC, ${msg}`
-            }
-        });
+        this.messager.atcEmergency(this.flightJS, msg);
     }
 
     flightEmergency(msg) {
-        this.sendMessage(() => {
-            return {
-                type: MESSAGE_TYPES.EMERGENCY,
-                msg: `${this.props.map.name} ATC, ${this.flight.get('id')}, ${msg}`
-            }
-        });
+        this.messager.flightEmergency(this.flightJS, msg);
     }
 
     /** Returns the JSON flight */
@@ -142,17 +113,17 @@ class Flight {
         const toNode = this.props.map.nodes[to];
 
         if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-            this.flightMessage(`holding short runway ${from}, ready for departure to ${to}`);
+            this.flightMessage(`holding short runway ${from}, ready for departure via ${to}`);
             this.atcMessage(`hold short runway ${from}`);
             this.readbackMessage(`holding short runway ${from}`);
         } else if (toNode.type === NODE_TYPES.RUNWAY) {
-            this.flightMessage(`inbound from ${from} to land runway ${to}`);
+            this.flightMessage(`enter control zone via ${from} at ${alt}' to runway ${to}`);
             this.atcMessage(`mantain ${alt}, heading ${hdg}`);
             this.readbackMessage(`mantaining ${alt}, heading ${hdg}`);
         } else {
-            this.flightMessage(`inbound from ${from} to leave at ${to}`);
-            this.atcMessage(`mantain ${alt}, heading ${hdg}`);
-            this.readbackMessage(`mantaining ${alt}, heading ${hdg}`);
+            this.flightMessage(`enter control zone at ${alt}' heading ${hdg} leave ${to}`);
+            this.atcMessage(`mantain ${alt}', heading ${hdg}`);
+            this.readbackMessage(`mantaining ${alt}', heading ${hdg}`);
         }
         return this;
     }
@@ -617,9 +588,6 @@ class Flight {
                 .set('speed', 0)
                 .set('alt', 0)
                 .set('status', FLIGHT_STATES.LANDED);
-            this.atcMessage(`runway ${runwayNode.id} vacated`);
-            this.flightMessage(`leaving frequency`);
-            this.atcMessage(`good day`);
             return this.with(newFlight);
         }
 
