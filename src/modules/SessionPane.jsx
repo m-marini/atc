@@ -14,6 +14,7 @@ import { interval } from 'rxjs';
 import { TrafficSimulator } from './TrafficSimulator';
 import { levelDao } from './LevelDao';
 import { cockpitLogger } from './CockpitLogger';
+import ReactAudioPlayer from 'react-audio-player';
 
 const INTERVAL = 1000;
 const SIM_INTERVAL = 10;
@@ -27,6 +28,7 @@ class Session extends Component {
     this.handleClock = this.handleClock.bind(this);
     this.handleCommand = this.handleCommand.bind(this);
     this.clock = interval(INTERVAL);
+
   }
 
   componentDidMount() {
@@ -99,6 +101,7 @@ class Session extends Component {
             <Row>
             </Row>
           </Container>
+          <ReactAudioPlayer autoPlay />
         </Container >
       );
     }

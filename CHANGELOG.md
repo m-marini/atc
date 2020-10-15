@@ -24,3 +24,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #20: Flight to beacon
 - Issue #21: fly and turn to beacon
 - Issue #22: fly to beacon and hold
+- Issue #25: Message logger

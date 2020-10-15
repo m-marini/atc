@@ -258,9 +258,9 @@ class Flight {
             this.readbackMessage(`flying heading ${sprintf('%03d', hdg)} to ${to}`);
             return this.with(newFlight);
         } else {
-            this.atcMessage(`turn to ${to} passing ${when}`);
+            this.atcMessage(`turn to ${to} via ${when}`);
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-                this.flightEmergency(`negative, unable to turn to ${to} passing ${when} at ground`);
+                this.flightEmergency(`negative, unable to turn to ${to} via ${when} at ground`);
                 this.atcMessage(`roger`);
                 return this;
             }
@@ -270,7 +270,7 @@ class Flight {
                 .delete('rwy')
                 .delete('om')
                 .set('turnTo', to);
-            this.readbackMessage(`turn to ${to} passing ${when}`);
+            this.readbackMessage(`turn to ${to} via ${when}`);
             return this.with(newFlight);
         }
     }
