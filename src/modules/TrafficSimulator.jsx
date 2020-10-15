@@ -2,6 +2,7 @@ import { fromJS, Set } from 'immutable';
 import _ from 'lodash';
 import { Flight, FLIGHT_STATES, FLIGHT_TYPES } from './Flight';
 import { mapDao } from './MapDao';
+import { MessageUtils } from './MessagesUtils';
 
 const COMMAND_TYPES = {
     CHANGE_LEVEL: 'changeLevel',
@@ -51,13 +52,6 @@ const TRAFFIC_SIM_DEFAULTS = {
             vspeed: 700         // fpm
         }
     }
-};
-
-const MESSAGE_TYPES = {
-    ATC: 'atc',
-    FLIGHT: 'flight',
-    READBACK: 'readback',
-    EMERGENCY: 'emergency'
 };
 
 /**
@@ -111,8 +105,8 @@ class TrafficSimulator {
     constructor(props) {
         const session = props.session instanceof Map ? props.session : fromJS(props.session);
         this.props = _.defaults({ session }, props, TRAFFIC_SIM_DEFAULTS);
+        this.messager = new MessageUtils(this.props);
         this.withSession = this.withSession.bind(this);
-        this.sendMessage = this.sendMessage.bind(this);
     }
 
     /** Returns the session */
@@ -120,13 +114,6 @@ class TrafficSimulator {
 
     withSession(session) {
         return new TrafficSimulator(_.defaults({ session }, this.props));
-    }
-
-    sendMessage(msg) {
-        const sendMessage = this.props.sendMessage;
-        if (!!sendMessage) {
-            sendMessage(msg);
-        }
     }
 
     /**
@@ -195,6 +182,9 @@ class TrafficSimulator {
                 .set('flights', fromJS(notCollidedMap))
                 .update('noCollision', n => n + noCollided)
             // Sending message
+            collided.forEach(flight => {
+                this.messager.flightEmergency(flight, `Mayday, mayday, mayday, We are colliding`);
+            });
             return this.withSession(newSession);
         }
         return this;
@@ -209,10 +199,11 @@ class TrafficSimulator {
             { status: FLIGHT_STATES.EXITED });
         const noExited = exited.length;
         if (noExited > 0) {
-            const ok = _.filter(exited, f => {
+            const exitedOk = _.filter(exited, f => {
                 return f.alt === exitAlt
                     && f.to === f.exit
-            }).length;
+            });
+            const ok = exitedOk.length;
             const ko = noExited - ok;
             const notExitedMap = _(notExited)
                 .groupBy('id')
@@ -223,6 +214,16 @@ class TrafficSimulator {
                 .update('noExitOk', n => n + ok)
                 .update('noExitKo', n => n + ko);
             // Sending message
+            exited.forEach(flight => {
+                const ok = _.find(exitedOk, { id: flight.id }) !== undefined;
+                if (ok) {
+                    this.messager.flightMessage(flight, `Leaving controlled zone via ${flight.exit} at ${flight.alt}'`);
+                    this.messager.atcMessage(flight, `Cleared ${flight.to} departure`);
+                } else {
+                    this.messager.flightMessage(flight, `Leaving controlled zone via ${flight.exit} at ${flight.alt}'`);
+                    this.messager.atcEmergency(flight, `Negative, cleared ${flight.to} to departure`);
+                }
+            });
             return this.withSession(newSession);
         }
         return this;
@@ -252,6 +253,9 @@ class TrafficSimulator {
             const newSession = this.props.session
                 .set('flights', fromJS(inAreaMap))
                 .update('noExitKo', n => n + exited.length)
+            exited.forEach(flight => {
+                this.messager.flightEmergency(flight, `Leaving controlled zone heading ${flight.hdg} at ${flight.alt}'`);
+            });
             // Sending message
             return this.withSession(newSession);
         } else {
@@ -267,7 +271,8 @@ class TrafficSimulator {
             { status: FLIGHT_STATES.LANDED });
         const noLanded = landed.length;
         if (noLanded > 0) {
-            const ok = _.filter(landed, f => f.to === f.rwy).length;
+            const landedOk = _.filter(landed, f => f.to === f.rwy);
+            const ok = landedOk.length;
             const ko = noLanded - ok;
             const notLandedMap = _(notLanded)
                 .groupBy('id')
@@ -278,6 +283,17 @@ class TrafficSimulator {
                 .update('noLandedOk', n => n + ok)
                 .update('noLandedKo', n => n + ko);
             // Sending message
+            landed.forEach(flight => {
+                const ok = _.find(landedOk, { id: flight.id }) !== undefined;
+                if (ok) {
+                    this.messager.atcMessage(flight, `runway ${flight.rwy} vacated`);
+                    this.messager.flightMessage(flight, `leaving frequency`);
+                    this.messager.atcMessage(flight, `good day`);
+                } else {
+                    this.messager.atcMessage(flight, `runway ${flight.rwy} vacated`);
+                    this.messager.flightEmergency(flight, `wrong arrival runway, leaving frequency`);
+                }
+            });
             return this.withSession(newSession);
         } else {
             return this;
@@ -396,4 +412,4 @@ class TrafficSimulator {
     }
 }
 
-export { TrafficSimulator, MESSAGE_TYPES, NODE_TYPES, FLIGHT_TYPES, FLIGHT_STATES, COMMAND_TYPES, COMMAND_CONDITIONS, TRAFFIC_SIM_DEFAULTS };
+export { TrafficSimulator, NODE_TYPES, FLIGHT_TYPES, FLIGHT_STATES, COMMAND_TYPES, COMMAND_CONDITIONS, TRAFFIC_SIM_DEFAULTS };
