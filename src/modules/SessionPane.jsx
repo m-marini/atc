@@ -14,7 +14,10 @@ import { interval } from 'rxjs';
 import { TrafficSimulator } from './TrafficSimulator';
 import { levelDao } from './LevelDao';
 import { cockpitLogger } from './CockpitLogger';
+import Reader from './Reader';
 import ReactAudioPlayer from 'react-audio-player';
+import _ from 'lodash';
+import { AudioBuilder, toMessage, toMp3 } from './Audio';
 
 const INTERVAL = 1000;
 const SIM_INTERVAL = 10;
@@ -24,11 +27,10 @@ class Session extends Component {
   constructor(props) {
     super(props);
     const logger = cockpitLogger();
-    this.state = { logger };
-    this.handleClock = this.handleClock.bind(this);
-    this.handleCommand = this.handleCommand.bind(this);
+    const reader = new Reader();
+    this.state = { logger, reader };
     this.clock = interval(INTERVAL);
-
+    _.bindAll(this, ['handleClock', 'handleCommand', 'handleAudioEnded', 'handleSimulationEvent', 'handleAudioError']);
   }
 
   componentDidMount() {
@@ -56,30 +58,49 @@ class Session extends Component {
   }
 
   handleCommand(cmd) {
-    console.log('cmd', cmd);
-    const { session, map, level, logger } = this.state;
+    const { session, map, level } = this.state;
     const sim = new TrafficSimulator({
       session, map, level,
-      sendMessage: logger.sendMessage
+      onEvent: this.handleSimulationEvent
     });
     const next = sim.processCommand(cmd).sessionJS;
     const newSession = sessionDao.putSession(next);
     this.setState({ session: newSession });
   }
 
+  handleSimulationEvent(event) {
+    const { reader, logger } = this.state;
+    // toMessages(event).forEach(logger.sendMessage);
+    const clips = new AudioBuilder(event).toAudio().clips;
+    clips.forEach(clip => logger.sendMessage(toMessage(clip)));
+    const newReader = reader.say(clips.flatMap(toMp3));
+    this.setState({ reader: newReader });
+  }
+
   handleClock(t) {
-    const { session, map, level, logger } = this.state;
+    const { session, map, level } = this.state;
     const sim = new TrafficSimulator({
       session, map, level, dt: SIM_INTERVAL,
-      sendMessage: logger.sendMessage
+      onEvent: this.handleSimulationEvent
     });
     const next = sim.transition().sessionJS;
     const newSession = sessionDao.putSession(next);
     this.setState({ session: newSession });
   }
 
+  handleAudioEnded() {
+    this.setState({ reader: this.state.reader.next() })
+  }
+
+  handleAudioError() {
+    const { reader } = this.state;
+    console.error('missing src', reader.src);
+    this.setState({ reader: reader.next() })
+  }
+
   render() {
-    const { session, map, nodeMap, level, logger } = this.state;
+    const { session, map, nodeMap, level, logger, reader } = this.state;
+    const src = reader.src;
     if (!nodeMap || !session || !map || !level) {
       return (<div></div>);
     } else {
@@ -101,7 +122,9 @@ class Session extends Component {
             <Row>
             </Row>
           </Container>
-          <ReactAudioPlayer autoPlay />
+          <ReactAudioPlayer src={src} autoPlay
+            onEnded={this.handleAudioEnded}
+            onError={this.handleAudioError} />
         </Container >
       );
     }

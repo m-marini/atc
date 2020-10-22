@@ -2,7 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import { Alert } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { MESSAGE_TYPES } from './MessagesUtils';
+import { MESSAGE_TYPES } from './Events';
+import { ATC_VOICE } from './Audio';
 
 const DEFAULT_CONF = {
     maxMessage: 10
@@ -31,16 +32,11 @@ class CockpitLogger {
         const { maxMessage } = this.props;
         switch (msg.type) {
             case MESSAGE_TYPES.ATC:
-                toast.dark((<Alert variant="success">{msg.msg}</Alert>));
-                break;
-            case MESSAGE_TYPES.EMERGENCY:
-                toast.error((<Alert variant="danger">{msg.msg}</Alert>));
-                break;
-            case MESSAGE_TYPES.FLIGHT:
-                toast.dark((<Alert variant="warning">{msg.msg}</Alert>));
+            case ATC_VOICE:
+                toast.dark((<Alert variant="light">{msg.msg}</Alert>));
                 break;
             default:
-                toast.dark((<Alert variant="dark">{msg.msg}</Alert>));
+                toast.dark((<Alert variant="success">{msg.msg}</Alert>));
                 break;
         }
 

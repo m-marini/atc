@@ -2,6 +2,7 @@ import { TrafficSimulator, NODE_TYPES, FLIGHT_STATES, FLIGHT_TYPES, COMMAND_TYPE
 import _ from 'lodash';
 import { mapDao } from './modules/MapDao';
 import { distance, flightBuilder } from './TestUtil';
+import {sprintf} from 'sprintf-js';
 
 const DT = 10; // sec
 

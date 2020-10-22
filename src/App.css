@@ -8,8 +8,20 @@
   margin-bottom: 0px;
 }
 
+.john {
+  color: #00ff00;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+
 .flight {
   color: #d0d000;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+  
+.george {
+  color: #d0d0d0;
   font-size: 12px;
   margin-bottom: 0px;
 }

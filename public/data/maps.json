@@ -1,10 +1,5 @@
 {
     "maps": {
-        "LRX": {
-            "id": "LRX",
-            "name": "Lamarx",
-            "descr": "Lamarx (Demo)"
-        },
         "FFM": {
             "id": "FFM",
             "name": "Frankfurt",

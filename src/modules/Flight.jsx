@@ -1,9 +1,8 @@
 import { fromJS, Map } from 'immutable';
 import { mapDao } from './MapDao';
-import { sprintf } from 'sprintf-js';
 import _ from 'lodash';
-import { MessageUtils } from './MessagesUtils';
 import { COMMAND_CONDITIONS, COMMAND_TYPES, NODE_TYPES } from './TrafficSimulator';
+import { buildEvent, EVENT_TYPES } from './Events';
 
 const SECS_PER_HOUR = 3600;
 const MINS_PER_SEC = 1.0 / 60;
@@ -58,29 +57,16 @@ class Flight {
             this._flightJS = f;
         }
         this.props = props;
-        this.with = this.with.bind(this);
-        this.messager = new MessageUtils(props);
+        _.bindAll(this);
     }
 
-
-    atcMessage(msg) {
-        this.messager.atcMessage(this.flightJS, msg);
-    }
-
-    flightMessage(msg) {
-        this.messager.flightMessage(this.flightJS, msg);
-    }
-
-    readbackMessage(msg) {
-        this.messager.readbackMessage(this.flightJS, msg);
-    }
-
-    atcEmergency(msg) {
-        this.messager.atcEmergency(this.flightJS, msg);
-    }
-
-    flightEmergency(msg) {
-        this.messager.flightEmergency(this.flightJS, msg);
+    fireEvent(type, cmd) {
+        const { onEvent } = this.props;
+        if (!!onEvent) {
+            const event = buildEvent(type, this.flightJS, this.props.map, cmd);
+            onEvent(event);
+        }
+        return this;
     }
 
     /** Returns the JSON flight */
@@ -107,27 +93,6 @@ class Flight {
     with(flight) {
         return new Flight(flight, this.props);
     }
-
-    clearanceEntry() {
-        const { status, to, from, alt, hdg } = this.flightJS;
-        const toNode = this.props.map.nodes[to];
-
-        if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-            this.flightMessage(`holding short runway ${from}, ready for departure via ${to}`);
-            this.atcMessage(`hold short runway ${from}`);
-            this.readbackMessage(`holding short runway ${from}`);
-        } else if (toNode.type === NODE_TYPES.RUNWAY) {
-            this.flightMessage(`enter control zone via ${from} at ${alt}' to runway ${to}`);
-            this.atcMessage(`mantain ${alt}, heading ${hdg}`);
-            this.readbackMessage(`mantaining ${alt}, heading ${hdg}`);
-        } else {
-            this.flightMessage(`enter control zone at ${alt}' heading ${hdg} leave ${to}`);
-            this.atcMessage(`mantain ${alt}', heading ${hdg}`);
-            this.readbackMessage(`mantaining ${alt}', heading ${hdg}`);
-        }
-        return this;
-    }
-
     /**
      * 
      * @param {*} cmd 
@@ -147,15 +112,15 @@ class Flight {
         }
     }
 
-    hold({ when }) {
+    hold(cmd) {
+        const { when } = cmd;
         const flight = this.flightJS;
         const { status, hdg, lat, lon } = flight;
         const { map } = this.props;
         if (when === COMMAND_CONDITIONS.IMMEDIATE) {
-            this.atcMessage(`hold at current position`);
+
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-                this.flightEmergency(`negative, unable to hold at current position at ground`);
-                return this;
+                return this.fireEvent(EVENT_TYPES.UNABLE_TO_HOLD, cmd);
             }
             const fix = { lat, lon }
             const newFlight = this.flight
@@ -163,12 +128,10 @@ class Flight {
                 .set('hdg', mapDao.normHdg(hdg + 180))
                 .set('holdHdg', mapDao.normHdg(hdg + 180))
                 .set('fix', fix);
-            this.readbackMessage(`holding at current position`);
-            return this.with(newFlight);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.HOLD);
         } else {
-            this.atcMessage(`hold at ${when}`);
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-                this.flightEmergency(`negative, unable to hold at ${when} at ground`);
+                this.fireEvent(EVENT_TYPES.UNABLE_TO_HOLD_AT, cmd);
                 return this;
             }
             const at = map.nodes[when];
@@ -178,8 +141,7 @@ class Flight {
                 .set('hdg', hdg)
                 .set('holdHdg', mapDao.normHdg(hdg + 180))
                 .set('at', when);
-            this.readbackMessage(`holding at ${when}`);
-            return this.with(newFlight);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.HOLD_AT, cmd);
         }
     }
 
@@ -187,14 +149,11 @@ class Flight {
      * 
      * @param {*} cmd 
      */
-    clearingToLand({ to }) {
-        // const { to } = cmd;
+    clearingToLand(cmd) {
+        const { to } = cmd;
         const flight = this.flightJS;
-        this.atcMessage(`cleared to land runway ${to}`);
         if (flight.status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-            this.flightEmergency(`negative, unable to land runway ${to} at ground`);
-            this.atcMessage(`roger`);
-            return this;
+            return this.fireEvent(EVENT_TYPES.UNABLE_TO_LAND_GROUND, cmd);
         }
 
         const { map, clearToLandDistance, om } = this.props;
@@ -206,17 +165,14 @@ class Flight {
         const rwyDistance = mapDao.distance(flight, runway);
         if (rwyDistance > clearToLandDistance) {
             // Runway to distant
-            this.flightEmergency(`negative, unable to land runway ${to} too distant`);
-            this.atcMessage(`roger`);
-            return this;
+            return this.fireEvent(EVENT_TYPES.UNABLE_TO_LAND_DISTANCE, cmd);
         }
 
         // Check altitude
         const { alt } = flight;
         const apprAlt = this.approachAlt(rwyDistance);
         if (alt > apprAlt) {
-            this.flightEmergency(`negative, unable to land runway ${to} too high`);
-            this.atcMessage(`roger`);
+            this.fireEvent(EVENT_TYPES.UNABLE_TO_LAND_ALTITUDE, cmd);
             return this;
         }
 
@@ -226,27 +182,24 @@ class Flight {
             .set('om', outerMarker)
             .delete('turnTo')
             .delete('at');
-        this.readbackMessage(`cleared to land runway ${to}`);
 
-        return this.with(newFlight);
+        return this.with(newFlight).fireEvent(EVENT_TYPES.CLEARED_TO_LAND, cmd);
     }
 
     /**
      * 
      * @param {*} cmd 
      */
-    turnHeading({ when, to }) {
+    turnHeading(cmd) {
+        const { when, to } = cmd;
         const flight = this.flightJS;
         const { status } = flight;
         const { map } = this.props;
         if (when === COMMAND_CONDITIONS.IMMEDIATE) {
             const toNode = map.nodes[to];
             const hdg = mapDao.hdg(toNode, flight);
-            this.atcMessage(`fly heading ${sprintf('%03d', hdg)} to ${to}`);
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-                this.flightEmergency(`negative, unable to fly to ${to} at ground`);
-                this.atcMessage(`roger`);
-                return this;
+                return this.fireEvent(EVENT_TYPES.UNABLE_TO_FLY_TO, cmd);
             }
             const newFlight = this.flight
                 .set('hdg', hdg)
@@ -255,13 +208,10 @@ class Flight {
                 .delete('rwy')
                 .delete('om')
                 .delete('turnTo');
-            this.readbackMessage(`flying heading ${sprintf('%03d', hdg)} to ${to}`);
-            return this.with(newFlight);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.FLY_TO, cmd);
         } else {
-            this.atcMessage(`turn to ${to} via ${when}`);
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-                this.flightEmergency(`negative, unable to turn to ${to} via ${when} at ground`);
-                this.atcMessage(`roger`);
+                this.fireEvent(EVENT_TYPES.UNABLE_TO_FLY_TO_VIA, cmd);
                 return this;
             }
             const newFlight = this.flight
@@ -270,8 +220,7 @@ class Flight {
                 .delete('rwy')
                 .delete('om')
                 .set('turnTo', to);
-            this.readbackMessage(`turn to ${to} via ${when}`);
-            return this.with(newFlight);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.FLY_TO_VIA, cmd);
         }
     }
 
@@ -279,22 +228,20 @@ class Flight {
      * 
      * @param {*} cmd 
      */
-    changeLevel({ flightLevel }) {
+    changeLevel(cmd) {
+        const { flightLevel } = cmd;
         const { flightTempl } = this.props;
         const cmdAlt = parseInt(flightLevel) * 100;
         const alt = this.flight.get('alt');
         const status = this.flight.get('status');
         if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
             const speed = speedByAlt(0, flightTempl[this.flight.get('type')]);
-            const runway = this.flight.get('from');
             const newFlight = this.flight
                 .set('toAlt', cmdAlt)
                 .set('speed', speed)
                 .set('status', FLIGHT_STATES.FLYING)
                 .delete('rwy');
-            this.atcMessage(`runway ${runway}, cleared for take-off, climb to ${cmdAlt}ft`);
-            this.readbackMessage(`runway ${runway}, cleared for take-off, climbing to ${cmdAlt}ft`);
-            return this.with(newFlight);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.CLEARED_TO_TAKE_OFF, cmd);
         }
         if (status === FLIGHT_STATES.LANDING || status === FLIGHT_STATES.APPROACHING) {
             const newFlight = this.flight
@@ -302,23 +249,17 @@ class Flight {
                 .set('status', FLIGHT_STATES.FLYING)
                 .delete('om')
                 .delete('rwy');
-            this.atcEmergency(`pull up and go around, climb to ${cmdAlt}ft`);
-            this.readbackMessage(`Going around, climbing to ${cmdAlt}ft`);
-            return this.with(newFlight);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.ATC_GO_AROUD, cmd);
         }
         const newFlight = this.flight
             .set('toAlt', cmdAlt);
         if (cmdAlt > alt) {
-            this.atcMessage(`climb to ${cmdAlt}ft`)
-            this.readbackMessage(`climbing to ${cmdAlt} ft`);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.CLIMB_TO, cmd);
         } else if (cmdAlt < alt) {
-            this.atcMessage(`descend to ${cmdAlt}ft`)
-            this.readbackMessage(`descending to ${cmdAlt}ft`);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.DESCEND_TO, cmd);
         } else {
-            this.atcMessage(`maintain ${cmdAlt}ft`)
-            this.readbackMessage(`maintaining ${cmdAlt}ft`);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.MAINTAIN_FLIGHT_LEVEL, cmd);
         }
-        return this.with(newFlight);
     }
 
     /**
@@ -516,9 +457,7 @@ class Flight {
                 .set('toAlt', goAroundAlt)
                 .delete('om')
                 .delete('runway');
-            this.flightEmergency(`going around, missing approach`)
-            this.atcMessage(`roger`)
-            return this.with(newFlight).moveHoriz().moveVert();
+            return this.with(newFlight).moveHoriz().moveVert().fireEvent(EVENT_TYPES.GO_AROUD_APPROACH);
         }
 
         // Approaching
@@ -547,9 +486,8 @@ class Flight {
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
                 .delete('rwy');
-            this.flightEmergency(`going around, missing runway`)
-            this.atcMessage(`roger`)
-            return this.with(newFlight).moveHoriz().moveVert();
+            return this.with(newFlight).moveHoriz().moveVert()
+                .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
 
         // Compute altitude
@@ -563,9 +501,8 @@ class Flight {
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
                 .delete('rwy');
-            this.flightEmergency(`going around, missing runway`)
-            this.atcMessage(`roger`)
-            return this.with(newFlight).moveHoriz().moveVert();
+            return this.with(newFlight).moveHoriz().moveVert()
+                .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
 
         // Check for distance
@@ -577,9 +514,8 @@ class Flight {
                     .set('status', FLIGHT_STATES.FLYING)
                     .set('toAlt', goAroundAlt)
                     .delete('rwy');
-                this.flightEmergency(`going around, missing runway`)
-                this.atcMessage(`roger`)
-                return this.with(newFlight).moveHoriz().moveVert();
+                return this.with(newFlight).moveHoriz().moveVert()
+                    .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
             }
             // Landed
             const newFlight = this.flight
@@ -598,9 +534,8 @@ class Flight {
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
                 .delete('rwy');
-            this.flightEmergency(`going around, missing runway`)
-            this.atcMessage(`roger`)
-            return this.with(newFlight).moveHoriz().moveVert();
+            return this.with(newFlight).moveHoriz().moveVert()
+                .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
 
         // Approaching
@@ -693,10 +628,8 @@ class Flight {
             .set('status', FLIGHT_STATES.FLYING_TO)
             .set('at', flight.turnTo)
             .delete('turnTo');
-        this.flightMessage(`flying heading ${sprintf('%03d', hdg)}, ${flight.id}`);
-        this.atcMessage(`maintain heading ${sprintf('%03d', hdg)}`);
-        this.readbackMessage(`maintaining heading ${sprintf('%03d', hdg)}`);
-        return this.with(newFlight);
+
+        return this.with(newFlight).fireEvent(EVENT_TYPES.FLYING_TO);
     }
 
     hdg(hdg) {
@@ -752,9 +685,7 @@ class Flight {
             .set('speed', newSpeed));
         if (toAlt !== alt && newAlt === toAlt) {
             // flight level reached
-            this.flightMessage(`passing ${newAlt}ft`);
-            this.atcMessage(`maintain ${newAlt}ft`);
-            this.readbackMessage(`mantaining ${newAlt}ft`);
+            return result.fireEvent(EVENT_TYPES.PASSING);
         }
         return result;
     }
