@@ -6,7 +6,6 @@ import SessionPane from './modules/SessionPane';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function App() {
   return (
     <Router basename=".">
@@ -14,9 +13,7 @@ function App() {
         <ToastContainer
           position="bottom-left"
           autoClose={5000}
-          closeButton={false}
           hideProgressBar
-          closeOnClick
           pauseOnFocusLoss
           pauseOnHover />
         <Switch>

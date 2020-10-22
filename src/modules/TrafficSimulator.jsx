@@ -1,8 +1,8 @@
 import { fromJS, Set } from 'immutable';
 import _ from 'lodash';
+import { buildEvent, EVENT_TYPES } from './Events';
 import { Flight, FLIGHT_STATES, FLIGHT_TYPES } from './Flight';
 import { mapDao } from './MapDao';
-import { MessageUtils } from './MessagesUtils';
 
 const COMMAND_TYPES = {
     CHANGE_LEVEL: 'changeLevel',
@@ -105,8 +105,7 @@ class TrafficSimulator {
     constructor(props) {
         const session = props.session instanceof Map ? props.session : fromJS(props.session);
         this.props = _.defaults({ session }, props, TRAFFIC_SIM_DEFAULTS);
-        this.messager = new MessageUtils(this.props);
-        this.withSession = this.withSession.bind(this);
+        _.bindAll(this);
     }
 
     /** Returns the session */
@@ -114,6 +113,14 @@ class TrafficSimulator {
 
     withSession(session) {
         return new TrafficSimulator(_.defaults({ session }, this.props));
+    }
+
+    fireEvent(type, flight, cmd) {
+        const { onEvent } = this.props;
+        if (!!onEvent) {
+            const event = buildEvent(type, flight, this.props.map, cmd);
+            onEvent(event);
+        }
     }
 
     /**
@@ -126,7 +133,7 @@ class TrafficSimulator {
         const flight = session.getIn(['flights', flightId]);
         if (!flight) {
             // No flight in the session
-            this.sendMessage(`ATC: no flight ${flightId}`);
+            this.fireEvent(EVENT_TYPES.UNKWOWN_FLIGHT, undefined, cmd);
             return this;
         }
         const newFlight = new Flight(flight, this.props).processCommand(cmd).flight;
@@ -183,7 +190,7 @@ class TrafficSimulator {
                 .update('noCollision', n => n + noCollided)
             // Sending message
             collided.forEach(flight => {
-                this.messager.flightEmergency(flight, `Mayday, mayday, mayday, We are colliding`);
+                this.fireEvent(EVENT_TYPES.COLLISION, flight);
             });
             return this.withSession(newSession);
         }
@@ -217,11 +224,9 @@ class TrafficSimulator {
             exited.forEach(flight => {
                 const ok = _.find(exitedOk, { id: flight.id }) !== undefined;
                 if (ok) {
-                    this.messager.flightMessage(flight, `Leaving controlled zone via ${flight.exit} at ${flight.alt}'`);
-                    this.messager.atcMessage(flight, `Cleared ${flight.to} departure`);
+                    this.fireEvent(EVENT_TYPES.RIGHT_LEAVE, flight);
                 } else {
-                    this.messager.flightMessage(flight, `Leaving controlled zone via ${flight.exit} at ${flight.alt}'`);
-                    this.messager.atcEmergency(flight, `Negative, cleared ${flight.to} to departure`);
+                    this.fireEvent(EVENT_TYPES.WRONG_LEAVE, flight)
                 }
             });
             return this.withSession(newSession);
@@ -254,7 +259,7 @@ class TrafficSimulator {
                 .set('flights', fromJS(inAreaMap))
                 .update('noExitKo', n => n + exited.length)
             exited.forEach(flight => {
-                this.messager.flightEmergency(flight, `Leaving controlled zone heading ${flight.hdg} at ${flight.alt}'`);
+                this.fireEvent(EVENT_TYPES.OUT_OF_AREA, flight);
             });
             // Sending message
             return this.withSession(newSession);
@@ -286,12 +291,9 @@ class TrafficSimulator {
             landed.forEach(flight => {
                 const ok = _.find(landedOk, { id: flight.id }) !== undefined;
                 if (ok) {
-                    this.messager.atcMessage(flight, `runway ${flight.rwy} vacated`);
-                    this.messager.flightMessage(flight, `leaving frequency`);
-                    this.messager.atcMessage(flight, `good day`);
+                    this.fireEvent(EVENT_TYPES.RIGHT_LAND, flight);
                 } else {
-                    this.messager.atcMessage(flight, `runway ${flight.rwy} vacated`);
-                    this.messager.flightEmergency(flight, `wrong arrival runway, leaving frequency`);
+                    this.fireEvent(EVENT_TYPES.WRONG_LAND, flight);
                 }
             });
             return this.withSession(newSession);
@@ -400,14 +402,14 @@ class TrafficSimulator {
             status
         })
 
-        const newFlight = new Flight(flight, this.props).clearanceEntry().flight;
+        this.fireEvent(EVENT_TYPES.ENTER, flight);
         const newSession = entry.type === NODE_TYPES.RUNWAY
             ? session
             : session
                 .setIn(['entries', entry.id], t);
         return this.withSession(newSession
             .set('noFlights', noFlights + 1)
-            .setIn(['flights', flight.id], newFlight)
+            .setIn(['flights', flight.id], flight)
         );
     }
 }
