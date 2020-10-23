@@ -4,6 +4,8 @@ import { buildEvent, EVENT_TYPES } from './Events';
 import { Flight, FLIGHT_STATES, FLIGHT_TYPES } from './Flight';
 import { mapDao } from './MapDao';
 
+const MAX_INITIAL_IDLE_INTERVAL = 20;
+
 const COMMAND_TYPES = {
     CHANGE_LEVEL: 'changeLevel',
     TURN_HEADING: 'turnHeading',
@@ -337,9 +339,12 @@ class TrafficSimulator {
         const { dt, level, session } = this.props;
         const { maxPlane, flightFreq } = level;
         const flights = session.get('flights');
+        const t = session.get('t');
+        const noFlights = session.get('noFlights');
         //Check for new flight eligibility
-        if (flights.size < maxPlane &&
-            rndByFreq(dt, flightFreq / 3600)) {
+        if (flights.size < maxPlane && (
+            rndByFreq(dt, flightFreq / 3600)
+            || (noFlights === 0 && t >= MAX_INITIAL_IDLE_INTERVAL))) {
             return this.createFlight();
         } else {
             return this;

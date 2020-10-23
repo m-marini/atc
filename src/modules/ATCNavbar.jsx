@@ -1,7 +1,7 @@
 import React from 'react';
-import { Badge, Col, Container, Nav, Navbar } from 'react-bootstrap';
+import { Badge, Col, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
 
-function ATCNavBar({ session }) {
+function ATCNavBar({ session, muted, onMuted }) {
 
   const home = process.env.REACT_APP_BASENAME;
 
@@ -13,28 +13,32 @@ function ATCNavBar({ session }) {
   } else {
     const { noFlights, noLandedOk, noLandedKo, noExitKo, noExitOk, noCollision } = session
     serviceStatus = (
-      <Navbar.Text>
-        <Container fluid>
-          <Col>
-            <span><Badge variant="info">Inbound: {noFlights}</Badge></span>
-          </Col >
-          <Col>
-            <span><Badge variant="success">Right land: {noLandedOk}</Badge></span>
-          </Col >
-          <Col>
-            <span><Badge variant="success">Right left: {noExitOk}</Badge></span>
-          </Col >
-          <Col>
-            <span><Badge variant="warning">Wrong land: {noLandedKo}</Badge></span>
-          </Col >
-          <Col>
-            <span><Badge variant="warning">Wrong left: {noExitKo}</Badge></span>
-          </Col >
-          <Col>
-            <span><Badge variant="danger">Collisions: {noCollision}</Badge></span>
-          </Col >
-        </Container >
-      </Navbar.Text >
+      <Container fluid>
+        <Col>
+          <span><Badge variant="info">Inbound: {noFlights}</Badge></span>
+        </Col >
+        <Col>
+          <span><Badge variant="success">Right land: {noLandedOk}</Badge></span>
+        </Col >
+        <Col>
+          <span><Badge variant="success">Right left: {noExitOk}</Badge></span>
+        </Col >
+        <Col>
+          <span><Badge variant="warning">Wrong land: {noLandedKo}</Badge></span>
+        </Col >
+        <Col>
+          <span><Badge variant="warning">Wrong left: {noExitKo}</Badge></span>
+        </Col >
+        <Col>
+          <span><Badge variant="danger">Collisions: {noCollision}</Badge></span>
+        </Col >
+        <Col>
+          <Form inline className="text-light">
+            <FormControl type="checkbox" className="mr-sm-2"
+              checked={muted} onClick={onMuted} />Muted
+          </Form>
+        </Col>
+      </Container >
     );
   }
   return (
@@ -44,9 +48,12 @@ function ATCNavBar({ session }) {
         </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="mr-auto"></Nav>
+        <Navbar.Text>
+        </Navbar.Text >
       </Navbar.Collapse>
-      {serviceStatus}
+      <Nav className="mr-auto">
+        {serviceStatus}
+      </Nav>
     </Navbar>
   );
 }

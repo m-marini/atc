@@ -73,7 +73,7 @@ class Home extends Component {
     const th = this;
     mapDao.maps().pipe(
       tap(maps => {
-        const map = maps.maps.LRX;
+        const map = maps.maps.LON;
         th.setState({ maps, map });
       })
     ).subscribe();
@@ -124,6 +124,22 @@ class Home extends Component {
               </Row>
             </Container>
           </Jumbotron>
+          <p>Your goal is to route safely the planes in your area.</p>
+          <p>You need to:</p>
+          <ul>
+            <li>take off planes waiting at runways</li>
+            <li>land the planes at destination runways</li>
+            <li>fly the planes via the leaving beacons at altitude
+				of 36000 feet.</li>
+          </ul>
+          <p>You must avoid:</p>
+          <ul>
+            <li>planes collinsion, the collision happend when
+            the distance between two planes are lower then 4 nautic miles and
+				the altitude difference is lower then 1000 feet</li>
+            <li>leaving to a wrong beacons</li>
+            <li>landing to a wrong runway</li>
+          </ul>
         </Container>
       </Container >
     );

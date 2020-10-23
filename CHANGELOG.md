@@ -26,3 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #22: fly to beacon and hold
 - Issue #25: Message logger
 - Issue #29: Add Audio
+- Issue #31: wrong john flight level audios
+- Issue #32: Audio mute
+- Issue #33: Add flight within 20s
+- Issue #34:Home page info
