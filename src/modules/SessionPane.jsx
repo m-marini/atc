@@ -28,9 +28,12 @@ class Session extends Component {
     super(props);
     const logger = cockpitLogger();
     const reader = new Reader();
-    this.state = { logger, reader };
+    this.state = { logger, reader, muted: false };
     this.clock = interval(INTERVAL);
-    _.bindAll(this, ['handleClock', 'handleCommand', 'handleAudioEnded', 'handleSimulationEvent', 'handleAudioError']);
+    _.bindAll(this, [
+      'handleClock', 'handleCommand', 'handleAudioEnded', 'handleSimulationEvent', 'handleAudioError',
+      'handleMuted'
+    ]);
   }
 
   componentDidMount() {
@@ -98,15 +101,20 @@ class Session extends Component {
     this.setState({ reader: reader.next() })
   }
 
+  handleMuted(ev) {
+    const { muted } = this.state;
+    this.setState({ muted: !muted });
+  }
+
   render() {
-    const { session, map, nodeMap, level, logger, reader } = this.state;
+    const { session, map, nodeMap, level, logger, reader, muted } = this.state;
     const src = reader.src;
     if (!nodeMap || !session || !map || !level) {
       return (<div></div>);
     } else {
       return (
         <Container fluid>
-          <ATCNavbar session={session} />
+          <ATCNavbar session={session} muted={muted} onMuted={this.handleMuted} />
           <Container fluid className="ATC">
             <Row>
               <Col xs={2}>
@@ -122,7 +130,9 @@ class Session extends Component {
             <Row>
             </Row>
           </Container>
-          <ReactAudioPlayer src={src} autoPlay
+          <ReactAudioPlayer autoPlay
+            src={src}
+            muted={muted}
             onEnded={this.handleAudioEnded}
             onError={this.handleAudioError} />
         </Container >
