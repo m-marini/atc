@@ -389,6 +389,9 @@ class FlightBuilder {
     return new FlightBuilder(_.defaults({ to }, this.flight));
   }
 
+  exit(exit) {
+    return new FlightBuilder(_.defaults({ exit }, this.flight));
+  }
   om(rwy) {
     const om = outerMarker(rwy);
     return new FlightBuilder(_.defaults({ om }, this.flight));

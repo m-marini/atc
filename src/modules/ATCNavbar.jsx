@@ -18,13 +18,13 @@ function ATCNavBar({ session, muted, onMuted }) {
           <span><Badge variant="info">Inbound: {noFlights}</Badge></span>
         </Col >
         <Col>
-          <span><Badge variant="success">Right land: {noLandedOk}</Badge></span>
+          <span><Badge variant="success">Right landed: {noLandedOk}</Badge></span>
         </Col >
         <Col>
           <span><Badge variant="success">Right left: {noExitOk}</Badge></span>
         </Col >
         <Col>
-          <span><Badge variant="warning">Wrong land: {noLandedKo}</Badge></span>
+          <span><Badge variant="warning">Wrong landed: {noLandedKo}</Badge></span>
         </Col >
         <Col>
           <span><Badge variant="warning">Wrong left: {noExitKo}</Badge></span>
@@ -43,11 +43,12 @@ function ATCNavBar({ session, muted, onMuted }) {
   }
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Navbar.Brand href={home}>
-        ATC 0.1.0
-        </Navbar.Brand>
+      <Navbar.Brand href="http://www.mmarini.org">www.mmarini.org</Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href={home}>ATC {process.env.REACT_APP_VERSION}</Nav.Link>
+        </Nav>
         <Navbar.Text>
         </Navbar.Text >
       </Navbar.Collapse>

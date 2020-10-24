@@ -37,9 +37,12 @@ function sayHdg(hdg) {
 function toMp3(words) {
     const wl = words.replace(/\s+/gi, ' ').toLowerCase().split(' ');
     const voice = wl[0];
-    return _(wl).drop(1).map(word =>
-        `${process.env.REACT_APP_BASENAME}/audio/${voice}/${word}.mp3`
-    ).value();
+    return _(wl)
+        .drop(1)
+        .reject(tag => tag === '')
+        .map(word =>
+            `${process.env.REACT_APP_BASENAME}/audio/${voice}/${word}.mp3`
+        ).value();
 }
 
 
@@ -131,6 +134,10 @@ class AudioBuilder {
 
     cmdFlight() {
         return spell(this.event.cmd.flight);
+    }
+
+    exit() {
+        return this.event.flight.exit;
     }
 
     flightAudio(msg) {
@@ -232,8 +239,7 @@ class AudioBuilder {
 
     passing() {
         return this.flightAudio('passing $alt')
-            .atcAudio('maintain $alt')
-            .readbackAudio('maintaining $alt');
+            .atcAudio('roger');
     }
 
     flyTo() {
@@ -345,7 +351,7 @@ class AudioBuilder {
     }
 
     wrongLeave() {
-        return this.flightAudio('leavingvia $at at $alt missingdep')
+        return this.flightAudio('leavingvia $exit at $alt missingdep')
             .atcAudio('roger');
     }
 
