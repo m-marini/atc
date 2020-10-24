@@ -1,0 +1,172 @@
+.ATC {
+  background-color:black;
+}
+
+.atc {
+  color: #00ff00;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+
+.john {
+  color: #00ff00;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+
+.flight {
+  color: #d0d000;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+  
+.george {
+  color: #d0d0d0;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+  
+.readback {
+  color: #a0a0a0;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+  
+.emergency {
+  color: #ff8000;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+  
+.terminal {
+  /*  background-color:black;*/
+    color: #00ff00;
+    font-size: 12px;
+    margin-bottom: 0px;
+  }
+   
+.fl-040 {
+  stroke: #eceacc;
+  background: #eceacc;
+  color: black;
+}
+
+.fl-080 {
+  stroke: #8de5e8;
+  background: #8de5e8;
+  color: black;
+}
+
+.fl-120 {
+  stroke: #60d750;
+  background: #60d750;
+  color: black;
+}
+
+.fl-160 {
+  stroke: #2b21e9;
+  background: #2b21e9;
+  color: black;
+}
+
+.fl-200 {
+  stroke: #e95ada;
+  background: #e95ada;
+  color: black;
+}
+
+.fl-240 {
+  stroke: #e98b30;
+  background: #e98b30;
+  color: black;
+}
+
+.fl-280 {
+  stroke: #ea332a;
+  background: #ea332a;
+  color: black;
+}
+
+.fl-320 {
+  stroke: #eee450;
+  background: #eee450;
+  color: black;
+}
+
+.fl-360 {
+  stroke: #aead97;
+  color: black;
+  background: #aead97;
+}
+circle.runway {
+  fill: none;
+  stroke: #eceacc;
+  r: 3
+}
+.radar {
+  background-color:black;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+circle.beacon {
+  fill: none;
+  stroke: #fc7e04;
+  r: 3
+}
+
+text.beacon {
+  stroke: #fc7e04;
+}
+
+circle.entry {
+  fill: none;
+  stroke: #ea332a;
+  r: 3
+}
+
+circle.flight {
+  fill: none;
+  stroke: white;
+  r: 3
+}
+
+text.entry {
+  stroke: #ea332a;
+}
+
+
+text.runway {
+  stroke: #eceacc;
+}
+
+line.land {
+  stroke: #797429;
+}
+
+line.connection {
+  stroke: #523010;
+}
+
+line.entry {
+  stroke: #8f551d;
+}
+
+line.takeoff {
+  stroke: #306060
+}
+
+line.landConnection {
+  stroke: #004000;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
