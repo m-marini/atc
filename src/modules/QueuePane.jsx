@@ -4,6 +4,10 @@ import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
 import { FLIGHT_STATES } from './TrafficSimulator';
 
+/**
+ * 
+ * @param {*} flight 
+ */
 function status(flight) {
     const { status, at, turnTo, rwy, from } = flight;
 
@@ -13,11 +17,11 @@ function status(flight) {
         case FLIGHT_STATES.FLYING_TO:
             return `flying to ${at}`;
         case FLIGHT_STATES.WAITING_FOR_TAKEOFF:
-            return sprintf('hold short runway %s', from);
+            return sprintf('holding rwy %s', from);
         case FLIGHT_STATES.LANDING:
-            return sprintf('landing runway %s', rwy);
+            return sprintf('landing rwy %s', rwy);
         case FLIGHT_STATES.APPROACHING:
-            return sprintf('approach runway %s', rwy);
+            return sprintf('approach rwy %s', rwy);
         case FLIGHT_STATES.HOLDING_FROM:
         case FLIGHT_STATES.HOLDING_TO:
             return 'holding';
@@ -31,34 +35,40 @@ function status(flight) {
     }
 }
 
-function FlightEntry({ flight }) {
-    const line1 = sprintf('ID: %3s-%s   FL  %03d', flight.id, flight.type, Math.round(flight.alt / 100));
-    const line2 = sprintf('    to %3s  Hdg %03d', flight.to, Math.round(flight.hdg));
-    const line3 = sprintf('    %s', status(flight));
-    return (
-        <pre className="terminal">{line1}<br />
-            {line2}<br />
-            {line3}<br /></pre>
-    );
+/**
+ * 
+ * @param {*} flight 
+ */
+function toLines(flight) {
+    const fl = Math.round(flight.alt / 100);
+    const st = status(flight);
+    const line1 = sprintf('%3s to %s Class %s', flight.id, flight.to, flight.type);
+    const line2 = sprintf('    FL%03d  Hdg %03d', fl, flight.hdg);
+    return st.length === 0
+        ? [line1, line2]
+        : [line1, line2, sprintf('    %s', status(flight))];
 }
 
+/**
+ * 
+ * @param {*} param0 
+ */
 function QueuePane({ session }) {
     if (!session) {
         return (
             <Card bg="dark">Queue</Card>
         );
     } else {
+        const lines = _(session.flights)
+            .values()
+            .sortBy(['id'])
+            .flatMap(toLines)
+            .join('\n');
         return (
             <Card bg="dark" text="white">
                 <Card.Header>Flights</Card.Header>
                 <Card.Body>
-                    {
-                        _.map(session.flights, (flight, i) => {
-                            return (
-                                <FlightEntry key={i} flight={flight} />
-                            );
-                        })
-                    }
+                    <pre className="terminal">{lines}</pre>
                 </Card.Body>
             </Card>
         );

@@ -45,13 +45,13 @@ function FlightSelection({ flights, onSelect }) {
             <Card.Body>
                 <ButtonGroup vertical>
                     {
-                        _.map(flights, flight => {
+                        _(flights).values().sortBy(['id']).map(flight => {
                             return (
                                 <Button key={flight.id} variant="secondary"
                                     onClick={() => { if (!!onSelect) { onSelect(flight.id) } }
                                     }>{flight.id}</Button>
                             );
-                        })
+                        }).value()
                     }
                 </ButtonGroup>
             </Card.Body>
@@ -60,7 +60,7 @@ function FlightSelection({ flights, onSelect }) {
 }
 
 function RunwaySelection({ flight, map, onAbort, onSelect }) {
-    const nodes = _(map.nodes).filter({ type: 'runway' }).sortBy('id');
+    const nodes = _(map.nodes).filter({ type: 'runway' }).sortBy(['id']);
 
     return (
         <Card bg="dark" text="white">
@@ -88,7 +88,7 @@ function RunwaySelection({ flight, map, onAbort, onSelect }) {
 }
 
 function DestinationSelection({ flight, map, onAbort, onSelect }) {
-    const nodes = _(map.nodes).sortBy('id');
+    const nodes = _(map.nodes).sortBy(['id']);
     const numCol1 = Math.ceil((nodes.size() + 1) / 2) - 1;
     const nodes1 = nodes.take(numCol1);
     const nodes2 = nodes.drop(numCol1);
@@ -137,7 +137,7 @@ function DestinationSelection({ flight, map, onAbort, onSelect }) {
 }
 
 function ConditionButtons({ map, onAbort, onSelect }) {
-    const nodes = _(map.nodes).filter(node => node.type !== 'runway').sortBy('id');
+    const nodes = _(map.nodes).filter(node => node.type !== 'runway').sortBy(['id']);
 
     const numCol1 = Math.ceil((nodes.size() + 2) / 2) - 2;
     const nodes1 = nodes.take(numCol1);

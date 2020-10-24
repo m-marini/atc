@@ -184,8 +184,7 @@ describe('events', () => {
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
       'john pause LONatc a pause 1 passing fl040',
-      'george pause a pause 1 LONatc maintain fl040',
-      'john pause maintaining fl040 pause1 a pause 1'
+      'george pause a pause 1 LONatc roger'
     ]);
   });
 
@@ -506,7 +505,7 @@ describe('events', () => {
   test('wrong leave', () => {
     const flight = flightBuilder()
       .from('36C')
-      .at('TO')
+      .exit('TO')
       .alt(30000)
       .status(FLIGHT_STATES.FLYING_TO)
       .flight;
