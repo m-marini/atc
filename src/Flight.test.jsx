@@ -82,7 +82,7 @@ describe('Flight should process time when holding fix', () => {
       .status(FLIGHT_STATES.HOLDING_FROM).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(holdHdg);
     expect(result).toBeHoldHdg(holdHdg);
@@ -105,7 +105,7 @@ describe('Flight should process time when holding fix', () => {
       .status(FLIGHT_STATES.HOLDING_FROM).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.normHdg(radial + 180);
@@ -130,7 +130,7 @@ describe('Flight should process time when holding fix', () => {
       .status(FLIGHT_STATES.HOLDING_TO).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(holdHdg);
@@ -154,7 +154,7 @@ describe('Flight should process time when holding fix', () => {
       .status(FLIGHT_STATES.HOLDING_TO).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const hdg1 = mapDao.normHdg(radial + 180);
     const ds = distance(A1.speed, DT);
@@ -190,7 +190,7 @@ describe('Flight should process time when holding', () => {
       .flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.normHdg(radial + 180);
@@ -215,7 +215,7 @@ describe('Flight should process time when holding', () => {
       .flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT)
     const df = ds - 0.1;
@@ -240,7 +240,7 @@ describe('Flight should process time when holding', () => {
       .status(FLIGHT_STATES.HOLDING_FROM_AT).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.normHdg(radial + 180);
@@ -265,7 +265,7 @@ describe('Flight should process time when holding', () => {
       .status(FLIGHT_STATES.HOLDING_FROM_AT).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(holdHdg);
@@ -294,7 +294,7 @@ describe('Flight should process time when flying to', () => {
       .status(FLIGHT_STATES.FLYING_TO).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const hdg1 = mapDao.normHdg(fixHdg + 180);
     expect(result).toBeHdg(hdg1);
@@ -317,7 +317,7 @@ describe('Flight should process time when flying to', () => {
       .status(FLIGHT_STATES.FLYING_TO).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(28000);
@@ -341,7 +341,7 @@ describe('Flight should process time when flying', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(28000);
@@ -362,7 +362,7 @@ describe('Flight should process time when flying', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = d0 + distance(A1.speed, DT);
     expect(result).toBeRadial(ENTRY, d1, hdg);
@@ -383,7 +383,7 @@ describe('Flight should process time when flying', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = d0 + distance(A1.speed, DT);
     expect(result).toBeRadial(ENTRY, d1, hdg);
@@ -404,7 +404,7 @@ describe('Flight should process time when flying', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = d0 + distance(A1.speed, DT);
     expect(result).toBeRadial(ENTRY, d1, hdg);
@@ -425,7 +425,7 @@ describe('Flight should process time when flying', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = d0 + distance(A1.speed, DT);
     expect(result).toBeRadial(ENTRY, d1, hdg);
@@ -453,7 +453,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.normHdg(radial + 180);
@@ -480,7 +480,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = distance(A1.speed, DT) - d0;
     expect(result).toBeRadial(BEACON, d1, hdg);
@@ -505,7 +505,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = distance(A1.speed, DT) - d0;
     expect(result).toBeRadial(BEACON, d1, hdg);
@@ -530,7 +530,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = distance(A1.speed, DT) - d0;
     expect(result).toBeRadial(BEACON, d1, hdg);
@@ -555,7 +555,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = distance(A1.speed, DT) - d0;
     expect(result).toBeRadial(BEACON, d1, hdg);
@@ -582,7 +582,7 @@ describe('Flight should process time when turning to ENTRY', () => {
     const hdg1 = mapDao.hdg(ENTRY, A1);
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg1);
     expect(result).toBeAlt(alt);
@@ -609,7 +609,7 @@ describe('Flight should process time when turning to ENTRY', () => {
     const hdg1 = mapDao.hdg(ENTRY, A1);
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg1);
     expect(result).toBeClimbedFrom(28000, DT);
@@ -633,7 +633,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.hdg(ENTRY, A1);
@@ -659,7 +659,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.hdg(ENTRY, A1);
@@ -685,7 +685,7 @@ describe('Flight should process time when turning to ENTRY', () => {
       .status(FLIGHT_STATES.TURNING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const hdg1 = mapDao.hdg(ENTRY, A1);
@@ -712,7 +712,7 @@ describe('Flight should process time when approaching', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(RUNWAY.hdg);
     expect(result).toBeAlt(4000);
@@ -732,7 +732,7 @@ describe('Flight should process time when approaching', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(RUNWAY.hdg);
@@ -754,7 +754,7 @@ describe('Flight should process time when approaching', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(RUNWAY.hdg);
@@ -780,7 +780,7 @@ describe('Flight should process time when approaching', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(hdg);
@@ -807,7 +807,7 @@ describe('Flight should process time when approaching', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(hdg);
@@ -835,7 +835,7 @@ describe('Flight should process time when approaching', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     const d1 = d0 + 7 - ds;
@@ -860,7 +860,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(RUNWAY.hdg);
@@ -879,7 +879,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = d0 - distance(A1.speed, DT);
     expect(result).toBeHdg(RUNWAY.hdg);
@@ -905,7 +905,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const hdg1 = hdg + 1;
     const ds = distance(A1.speed, DT);
@@ -930,7 +930,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(4000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const hdg1 = hdg - 1;
     const ds = distance(A1.speed, DT);
@@ -952,7 +952,7 @@ describe('Flight should process time when landing', () => {
       .hdg(RUNWAY.hdg).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const d1 = distance(A1.speed, DT) + d0;
     expect(result).toBeHdg(RUNWAY.hdg);
@@ -974,7 +974,7 @@ describe('Flight should process time when landing', () => {
       .hdg(RUNWAY.hdg).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(RUNWAY.hdg);
@@ -996,7 +996,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(28000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(hdg);
@@ -1018,7 +1018,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(28000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(hdg);
@@ -1040,7 +1040,7 @@ describe('Flight should process time when landing', () => {
       .toAlt(28000).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     const ds = distance(A1.speed, DT);
     expect(result).toBeHdg(hdg);
@@ -1070,7 +1070,7 @@ describe('Flight should process change flight level command', () => {
         flight: A1.id,
         flightLevel: '280',
         type: COMMAND_TYPES.CHANGE_LEVEL
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(28000);
@@ -1095,7 +1095,7 @@ describe('Flight should process change flight level command', () => {
         flight: A1.id,
         flightLevel: '240',
         type: COMMAND_TYPES.CHANGE_LEVEL
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(28000);
@@ -1119,7 +1119,7 @@ describe('Flight should process change flight level command', () => {
         flight: A1.id,
         flightLevel: '280',
         type: COMMAND_TYPES.CHANGE_LEVEL
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(RUNWAY.hdg);
     expect(result).toBeAlt(0);
@@ -1142,7 +1142,7 @@ describe('Flight should process change flight level command', () => {
         flight: A1.id,
         flightLevel: '080',
         type: COMMAND_TYPES.CHANGE_LEVEL
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(RUNWAY.hdg);
     expect(result).toBeAlt(A1.alt);
@@ -1171,7 +1171,7 @@ describe('Flight should process turn command', () => {
         type: COMMAND_TYPES.TURN_HEADING,
         when: COMMAND_CONDITIONS.IMMEDIATE,
         to: ENTRY.id
-      }).flightJS;
+      }).flight;
 
     const hdg1 = mapDao.hdg(ENTRY, A1);
     expect(result).toBeHdg(hdg1);
@@ -1199,7 +1199,7 @@ describe('Flight should process turn command', () => {
         type: COMMAND_TYPES.TURN_HEADING,
         when: BEACON.id,
         to: ENTRY.id
-      }).flightJS;
+      }).flight;
 
     const hdg1 = mapDao.hdg(ENTRY, A1);
     expect(result).toBeHdg(hdg);
@@ -1228,7 +1228,7 @@ describe('Flight should process turn command', () => {
         type: COMMAND_TYPES.TURN_HEADING,
         when: COMMAND_CONDITIONS.IMMEDIATE,
         to: ENTRY.id
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(RUNWAY.hdg);
     expect(result).toBeAlt(0);
@@ -1249,7 +1249,7 @@ describe('Flight should process turn command', () => {
         type: COMMAND_TYPES.TURN_HEADING,
         when: COMMAND_CONDITIONS.IMMEDIATE,
         to: ENTRY.id
-      }).flightJS;
+      }).flight;
 
     const hdg1 = mapDao.hdg(ENTRY, A1);
     expect(result).toBeHdg(hdg1);
@@ -1279,7 +1279,7 @@ describe('Flight should process clear to land command', () => {
         flight: A1.id,
         type: COMMAND_TYPES.CLEAR_TO_LAND,
         to: RUNWAY.id
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(4000);
@@ -1306,7 +1306,7 @@ describe('Flight should process clear to land command', () => {
         flight: A1.id,
         type: COMMAND_TYPES.CLEAR_TO_LAND,
         to: RUNWAY.id
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(4000);
@@ -1333,7 +1333,7 @@ describe('Flight should process clear to land command', () => {
         flight: A1.id,
         type: COMMAND_TYPES.CLEAR_TO_LAND,
         to: RUNWAY.id
-      }).flightJS;
+      }).flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(8000);
@@ -1360,7 +1360,7 @@ describe('Flight should process exit', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(36000);
@@ -1383,7 +1383,7 @@ describe('Flight should process exit', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(36000);
@@ -1406,7 +1406,7 @@ describe('Flight should process exit', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(36000);
@@ -1429,7 +1429,7 @@ describe('Flight should process exit', () => {
       .status(FLIGHT_STATES.FLYING).flight;
 
     const result = new Flight(A1, props())
-      .processTime().flightJS;
+      .processTime().flight;
 
     expect(result).toBeHdg(hdg);
     expect(result).toBeAlt(36000);
@@ -1458,7 +1458,7 @@ describe('Flight should process hold command', () => {
       flight: 'A1',
       type: COMMAND_TYPES.HOLD,
       when: COMMAND_CONDITIONS.IMMEDIATE
-    }).flightJS;
+    }).flight;
 
     const hdg1 = mapDao.normHdg(hdg + 180);
     expect(result).toBeHdg(hdg1);
@@ -1483,7 +1483,7 @@ describe('Flight should process hold command', () => {
       flight: 'A1',
       type: COMMAND_TYPES.HOLD,
       when: BEACON.id
-    }).flightJS;
+    }).flight;
 
     const hdg1 = mapDao.normHdg(radial + 180);
     expect(result).toBeHdg(hdg1);

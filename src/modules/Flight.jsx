@@ -1,4 +1,4 @@
-import { fromJS, Map } from 'immutable';
+import { Map } from 'immutable';
 import { mapDao } from './MapDao';
 import _ from 'lodash';
 import { COMMAND_CONDITIONS, COMMAND_TYPES, NODE_TYPES } from './TrafficSimulator';
@@ -51,11 +51,7 @@ class Flight {
      * @param {*} props 
      */
     constructor(f, props) {
-        if (f instanceof Map) {
-            this._flight = f;
-        } else {
-            this._flightJS = f;
-        }
+        this._flight = f;
         this.props = props;
         _.bindAll(this);
     }
@@ -63,25 +59,14 @@ class Flight {
     fireEvent(type, cmd) {
         const { onEvent } = this.props;
         if (!!onEvent) {
-            const event = buildEvent(type, this.flightJS, this.props.map, cmd);
+            const event = buildEvent(type, this.flight, this.props.map, cmd);
             onEvent(event);
         }
         return this;
     }
 
     /** Returns the JSON flight */
-    get flightJS() {
-        if (this._flightJS === undefined) {
-            this._flightJS = this._flight.toJS();
-        }
-        return this._flightJS;
-    }
-
-    /** Returns the Map flight */
     get flight() {
-        if (this._flight === undefined) {
-            this._flight = fromJS(this._flightJS);
-        }
         return this._flight;
     }
 
@@ -93,6 +78,7 @@ class Flight {
     with(flight) {
         return new Flight(flight, this.props);
     }
+
     /**
      * 
      * @param {*} cmd 
@@ -114,7 +100,7 @@ class Flight {
 
     hold(cmd) {
         const { when } = cmd;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { status, hdg, lat, lon } = flight;
         const { map } = this.props;
         if (when === COMMAND_CONDITIONS.IMMEDIATE) {
@@ -123,11 +109,11 @@ class Flight {
                 return this.fireEvent(EVENT_TYPES.UNABLE_TO_HOLD, cmd);
             }
             const fix = { lat, lon }
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.HOLDING_FROM)
                 .set('hdg', mapDao.normHdg(hdg + 180))
                 .set('holdHdg', mapDao.normHdg(hdg + 180))
-                .set('fix', fix);
+                .set('fix', fix).toJS();
             return this.with(newFlight).fireEvent(EVENT_TYPES.HOLD);
         } else {
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
@@ -136,11 +122,11 @@ class Flight {
             }
             const at = map.nodes[when];
             const hdg = mapDao.hdg(at, flight);
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.HOLDING_TO_AT)
                 .set('hdg', hdg)
                 .set('holdHdg', mapDao.normHdg(hdg + 180))
-                .set('at', when);
+                .set('at', when).toJS();
             return this.with(newFlight).fireEvent(EVENT_TYPES.HOLD_AT, cmd);
         }
     }
@@ -151,7 +137,7 @@ class Flight {
      */
     clearingToLand(cmd) {
         const { to } = cmd;
-        const flight = this.flightJS;
+        const flight = this.flight;
         if (flight.status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
             return this.fireEvent(EVENT_TYPES.UNABLE_TO_LAND_GROUND, cmd);
         }
@@ -176,12 +162,12 @@ class Flight {
             return this;
         }
 
-        const newFlight = this.flight
+        const newFlight = Map(this.flight)
             .set('rwy', to)
             .set('status', FLIGHT_STATES.APPROACHING)
             .set('om', outerMarker)
             .delete('turnTo')
-            .delete('at');
+            .delete('at').toJS();
 
         return this.with(newFlight).fireEvent(EVENT_TYPES.CLEARED_TO_LAND, cmd);
     }
@@ -192,7 +178,7 @@ class Flight {
      */
     turnHeading(cmd) {
         const { when, to } = cmd;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { status } = flight;
         const { map } = this.props;
         if (when === COMMAND_CONDITIONS.IMMEDIATE) {
@@ -201,25 +187,25 @@ class Flight {
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
                 return this.fireEvent(EVENT_TYPES.UNABLE_TO_FLY_TO, cmd);
             }
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('hdg', hdg)
                 .set('at', to)
                 .set('status', FLIGHT_STATES.FLYING_TO)
                 .delete('rwy')
                 .delete('om')
-                .delete('turnTo');
+                .delete('turnTo').toJS();
             return this.with(newFlight).fireEvent(EVENT_TYPES.FLY_TO, cmd);
         } else {
             if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
                 this.fireEvent(EVENT_TYPES.UNABLE_TO_FLY_TO_VIA, cmd);
                 return this;
             }
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.TURNING)
                 .set('at', when)
                 .delete('rwy')
                 .delete('om')
-                .set('turnTo', to);
+                .set('turnTo', to).toJS();
             return this.with(newFlight).fireEvent(EVENT_TYPES.FLY_TO_VIA, cmd);
         }
     }
@@ -232,27 +218,26 @@ class Flight {
         const { flightLevel } = cmd;
         const { flightTempl } = this.props;
         const cmdAlt = parseInt(flightLevel) * 100;
-        const alt = this.flight.get('alt');
-        const status = this.flight.get('status');
+        const { alt, status, type } = this.flight;
         if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
-            const speed = speedByAlt(0, flightTempl[this.flight.get('type')]);
-            const newFlight = this.flight
+            const speed = speedByAlt(0, flightTempl[type]);
+            const newFlight = Map(this.flight)
                 .set('toAlt', cmdAlt)
                 .set('speed', speed)
                 .set('status', FLIGHT_STATES.FLYING)
-                .delete('rwy');
+                .delete('rwy').toJS();
             return this.with(newFlight).fireEvent(EVENT_TYPES.CLEARED_TO_TAKE_OFF, cmd);
         }
         if (status === FLIGHT_STATES.LANDING || status === FLIGHT_STATES.APPROACHING) {
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('toAlt', cmdAlt)
                 .set('status', FLIGHT_STATES.FLYING)
                 .delete('om')
-                .delete('rwy');
+                .delete('rwy').toJS();
             return this.with(newFlight).fireEvent(EVENT_TYPES.ATC_GO_AROUD, cmd);
         }
-        const newFlight = this.flight
-            .set('toAlt', cmdAlt);
+        const newFlight = Map(this.flight)
+            .set('toAlt', cmdAlt).toJS();
         if (cmdAlt > alt) {
             return this.with(newFlight).fireEvent(EVENT_TYPES.CLIMB_TO, cmd);
         } else if (cmdAlt < alt) {
@@ -271,7 +256,7 @@ class Flight {
     }
 
     processTimePhase1() {
-        switch (this.flight.get('status')) {
+        switch (this.flight.status) {
             case FLIGHT_STATES.FLYING_TO:
                 return this.flyingTo();
             case FLIGHT_STATES.FLYING:
@@ -297,7 +282,7 @@ class Flight {
 
     holdingFromNode() {
         const { map, holdingDuration, dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, at, holdHdg } = flight;
         const dl = speed * holdingDuration / SECS_PER_HOUR / 2;
         const node = map.nodes[at];
@@ -307,11 +292,11 @@ class Flight {
             const d1 = 2 * dl - d - ds;
             const { lat, lon } = mapDao.radial(node, fixHdg + 180, d1);
             // Reverse circle
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('lat', lat)
                 .set('lon', lon)
                 .set('status', FLIGHT_STATES.HOLDING_TO_AT)
-                .set('hdg', fixHdg);
+                .set('hdg', fixHdg).toJS();
             return this.with(newFlight).moveVert();
         } else {
             return this.hdg(holdHdg).moveHoriz().moveVert();
@@ -320,7 +305,7 @@ class Flight {
 
     holdingToNode() {
         const { map, dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, at, holdHdg } = flight;
         const node = map.nodes[at];
         const { d, hdg: fixHdg } = mapDao.route(flight, node);
@@ -329,11 +314,11 @@ class Flight {
             const d1 = ds - d;
             const { lat, lon } = mapDao.radial(node, holdHdg, d1);
             // Reverse circle
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('lat', lat)
                 .set('lon', lon)
                 .set('status', FLIGHT_STATES.HOLDING_FROM_AT)
-                .set('hdg', holdHdg);
+                .set('hdg', holdHdg).toJS();
             return this.with(newFlight).moveVert();
         } else {
             return this.hdg(fixHdg).moveHoriz().moveVert();
@@ -342,7 +327,7 @@ class Flight {
 
     holdingFrom() {
         const { holdingDuration, dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, fix, holdHdg } = flight;
         const dl = speed * holdingDuration / SECS_PER_HOUR / 2;
         const { d, hdg: fixHdg } = mapDao.route(flight, fix);
@@ -351,11 +336,11 @@ class Flight {
             const d1 = 2 * dl - d - ds;
             const { lat, lon } = mapDao.radial(fix, fixHdg + 180, d1);
             // Reverse circle
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('lat', lat)
                 .set('lon', lon)
                 .set('status', FLIGHT_STATES.HOLDING_TO)
-                .set('hdg', fixHdg);
+                .set('hdg', fixHdg).toJS();
             return this.with(newFlight).moveVert();
         } else {
             return this.hdg(holdHdg).moveHoriz().moveVert();
@@ -364,7 +349,7 @@ class Flight {
 
     holdingTo() {
         const { dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, fix, holdHdg } = flight;
         const { d, hdg: fixHdg } = mapDao.route(flight, fix);
         const ds = speed * dt / SECS_PER_HOUR;
@@ -372,11 +357,11 @@ class Flight {
             const d1 = ds - d;
             const { lat, lon } = mapDao.radial(fix, holdHdg, d1);
             // Reverse circle
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('lat', lat)
                 .set('lon', lon)
                 .set('status', FLIGHT_STATES.HOLDING_FROM)
-                .set('hdg', holdHdg);
+                .set('hdg', holdHdg).toJS();
             return this.with(newFlight).moveVert();
         } else {
             return this.hdg(fixHdg).moveHoriz().moveVert();
@@ -388,7 +373,7 @@ class Flight {
      */
     processExit() {
         const { map, dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const ds = flight.speed * dt / SECS_PER_HOUR;
         const exitNode = _(map.nodes).find(node => {
             if (node.type !== NODE_TYPES.ENTRY) {
@@ -402,9 +387,9 @@ class Flight {
             return from && d <= ds && Math.abs(diff);
         });
         if (!!exitNode) {
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('exit', exitNode.id)
-                .set('status', FLIGHT_STATES.EXITED);
+                .set('status', FLIGHT_STATES.EXITED).toJS();
             return this.with(newFlight);
         } else {
             return this;
@@ -416,7 +401,7 @@ class Flight {
      */
     approaching() {
         const { dt, flightTempl, goAroundAlt, om: omrDist } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, type, alt, toAlt, om } = flight;
 
         const { d: omDist, hdg: omHdg } = mapDao.route(flight, om);
@@ -429,19 +414,19 @@ class Flight {
         const minAlt = alt - vspeed * dt * MINS_PER_SEC;
         if (omDist < ds) {
             // passing outer marker
-            const rwy = this.props.map.nodes[this.flightJS.rwy];
+            const rwy = this.props.map.nodes[this.flight.rwy];
             const drwy = omrDist + omDist - ds;
             const pos = mapDao.radial(rwy, rwy.hdg + 180, drwy);
             const apprAlt = this.approachAlt(drwy);
             const targetAlt = Math.min(apprAlt, Math.max(minAlt, toAlt));
-            const result = this.with(this.flight
+            const result = this.with(Map(this.flight)
                 .set('hdg', rwy.hdg)
                 .set('status', FLIGHT_STATES.LANDING)
                 .set('lat', pos.lat)
                 .set('lon', pos.lon)
                 .set('alt', targetAlt)
                 .set('speed', this.speedByAlt(targetAlt))
-                .delete('om'));
+                .delete('om').toJS());
             return result;
         }
 
@@ -452,20 +437,22 @@ class Flight {
         // Checking altitude
         if (apprAlt < minAlt) {
             // Go around due to altitude
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
                 .delete('om')
-                .delete('runway');
+                .delete('runway')
+                .toJS();
             return this.with(newFlight).moveHoriz().moveVert().fireEvent(EVENT_TYPES.GO_AROUD_APPROACH);
         }
 
         // Approaching
         const targetAlt = Math.min(apprAlt, Math.max(minAlt, toAlt));
-        const result = this.with(this.flight
+        const result = this.with(Map(this.flight)
             .set('hdg', omHdg)
             .set('alt', targetAlt)
-            .set('speed', this.speedByAlt(targetAlt))).moveHoriz();
+            .set('speed', this.speedByAlt(targetAlt))
+            .toJS()).moveHoriz();
         return result;
     }
 
@@ -474,7 +461,7 @@ class Flight {
      */
     landing() {
         const { dt, map, landingHdgRange, landingHdgTrim, flightTempl, goAroundAlt, approachHdgRange } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, rwy, hdg, type, alt, toAlt } = flight;
         const runwayNode = map.nodes[rwy];
 
@@ -482,10 +469,11 @@ class Flight {
         const { from, d, angle, hdg: toHdg } = mapDao.route(flight, runwayNode);
         if (from) {
             // Go around due to missing runway
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
-                .delete('rwy');
+                .delete('rwy')
+                .toJS();
             return this.with(newFlight).moveHoriz().moveVert()
                 .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
@@ -497,10 +485,11 @@ class Flight {
         const minAlt = alt - vspeed * dt * MINS_PER_SEC;
         if (apprAlt < minAlt) {
             // Go around due to altitude
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
-                .delete('rwy');
+                .delete('rwy')
+                .toJS();
             return this.with(newFlight).moveHoriz().moveVert()
                 .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
@@ -510,30 +499,33 @@ class Flight {
             // Check for runway alignment
             if (Math.abs(angle) > landingHdgRange) {
                 // Go around due to wrong alignment
-                const newFlight = this.flight
+                const newFlight = Map(this.flight)
                     .set('status', FLIGHT_STATES.FLYING)
                     .set('toAlt', goAroundAlt)
-                    .delete('rwy');
+                    .delete('rwy')
+                    .toJS();
                 return this.with(newFlight).moveHoriz().moveVert()
                     .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
             }
             // Landed
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('lat', runwayNode.lat)
                 .set('lon', runwayNode.lon)
                 .set('speed', 0)
                 .set('alt', 0)
-                .set('status', FLIGHT_STATES.LANDED);
+                .set('status', FLIGHT_STATES.LANDED)
+                .toJS();
             return this.with(newFlight);
         }
 
         // Check for approach direction
         if (Math.abs(angle) > approachHdgRange) {
             // Go around due to wrong approach
-            const newFlight = this.flight
+            const newFlight = Map(this.flight)
                 .set('status', FLIGHT_STATES.FLYING)
                 .set('toAlt', goAroundAlt)
-                .delete('rwy');
+                .delete('rwy')
+                .toJS();
             return this.with(newFlight).moveHoriz().moveVert()
                 .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
@@ -548,10 +540,11 @@ class Flight {
                 : toHdg;
 
         const targetAlt = Math.min(apprAlt, Math.max(minAlt, toAlt));
-        const result = this.with(this.flight
+        const result = this.with(Map(this.flight)
             .set('hdg', targetHdg)
             .set('alt', targetAlt)
-            .set('speed', this.speedByAlt(targetAlt)))
+            .set('speed', this.speedByAlt(targetAlt))
+            .toJS())
             .moveHoriz();
 
         return result;
@@ -572,9 +565,9 @@ class Flight {
      */
     runwayDistance(pos) {
         if (pos === undefined) {
-            pos = this.flightJS;
+            pos = this.flight;
         }
-        const rwy = this.props.map.nodes[this.flight.get('rwy')];
+        const rwy = this.props.map.nodes[this.flight.rwy];
         return mapDao.distance(pos, rwy);
     }
 
@@ -585,9 +578,9 @@ class Flight {
      */
     approachDistance(pos) {
         if (pos === undefined) {
-            pos = this.flightJS;
+            pos = this.flight;
         }
-        const om = this.flightJS.om;
+        const om = this.flight.om;
         return mapDao.distance(pos, om) + this.props.om;
     }
 
@@ -597,7 +590,7 @@ class Flight {
     turning() {
         // Check position
         const { map, dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { speed, at, hdg } = flight;
         const atNode = map.nodes[at];
         const { d, hdg: hdgTo } = mapDao.route(flight, atNode);
@@ -620,30 +613,28 @@ class Flight {
      */
     turnTo() {
         const { map } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const toNode = map.nodes[flight.turnTo];
         const hdg = mapDao.hdg(toNode, flight);
-        const newFlight = this.flight
+        const newFlight = Map(this.flight)
             .set('hdg', hdg)
             .set('status', FLIGHT_STATES.FLYING_TO)
             .set('at', flight.turnTo)
-            .delete('turnTo');
+            .delete('turnTo')
+            .toJS();
 
         return this.with(newFlight).fireEvent(EVENT_TYPES.FLYING_TO);
     }
 
     hdg(hdg) {
-        return this.with(this.flight.set('hdg', hdg));
+        return this.with(Map(this.flight).set('hdg', hdg).toJS());
     }
 
     /**
      * 
      */
     nextPos() {
-        const speed = this.flight.get('speed');
-        const hdg = this.flight.get('hdg');
-        const lat = this.flight.get('lat');
-        const lon = this.flight.get('lon');
+        const { speed, hdg, lat, lon } = this.flight;
         const { dt } = this.props;
 
         // Compute new position
@@ -658,9 +649,10 @@ class Flight {
     moveHoriz() {
         // Compute new position
         const { lat, lon } = this.nextPos()
-        const result = this.with(this.flight
+        const result = this.with(Map(this.flight)
             .set('lat', lat)
-            .set('lon', lon));
+            .set('lon', lon)
+            .toJS());
         return result;
     }
 
@@ -668,7 +660,7 @@ class Flight {
      * 
      */
     moveVert() {
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { alt, toAlt } = flight;
         const { dt } = this.props;
 
@@ -680,9 +672,10 @@ class Flight {
                 ? Math.max(toAlt, Math.round(alt - vspeed * dt * MINS_PER_SEC))
                 : alt;
         const newSpeed = this.speedByAlt(newAlt);
-        const result = this.with(this.flight
+        const result = this.with(Map(this.flight)
             .set('alt', newAlt)
-            .set('speed', newSpeed));
+            .set('speed', newSpeed)
+            .toJS());
         if (toAlt !== alt && newAlt === toAlt) {
             // flight level reached
             return result.fireEvent(EVENT_TYPES.PASSING);
@@ -702,7 +695,7 @@ class Flight {
      */
     flyingTo() {
         const { map, dt } = this.props;
-        const flight = this.flightJS;
+        const flight = this.flight;
         const { at, speed, hdg } = flight;
         // compute heading
         const atNode = map.nodes[at];
@@ -710,9 +703,10 @@ class Flight {
         const ds = speed * dt / SECS_PER_HOUR;
         if (ds >= d) {
             // Passing
-            const flight1 = this.flight
+            const flight1 = Map(this.flight)
                 .delete('at')
-                .set('status', FLIGHT_STATES.FLYING);
+                .set('status', FLIGHT_STATES.FLYING)
+                .toJS();
             // Messages
             return this.with(flight1)
                 .moveHoriz()
@@ -721,8 +715,9 @@ class Flight {
             return this.moveHoriz().moveVert();
         } else {
             // correct
-            const flight1 = this.flight
-                .set('hdg', hdgTo);
+            const flight1 = Map(this.flight)
+                .set('hdg', hdgTo)
+                .toJS();
             return this.with(flight1)
                 .moveHoriz()
                 .moveVert();
@@ -730,11 +725,11 @@ class Flight {
     }
 
     speedByAlt(alt) {
-        return speedByAlt(alt, this.props.flightTempl[this.flight.get('type')]);
+        return speedByAlt(alt, this.props.flightTempl[this.flight.type]);
     }
 
     get vspeed() {
-        return this.props.flightTempl[this.flight.get('type')].vspeed;
+        return this.props.flightTempl[this.flight.type].vspeed;
     }
 }
 
