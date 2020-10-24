@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonGroup, Card } from 'react-bootstrap';
+import { Button, ButtonGroup, Card, Col, Container, Row } from 'react-bootstrap';
 import _ from 'lodash';
 import { COMMAND_TYPES } from './TrafficSimulator';
 
@@ -13,10 +13,12 @@ const HoldingConditionSelectionStatus = "holdingConditionSelection";
 
 const FlightLveles = ['040', '080', '120', '160', '200', '240', '280', '320', '360'];
 
-function CommandSelection({ onAbort, onChangeFlightLevel, onTurnHeading, onClearToLand, onHold }) {
+function CommandSelection({ flight, onAbort, onChangeFlightLevel, onTurnHeading, onClearToLand, onHold }) {
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select the instruction</Card.Header>
+            <Card.Header>
+                Flight {flight}
+            </Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button variant="warning"
@@ -39,7 +41,7 @@ function FlightSelection({ flights, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Send instruction to flight</Card.Header>
+            <Card.Header>Select flight</Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     {
@@ -47,7 +49,7 @@ function FlightSelection({ flights, onSelect }) {
                             return (
                                 <Button key={flight.id} variant="secondary"
                                     onClick={() => { if (!!onSelect) { onSelect(flight.id) } }
-                                    }>{ flight.id}</Button>
+                                    }>{flight.id}</Button>
                             );
                         })
                     }
@@ -57,12 +59,15 @@ function FlightSelection({ flights, onSelect }) {
     );
 }
 
-function RunwaySelection({ map, onAbort, onSelect }) {
+function RunwaySelection({ flight, map, onAbort, onSelect }) {
     const nodes = _(map.nodes).filter({ type: 'runway' }).sortBy('id');
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Select runway</Card.Header>
+            <Card.Header>
+                Flight {flight}<br />
+                clear to land
+            </Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button
@@ -82,64 +87,143 @@ function RunwaySelection({ map, onAbort, onSelect }) {
     );
 }
 
-function DestinationSelection({ map, onAbort, onSelect }) {
+function DestinationSelection({ flight, map, onAbort, onSelect }) {
     const nodes = _(map.nodes).sortBy('id');
+    const numCol1 = Math.ceil((nodes.size() + 1) / 2) - 1;
+    const nodes1 = nodes.take(numCol1);
+    const nodes2 = nodes.drop(numCol1);
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>To checkpoint</Card.Header>
+            <Card.Header>
+                Flight {flight}<br />
+                turn to
+            </Card.Header>
             <Card.Body>
-                <ButtonGroup vertical>
-                    <Button
-                        onClick={() => { if (!!onAbort) { onAbort() } }}
-                        variant="warning">Abort</Button>
-                    {nodes.map(node => {
-                        return (
-                            <Button key={node.id}
-                                onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
-                                variant="secondary" >{node.id}</Button>
-                        );
-                    }).value()
-                    }
-                </ButtonGroup>
-            </Card.Body>
+                <Container fluid>
+                    <Row>
+                        <Col>
+                            <ButtonGroup vertical>
+                                <Button
+                                    onClick={() => { if (!!onAbort) { onAbort() } }}
+                                    variant="warning">Abort</Button>
+                                {nodes1.map(node => {
+                                    return (
+                                        <Button key={node.id}
+                                            onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
+                                            variant="secondary" >{node.id}</Button>
+                                    );
+                                }).value()
+                                }
+                            </ButtonGroup>
+                        </Col>
+                        <Col>
+                            <ButtonGroup vertical>
+                                {nodes2.map(node => {
+                                    return (
+                                        <Button key={node.id}
+                                            onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
+                                            variant="secondary" >{node.id}</Button>
+                                    );
+                                }).value()
+                                }
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </Container>
+            </Card.Body >
         </Card >
     );
 }
 
-function ConditionSelection({ map, onAbort, onSelect }) {
+function ConditionButtons({ map, onAbort, onSelect }) {
     const nodes = _(map.nodes).filter(node => node.type !== 'runway').sortBy('id');
 
+    const numCol1 = Math.ceil((nodes.size() + 2) / 2) - 2;
+    const nodes1 = nodes.take(numCol1);
+    const nodes2 = nodes.drop(numCol1);
+
+    return (
+        <Container fluid>
+            <Row>
+                <Col>
+                    <ButtonGroup vertical>
+                        <Button
+                            onClick={() => { if (!!onAbort) { onAbort() } }}
+                            variant="warning">Abort</Button>
+                        <Button
+                            onClick={() => { if (!!onSelect) { onSelect('immediate') } }}
+                            variant="primary">Now</Button>
+                        {nodes1.map(node => {
+                            return (
+                                <Button key={node.id}
+                                    onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
+                                    variant="secondary" >{node.id}</Button>
+                            );
+                        }).value()
+                        }
+                    </ButtonGroup>
+                </Col>
+                <Col>
+                    <ButtonGroup vertical>
+                        {nodes2.map(node => {
+                            return (
+                                <Button key={node.id}
+                                    onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
+                                    variant="secondary" >{node.id}</Button>
+                            );
+                        }).value()
+                        }
+                    </ButtonGroup>
+                </Col>
+            </Row>
+        </Container>
+    );
+}
+
+function ConditionSelection({ flight, node, map, onAbort, onSelect }) {
     return (
         <Card bg="dark" text="white">
-            <Card.Header>At checkpoint</Card.Header>
+            <Card.Header>
+                Flight {flight}<br />
+                turn to {node}<br />
+                at beacon
+            </Card.Header>
             <Card.Body>
-                <ButtonGroup vertical>
-                    <Button
-                        onClick={() => { if (!!onAbort) { onAbort() } }}
-                        variant="warning">Abort</Button>
-                    <Button
-                        onClick={() => { if (!!onSelect) { onSelect('immediate') } }}
-                        variant="primary">Immediate</Button>
-                    {nodes.map(node => {
-                        return (
-                            <Button key={node.id}
-                                onClick={() => { if (!!onSelect) { onSelect(node.id) } }}
-                                variant="secondary" >{node.id}</Button>
-                        );
-                    }).value()
-                    }
-                </ButtonGroup>
+                <ConditionButtons
+                    map={map}
+                    onAbort={onAbort}
+                    onSelect={onSelect} />
             </Card.Body>
         </Card >
     );
 }
 
-function FlightLevelSelection({ onAbort, onSelect }) {
+function HoldCondition({ flight, map, onAbort, onSelect }) {
+    return (
+        <Card bg="dark" text="white">
+            <Card.Header>
+                Flight {flight}<br />
+                hold on at
+            </Card.Header>
+            <Card.Body>
+                <ConditionButtons
+                    map={map}
+                    onAbort={onAbort}
+                    onSelect={onSelect} />
+            </Card.Body>
+        </Card >
+    );
+}
+
+function FlightLevelSelection({ flight, onAbort, onSelect }) {
 
     return (
         <Card bg="dark" text="white">
-            <Card.Header>Flight level</Card.Header>
+            <Card.Header>
+                Flight {flight}<br />
+                change flight level
+                </Card.Header>
             <Card.Body>
                 <ButtonGroup vertical>
                     <Button variant="warning"
@@ -261,32 +345,39 @@ class CommandPane extends Component {
     render() {
         const { session, map } = this.props;
         const { flights } = session;
-        const { type } = this.state;
+        const { type, flight, node } = this.state;
         switch (type) {
             case CommandSelectionStatus:
                 return (<CommandSelection onAbort={this.handleAbort}
                     onChangeFlightLevel={this.handleChangeFlightLevel}
                     onTurnHeading={this.handleTurnHeading}
                     onClearToLand={this.handleClearToLand}
-                    onHold={this.handleHold} />);
+                    onHold={this.handleHold}
+                    flight={flight} />);
             case FlightLevelSelectionStatus:
                 return (<FlightLevelSelection
+                    flight={flight}
                     onAbort={this.handleAbort}
                     onSelect={this.handleFlightLevelSelect} />);
             case TurnConditionSelectionStatus:
                 return (<ConditionSelection map={map}
+                    flight={flight}
+                    node={node}
                     onAbort={this.handleAbort}
                     onSelect={this.handleTurnConditionSelect} />);
             case TurnSelectionStatus:
                 return (<DestinationSelection map={map}
+                    flight={flight}
                     onAbort={this.handleAbort}
                     onSelect={this.handleTurnHeadingSelect} />);
             case LandingRunwaySelectionStatus:
                 return (<RunwaySelection map={map}
+                    flight={flight}
                     onAbort={this.handleAbort}
                     onSelect={this.handleRunwaySelect} />);
             case HoldingConditionSelectionStatus:
-                return (<ConditionSelection map={map}
+                return (<HoldCondition map={map}
+                    flight={flight}
                     onAbort={this.handleAbort}
                     onSelect={this.handleHoldConditionSelect} />);
             default:

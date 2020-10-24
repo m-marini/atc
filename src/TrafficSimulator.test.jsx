@@ -2,7 +2,7 @@ import { TrafficSimulator, NODE_TYPES, FLIGHT_STATES, FLIGHT_TYPES, COMMAND_TYPE
 import _ from 'lodash';
 import { mapDao } from './modules/MapDao';
 import { distance, flightBuilder } from './TestUtil';
-import {sprintf} from 'sprintf-js';
+import { sprintf } from 'sprintf-js';
 
 const DT = 10; // sec
 
@@ -62,7 +62,7 @@ function createSession() {
 
 describe('Traffic simulation should createEntryCandidates ', () => {
   test('full entries', () => {
-    const ts = new TrafficSimulator({ session, map, level });
+    const ts = new TrafficSimulator(session, { map, level });
 
     const result = ts.createEntryCandidates();
     expect(result).toHaveLength(2);
@@ -76,7 +76,7 @@ describe('Traffic simulation should createEntryCandidates ', () => {
         ENTRY: 8
       }
     }, session);
-    const ts = new TrafficSimulator({ session: session1, map, level, safeEntryDelay: 2 });
+    const ts = new TrafficSimulator(session1, { map, level, safeEntryDelay: 2 });
 
     const result = ts.createEntryCandidates();
     expect(result).toHaveLength(1);
@@ -89,7 +89,7 @@ describe('Traffic simulation should createEntryCandidates ', () => {
         ENTRY: 7
       }
     }, session);
-    const ts = new TrafficSimulator({ session: session1, map, level, safeEntryDelay: 2 });
+    const ts = new TrafficSimulator(session1, { map, level, safeEntryDelay: 2 });
 
     const result = ts.createEntryCandidates();
     expect(result).toHaveLength(2);
@@ -100,7 +100,7 @@ describe('Traffic simulation should createEntryCandidates ', () => {
 
 describe('Traffic simulation should createExitCandidates', () => {
   test('full entries', () => {
-    const ts = new TrafficSimulator({ session, map, level });
+    const ts = new TrafficSimulator(session, { map, level });
 
     const result = ts.createExitCandidates();
     expect(result).toHaveLength(2);
@@ -113,9 +113,9 @@ describe('Traffic simulation should createExitCandidates', () => {
 describe('Traffic simulation should createFlight', () => {
   test('jet', () => {
     const map = { nodes: { RUNWAY } };
-    const ts = new TrafficSimulator({ session, map, level, jetProb: 1 });
+    const ts = new TrafficSimulator(session, { map, level, jetProb: 1 });
 
-    const result = ts.createFlight().sessionJS;
+    const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
       flights: {
@@ -136,9 +136,9 @@ describe('Traffic simulation should createFlight', () => {
 
   test('plane', () => {
     const map = { nodes: { RUNWAY } };
-    const ts = new TrafficSimulator({ session, map, level, jetProb: 0 });
+    const ts = new TrafficSimulator(session, { map, level, jetProb: 0 });
 
-    const result = ts.createFlight().sessionJS;
+    const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
       flights: {
@@ -159,9 +159,9 @@ describe('Traffic simulation should createFlight', () => {
 
   test('flighing jet', () => {
     const map = { nodes: { ENTRY } };
-    const ts = new TrafficSimulator({ session, map, level, jetProb: 1 });
+    const ts = new TrafficSimulator(session, { map, level, jetProb: 1 });
 
-    const result = ts.createFlight().sessionJS;
+    const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
       flights: {
@@ -183,9 +183,9 @@ describe('Traffic simulation should createFlight', () => {
 
   test('flighing plane', () => {
     const map = { nodes: { ENTRY } };
-    const ts = new TrafficSimulator({ session, map, level, jetProb: 0 });
+    const ts = new TrafficSimulator(session, { map, level, jetProb: 0 });
 
-    const result = ts.createFlight().sessionJS;
+    const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
       flights: {
@@ -208,7 +208,7 @@ describe('Traffic simulation should createFlight', () => {
 
 describe('Traffic simulation should processForNewFlight ', () => {
   const session = {
-    t: 10,
+    t: 30,
     noFlights: 0,
     flights: {},
     entries: {}
@@ -217,8 +217,8 @@ describe('Traffic simulation should processForNewFlight ', () => {
   test('true', () => {
     const map = { nodes: { RUNWAY } };
 
-    const result = new TrafficSimulator({ session, map, level, jetProb: 1 })
-      .processForNewFlight().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, jetProb: 1 })
+      .processForNewFlight().session;
 
     expect(result).toMatchObject({
       noFlights: 1,
@@ -259,8 +259,8 @@ describe('Traffic simulation should processForNewFlight ', () => {
     }, session);
 
     const map = { nodes: { RUNWAY } };
-    const result = new TrafficSimulator({ session: session1, map, level, jetProb: 1 })
-      .processForNewFlight().sessionJS;
+    const result = new TrafficSimulator(session1, { map, level, jetProb: 1 })
+      .processForNewFlight().session;
 
     expect(result).toMatchObject({
       noFlights: 1,
@@ -286,8 +286,8 @@ describe('Traffic simulation should processForNewFlight ', () => {
     const session1 = createSession(A1);
 
     const map = { nodes: { RUNWAY } };
-    const result = new TrafficSimulator({ session: session1, map, level, jetProb: 1 })
-      .processForNewFlight().sessionJS;
+    const result = new TrafficSimulator(session1, { map, level, jetProb: 1 })
+      .processForNewFlight().session;
 
     expect(result).toMatchObject({
       noFlights: 2,
@@ -312,11 +312,12 @@ describe('Traffic simulation should processForNewFlight ', () => {
     };
 
     const map = { nodes: { RUNWAY } };
-    const result = new TrafficSimulator({ session, map, level, jetProb: 1 })
-      .processForNewFlight().sessionJS;
+    const result = new TrafficSimulator(_.defaults({ noFlights: 1 }, session),
+      { map, level, jetProb: 1 })
+      .processForNewFlight().session;
 
     expect(result).toMatchObject({
-      noFlights: 0,
+      noFlights: 1,
       flights: {}
     });
   });
@@ -334,8 +335,8 @@ describe('Traffic simulation should filterForOutOfArea', () => {
       .radial(map.center, 100, hdg).flight;
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterForOutOfArea().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterForOutOfArea().session;
 
     expect(result).toMatchObject({
       noFlights: 1,
@@ -358,8 +359,8 @@ describe('Traffic simulation should filterForOutOfArea', () => {
 
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterForLanded().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterForLanded().session;
 
     expect(result).toMatchObject({
       noFlights: 1,
@@ -385,8 +386,8 @@ describe('Traffic simulation should filterForLanded ', () => {
 
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterForLanded().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterForLanded().session;
 
     expect(result).toMatchObject({
       noFlights: 1,
@@ -410,8 +411,8 @@ describe('Traffic simulation should filterForLanded ', () => {
 
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterForLanded().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterForLanded().session;
 
     expect(result).toMatchObject({
       noFlights: 1,
@@ -435,9 +436,8 @@ describe('Traffic simulation should processFlights ', () => {
       .status(FLIGHT_STATES.FLYING).flight
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
-
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
     const ds = distance(A1.speed, DT);
     expect(result.flights.A1).toBeHdg(hdg);
     expect(result.flights.A1).toBeSpeedAtAlt();
@@ -457,8 +457,8 @@ describe('Traffic simulation should processFlights ', () => {
       .status(FLIGHT_STATES.FLYING).flight
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     expect(result.flights.A1).toBeHdg(hdg);
@@ -479,8 +479,8 @@ describe('Traffic simulation should processFlights ', () => {
       .status(FLIGHT_STATES.FLYING).flight
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     expect(result.flights.A1).toBeHdg(hdg);
@@ -501,8 +501,8 @@ describe('Traffic simulation should processFlights ', () => {
       .status(FLIGHT_STATES.FLYING).flight
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     expect(result.flights.A1).toBeHdg(hdg);
@@ -531,8 +531,8 @@ describe('Traffic simulation should processCommand for change flight level', () 
     }
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBePos(A1);
     expect(result.flights.A1).toBeHdg(A1.hdg);
@@ -555,8 +555,8 @@ describe('Traffic simulation should processCommand for change flight level', () 
       flight: A1.id, type: COMMAND_TYPES.CHANGE_LEVEL, flightLevel: '320'
     }
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBeHdg(RUNWAY.hdg);
     expect(result.flights.A1).toBeAlt(0);
@@ -574,8 +574,8 @@ describe('Traffic simulation should processCommand for change flight level', () 
       flight: A1.id, type: COMMAND_TYPES.CHANGE_LEVEL, flightLevel: '320'
     }
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBePos(A1);
     expect(result.flights.A1).toBeHdg(A1.hdg);
@@ -602,8 +602,8 @@ describe('Traffic simulation should processCommand for turn heading', () => {
       flight: A1.id, type: COMMAND_TYPES.TURN_HEADING, when: BEACON.id, to: ENTRY.id
     };
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBeHdg(hdg);
     expect(result.flights.A1).toBeAt(BEACON.id);
@@ -634,8 +634,8 @@ describe('Traffic simulation should processCommand for clear to land', () => {
       flight: A1.id, type: COMMAND_TYPES.CLEAR_TO_LAND, to: RUNWAY.id
     };
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBeAlt(4000);
     expect(result.flights.A1).toBeToAlt(4000);
@@ -659,8 +659,8 @@ describe('Traffic simulation should processCommand for clear to land', () => {
       flight: A1.id, type: COMMAND_TYPES.CLEAR_TO_LAND, to: RUNWAY.id
     };
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBeAlt(8000);
     expect(result.flights.A1).toBeToAlt(8000);
@@ -684,8 +684,8 @@ describe('Traffic simulation should processCommand for clear to land', () => {
       flight: A1.id, type: COMMAND_TYPES.CLEAR_TO_LAND, to: RUNWAY.id
     };
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level })
-      .processCommand(cmd).sessionJS;
+    const result = new TrafficSimulator(session, { map, level })
+      .processCommand(cmd).session;
 
     expect(result.flights.A1).toBeAlt(4000);
     expect(result.flights.A1).toBeToAlt(4000);
@@ -712,9 +712,9 @@ describe('Traffic simulation should processFlight turning at', () => {
 
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
       .processFlights()
-      .sessionJS;
+      .session;
 
     const ds = distance(A1.speed, DT);
     expect(result.flights.A1).toBeHdg(hdg);
@@ -741,8 +741,8 @@ describe('Traffic simulation should processFlight approaching', () => {
       .flight
     const session = createSession(A1);
 
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     const d1 = d0 - ds;
@@ -762,8 +762,8 @@ describe('Traffic simulation should processFlight approaching', () => {
       .status(FLIGHT_STATES.APPROACHING)
       .flight
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     const d1 = d0 - ds;
@@ -783,8 +783,8 @@ describe('Traffic simulation should processFlight landing', () => {
       .toAlt(4000)
       .flight
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     const d1 = d0 - ds;
@@ -803,8 +803,8 @@ describe('Traffic simulation should processFlight landing', () => {
       .flight
 
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     expect(result.flights.A1).toBeAlt(0);
     expect(result.flights.A1).toBeSpeed(0);
@@ -822,8 +822,8 @@ describe('Traffic simulation should processFlight landing', () => {
       .toAlt(8000)
       .flight
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .processFlights().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .processFlights().session;
 
     const ds = distance(A1.speed, DT);
     expect(result.flights.A1).toBeClimbedFrom(A1.alt, DT)
@@ -849,9 +849,9 @@ describe('Traffic simulation should processExited', () => {
       .status(FLIGHT_STATES.FLYING)
       .flight
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
       .processFlights()
-      .filterForExited().sessionJS;
+      .filterForExited().session;
 
     expect(result).toMatchObject({
       noExitOk: 1,
@@ -872,9 +872,9 @@ describe('Traffic simulation should processExited', () => {
       .status(FLIGHT_STATES.FLYING)
       .flight
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
       .processFlights()
-      .filterForExited().sessionJS;
+      .filterForExited().session;
 
     expect(result).toMatchObject({
       noExitOk: 0,
@@ -895,9 +895,9 @@ describe('Traffic simulation should processExited', () => {
       .status(FLIGHT_STATES.FLYING)
       .flight
     const session = createSession(A1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
       .processFlights()
-      .filterForExited().sessionJS;
+      .filterForExited().session;
 
     expect(result).toMatchObject({
       noExitOk: 0,
@@ -907,6 +907,7 @@ describe('Traffic simulation should processExited', () => {
     expect(result.flights).toEqual({});
   });
 });
+
 describe('Traffic simulation should detect collision ', () => {
   const d = Math.random() * 4;
   const r = Math.floor(Math.random() * 360 + 1);
@@ -930,8 +931,8 @@ describe('Traffic simulation should detect collision ', () => {
       .toAlt(b1Alt)
       .status(FLIGHT_STATES.FLYING).flight;
     const session = createSession(A1, B1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterCollision().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterCollision().session;
 
     expect(result).toMatchObject({
       noCollision: 2
@@ -954,8 +955,8 @@ describe('Traffic simulation should detect collision ', () => {
       .toAlt(b1Alt)
       .status(FLIGHT_STATES.FLYING).flight;
     const session = createSession(A1, B1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterCollision().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterCollision().session;
 
     expect(result).toMatchObject({
       noCollision: 0
@@ -978,8 +979,8 @@ describe('Traffic simulation should detect collision ', () => {
       .toAlt(b1Alt)
       .status(FLIGHT_STATES.FLYING).flight;
     const session = createSession(A1, B1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterCollision().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterCollision().session;
 
     expect(result).toMatchObject({
       noCollision: 0
@@ -1002,8 +1003,8 @@ describe('Traffic simulation should detect collision ', () => {
       .toAlt(100)
       .status(FLIGHT_STATES.FLYING).flight;
     const session = createSession(A1, B1);
-    const result = new TrafficSimulator({ session, map, level, dt: DT })
-      .filterCollision().sessionJS;
+    const result = new TrafficSimulator(session, { map, level, dt: DT })
+      .filterCollision().session;
 
     expect(result).toMatchObject({
       noCollision: 0

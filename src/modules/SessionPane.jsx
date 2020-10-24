@@ -24,6 +24,10 @@ const SIM_INTERVAL = 10;
 
 class Session extends Component {
 
+  /**
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     const logger = cockpitLogger();
@@ -36,6 +40,9 @@ class Session extends Component {
     ]);
   }
 
+  /**
+   * 
+   */
   componentDidMount() {
     const self = this;
 
@@ -60,33 +67,44 @@ class Session extends Component {
     ).subscribe()
   }
 
+  /**
+   * 
+   * @param {*} cmd 
+   */
   handleCommand(cmd) {
     const { session, map, level } = this.state;
-    const sim = new TrafficSimulator({
-      session, map, level,
+    const sim = new TrafficSimulator(session, {
+      map, level,
       onEvent: this.handleSimulationEvent
     });
-    const next = sim.processCommand(cmd).sessionJS;
+    const next = sim.processCommand(cmd).session;
     const newSession = sessionDao.putSession(next);
     this.setState({ session: newSession });
   }
 
+  /**
+   * 
+   * @param {*} event 
+   */
   handleSimulationEvent(event) {
     const { reader, logger } = this.state;
-    // toMessages(event).forEach(logger.sendMessage);
     const clips = new AudioBuilder(event).toAudio().clips;
     clips.forEach(clip => logger.sendMessage(toMessage(clip)));
     const newReader = reader.say(clips.flatMap(toMp3));
     this.setState({ reader: newReader });
   }
 
+  /**
+   * 
+   * @param {*} t 
+   */
   handleClock(t) {
     const { session, map, level } = this.state;
-    const sim = new TrafficSimulator({
-      session, map, level, dt: SIM_INTERVAL,
+    const sim = new TrafficSimulator(session, {
+      map, level, dt: SIM_INTERVAL,
       onEvent: this.handleSimulationEvent
     });
-    const next = sim.transition().sessionJS;
+    const next = sim.transition().session;
     const newSession = sessionDao.putSession(next);
     this.setState({ session: newSession });
   }

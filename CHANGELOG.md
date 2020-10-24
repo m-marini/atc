@@ -29,4 +29,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #31: wrong john flight level audios
 - Issue #32: Audio mute
 - Issue #33: Add flight within 20s
-- Issue #34:Home page info
+- Issue #34: Home page info
+- Issue #36: default use json flight in Flight object

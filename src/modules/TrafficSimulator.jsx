@@ -1,4 +1,4 @@
-import { fromJS, Set } from 'immutable';
+import { fromJS, Map, Set } from 'immutable';
 import _ from 'lodash';
 import { buildEvent, EVENT_TYPES } from './Events';
 import { Flight, FLIGHT_STATES, FLIGHT_TYPES } from './Flight';
@@ -104,17 +104,17 @@ function rndInt(n) {
  */
 class TrafficSimulator {
 
-    constructor(props) {
-        const session = props.session instanceof Map ? props.session : fromJS(props.session);
-        this.props = _.defaults({ session }, props, TRAFFIC_SIM_DEFAULTS);
+    constructor(session, props) {
+        this.props = _.defaults(props, TRAFFIC_SIM_DEFAULTS);
+        this._session = session;
         _.bindAll(this);
     }
 
     /** Returns the session */
-    get sessionJS() { return this.props.session.toJS(); }
+    get session() { return this._session; }
 
     withSession(session) {
-        return new TrafficSimulator(_.defaults({ session }, this.props));
+        return new TrafficSimulator(session, this.props);
     }
 
     fireEvent(type, flight, cmd) {
@@ -131,15 +131,14 @@ class TrafficSimulator {
      */
     processCommand(cmd) {
         const { flight: flightId } = cmd;
-        const { session } = this.props;
-        const flight = session.getIn(['flights', flightId]);
+        const flight = this.session.flights[flightId];
         if (!flight) {
             // No flight in the session
             this.fireEvent(EVENT_TYPES.UNKWOWN_FLIGHT, undefined, cmd);
             return this;
         }
         const newFlight = new Flight(flight, this.props).processCommand(cmd).flight;
-        const newSession = session.setIn(['flights', flightId], newFlight);
+        const newSession = fromJS(this.session).setIn(['flights', flightId], newFlight).toJS();
         return this.withSession(newSession);
     }
 
@@ -161,7 +160,7 @@ class TrafficSimulator {
      */
     filterCollision() {
         const { collisionAlt, collisionDistance } = this.props;
-        const { flights } = this.sessionJS;
+        const { flights } = this.session;
         const flightsAry = _.values(flights);
         var collision = Set.of();
         for (var i = 0; i < flightsAry.length; i++) {
@@ -187,9 +186,10 @@ class TrafficSimulator {
                 .groupBy('id')
                 .mapValues(f => f[0])
                 .value();
-            const newSession = this.props.session
-                .set('flights', fromJS(notCollidedMap))
+            const newSession = fromJS(this.session)
+                .set('flights', notCollidedMap)
                 .update('noCollision', n => n + noCollided)
+                .toJS();
             // Sending message
             collided.forEach(flight => {
                 this.fireEvent(EVENT_TYPES.COLLISION, flight);
@@ -204,7 +204,7 @@ class TrafficSimulator {
      */
     filterForExited() {
         const { exitAlt } = this.props;
-        const [exited, notExited] = _.partition(this.sessionJS.flights,
+        const [exited, notExited] = _.partition(this.session.flights,
             { status: FLIGHT_STATES.EXITED });
         const noExited = exited.length;
         if (noExited > 0) {
@@ -218,10 +218,11 @@ class TrafficSimulator {
                 .groupBy('id')
                 .mapValues(f => f[0])
                 .value();
-            const newSession = this.props.session
-                .set('flights', fromJS(notExitedMap))
+            const newSession = fromJS(this.session)
+                .set('flights', notExitedMap)
                 .update('noExitOk', n => n + ok)
-                .update('noExitKo', n => n + ko);
+                .update('noExitKo', n => n + ko)
+                .toJS();
             // Sending message
             exited.forEach(flight => {
                 const ok = _.find(exitedOk, { id: flight.id }) !== undefined;
@@ -243,7 +244,7 @@ class TrafficSimulator {
         const { map, exitDistance } = this.props;
         const { center } = map;
         const coords = mapDao.coords(map.nodes, center);
-        const flights = this.sessionJS.flights;
+        const flights = this.session.flights;
         const [exited, inArea] = _.partition(flights,
             f => {
                 const pts = mapDao.xy(f, center);
@@ -257,9 +258,10 @@ class TrafficSimulator {
                 .groupBy('id')
                 .mapValues(f => f[0])
                 .value();
-            const newSession = this.props.session
+            const newSession = Map(this.session)
                 .set('flights', fromJS(inAreaMap))
                 .update('noExitKo', n => n + exited.length)
+                .toJS();
             exited.forEach(flight => {
                 this.fireEvent(EVENT_TYPES.OUT_OF_AREA, flight);
             });
@@ -274,7 +276,7 @@ class TrafficSimulator {
      * 
      */
     filterForLanded() {
-        const [landed, notLanded] = _.partition(this.sessionJS.flights,
+        const [landed, notLanded] = _.partition(this.session.flights,
             { status: FLIGHT_STATES.LANDED });
         const noLanded = landed.length;
         if (noLanded > 0) {
@@ -285,10 +287,11 @@ class TrafficSimulator {
                 .groupBy('id')
                 .mapValues(f => f[0])
                 .value();
-            const newSession = this.props.session
-                .set('flights', fromJS(notLandedMap))
+            const newSession = Map(this.session)
+                .set('flights', notLandedMap)
                 .update('noLandedOk', n => n + ok)
-                .update('noLandedKo', n => n + ko);
+                .update('noLandedKo', n => n + ko)
+                .toJS();
             // Sending message
             landed.forEach(flight => {
                 const ok = _.find(landedOk, { id: flight.id }) !== undefined;
@@ -308,8 +311,10 @@ class TrafficSimulator {
      * 
      */
     addTime() {
-        return this.withSession(this.props.session.updateIn(['t'],
-            t => t + this.props.dt)
+        return this.withSession(
+            fromJS(this.session)
+                .updateIn(['t'], t => t + this.props.dt)
+                .toJS()
         );
     }
 
@@ -317,14 +322,12 @@ class TrafficSimulator {
      * 
      */
     processFlights() {
-        const { session } = this.props;
-        const flights = session.get('flights');
-        if (flights.size > 0) {
-            const newSession = session.update('flights', flights => {
-                return flights.map(flight => {
-                    return new Flight(flight, this.props).processTime().flight;
-                });
-            });
+        const { flights } = this.session;
+        if (_.size(flights) > 0) {
+            const newFlights = _.mapValues(flights, flight =>
+                new Flight(flight, this.props).processTime().flight
+            );
+            const newSession = Map(this.session).set('flights', newFlights).toJS();
             return this.withSession(newSession);
         } else {
             return this;
@@ -336,13 +339,11 @@ class TrafficSimulator {
      * @param {*} sessionMap 
      */
     processForNewFlight() {
-        const { dt, level, session } = this.props;
+        const { dt, level } = this.props;
         const { maxPlane, flightFreq } = level;
-        const flights = session.get('flights');
-        const t = session.get('t');
-        const noFlights = session.get('noFlights');
+        const { flights, t, noFlights } = this.session;
         //Check for new flight eligibility
-        if (flights.size < maxPlane && (
+        if (_.size(flights) < maxPlane && (
             rndByFreq(dt, flightFreq / 3600)
             || (noFlights === 0 && t >= MAX_INITIAL_IDLE_INTERVAL))) {
             return this.createFlight();
@@ -355,16 +356,15 @@ class TrafficSimulator {
      * 
      */
     createEntryCandidates() {
-        const { safeEntryDelay, session } = this.props;
-        const entries = session.get('entries');
-        const t = session.get('t');
+        const { safeEntryDelay } = this.props;
+        const { entries, t } = this.session;
         const entryTimeout = t - safeEntryDelay;
         return _(this.props.map.nodes)
             .filter(node =>
                 node.type === NODE_TYPES.RUNWAY
                 || (node.type === NODE_TYPES.ENTRY
-                    && (!entries.get(node.id)
-                        || entries.get(node.id) < entryTimeout)
+                    && (!entries[node.id]
+                        || entries[node.id] < entryTimeout)
                 )
             ).value();
     }
@@ -383,9 +383,8 @@ class TrafficSimulator {
      * @param {*} sessionMap 
      */
     createFlight() {
-        const { jetProb, entryAlt, flightTempl, session } = this.props;
-        const noFlights = session.get('noFlights');
-        const t = session.get('t');
+        const { jetProb, entryAlt, flightTempl } = this.props;
+        const { noFlights, t } = this.session;
         const entry = choose(this.createEntryCandidates());
         const to = choose(this.createExitCandidates());
         const type = rndByProb(jetProb) ? FLIGHT_TYPES.JET : FLIGHT_TYPES.AIRPLANE;
@@ -393,7 +392,7 @@ class TrafficSimulator {
         const alt = entry.type === NODE_TYPES.RUNWAY ? 0 : entryAlt;
         const status = entry.type === NODE_TYPES.RUNWAY ? FLIGHT_STATES.WAITING_FOR_TAKEOFF : FLIGHT_STATES.FLYING;
         const speed = entry.type === NODE_TYPES.RUNWAY ? 0 : flightSpeed(alt, flightTempl[type]);
-        const flight = _.defaults({
+        const flight = {
             id,
             type,
             alt,
@@ -405,17 +404,16 @@ class TrafficSimulator {
             speed,
             from: entry.id,
             status
-        })
+        };
 
         this.fireEvent(EVENT_TYPES.ENTER, flight);
-        const newSession = entry.type === NODE_TYPES.RUNWAY
-            ? session
-            : session
-                .setIn(['entries', entry.id], t);
-        return this.withSession(newSession
+        const sessionMap = fromJS(this.session)
             .set('noFlights', noFlights + 1)
-            .setIn(['flights', flight.id], flight)
-        );
+            .setIn(['flights', flight.id], flight);
+        const sessionMap1 = entry.type === NODE_TYPES.RUNWAY
+            ? sessionMap
+            : sessionMap.setIn(['entries', entry.id], t);
+        return this.withSession(sessionMap1.toJS());
     }
 }
 
