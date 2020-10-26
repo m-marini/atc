@@ -39,7 +39,8 @@ const map = {
     lat: 45,
     lon: 10
   },
-  nodes: { RUNWAY, BEACON, ENTRY }
+  nodes: { RUNWAY, BEACON, ENTRY },
+  voice: 'george'
 };
 
 const session = {
@@ -112,7 +113,7 @@ describe('Traffic simulation should createExitCandidates', () => {
 
 describe('Traffic simulation should createFlight', () => {
   test('jet', () => {
-    const map = { nodes: { RUNWAY } };
+    const map = { nodes: { RUNWAY }, voice: 'george' };
     const ts = new TrafficSimulator(session, { map, level, jetProb: 1 });
 
     const result = ts.createFlight().session;

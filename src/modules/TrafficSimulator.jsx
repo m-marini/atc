@@ -56,6 +56,8 @@ const TRAFFIC_SIM_DEFAULTS = {
     }
 };
 
+const VOICES = ['geroge', 'john'];
+
 /**
  * 
  * @param {*} alt 
@@ -70,7 +72,7 @@ function flightSpeed(alt, template) {
  * @param {*} items 
  */
 function choose(items) {
-    return items[rndInt(items.length)];
+    return items.length <= 1 ? items[0] : items[rndInt(items.length)];
 }
 
 /**
@@ -392,6 +394,9 @@ class TrafficSimulator {
         const alt = entry.type === NODE_TYPES.RUNWAY ? 0 : entryAlt;
         const status = entry.type === NODE_TYPES.RUNWAY ? FLIGHT_STATES.WAITING_FOR_TAKEOFF : FLIGHT_STATES.FLYING;
         const speed = entry.type === NODE_TYPES.RUNWAY ? 0 : flightSpeed(alt, flightTempl[type]);
+        const atcVoice = this.props.map.voice;
+        const voices = VOICES.filter(v => v !== atcVoice);
+        const voice = choose(voices);
         const flight = {
             id,
             type,
@@ -403,7 +408,8 @@ class TrafficSimulator {
             lon: entry.lon,
             speed,
             from: entry.id,
-            status
+            status,
+            voice
         };
 
         this.fireEvent(EVENT_TYPES.ENTER, flight);

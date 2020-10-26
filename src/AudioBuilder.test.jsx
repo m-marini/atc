@@ -29,7 +29,8 @@ function buildMap() {
         id: '09L',
         type: 'runway'
       }
-    }
+    },
+    voice: 'george'
   };
 }
 

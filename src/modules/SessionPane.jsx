@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Accordion, Card, Col, Container, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { sessionDao } from './SessionDao';
 import ATCNavbar from './ATCNavbar';
 import QueuePane from './QueuePane';
 import RadarPane from './RadarPane';
-import LogPane from './LogPane';
 import CommandPane from './CommandPane';
 import { mapDao } from './MapDao';
 import { flatMap, map, tap } from 'rxjs/operators';
@@ -21,6 +20,43 @@ import { AudioBuilder, toMessage, toMp3 } from './Audio';
 
 const INTERVAL = 1000;
 const SIM_INTERVAL = 10;
+
+/**
+ * 
+ * @param {*} param0 
+ */
+function AccordionPane({ session, logger }) {
+    return (
+    <Accordion defaultActiveKey="0">
+      <Card bg="dark" text="white">
+        <Accordion.Toggle as={Card.Header} eventKey="0">
+          Flights
+          </Accordion.Toggle>
+        <Accordion.Collapse eventKey="0">
+          <Card.Body>
+            <QueuePane session={session} />
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+      <Card bg="dark" text="white">
+        <Accordion.Toggle as={Card.Header} eventKey="1">
+          Cockpit Log
+          </Accordion.Toggle>
+        <Accordion.Collapse eventKey="1">
+          <Card.Body>
+            {
+              logger.log.map((msg, i) => {
+                return (
+                  <div key={i} className={`${msg.type} text-monospace`}>{msg.msg}</div>
+                );
+              })
+            }
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+    </Accordion>
+  );
+}
 
 class Session extends Component {
 
@@ -89,7 +125,7 @@ class Session extends Component {
   handleSimulationEvent(event) {
     const { reader, logger } = this.state;
     const clips = new AudioBuilder(event).toAudio().clips;
-    clips.forEach(clip => logger.sendMessage(toMessage(clip)));
+    clips.forEach(clip => logger.sendMessage(toMessage(clip, event.map.voice)));
     const newReader = reader.say(clips.flatMap(toMp3));
     this.setState({ reader: newReader });
   }
@@ -136,16 +172,13 @@ class Session extends Component {
           <Container fluid className="ATC">
             <Row>
               <Col xs={2}>
-                <QueuePane session={session} />
+                <AccordionPane session={session} logger={logger} />
               </Col>
               <Col><RadarPane session={session} nodeMap={nodeMap} map={map} /></Col>
               <Col xs={2}>
                 <CommandPane session={session} map={map}
                   onCommand={this.handleCommand} />
               </Col>
-            </Row>
-            <LogPane logger={logger} />
-            <Row>
             </Row>
           </Container>
           <ReactAudioPlayer autoPlay

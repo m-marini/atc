@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, CardDeck, Col, Container, Jumbotron, ListGroup, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar, Card, CardDeck, Col, Container, Jumbotron, ListGroup, Row } from 'react-bootstrap';
 import _ from 'lodash';
 import { mapDao } from './MapDao';
 import ATCNavbar from './ATCNavbar';
@@ -7,6 +7,10 @@ import { sessionDao } from './SessionDao';
 import { levelDao } from './LevelDao';
 import { tap } from 'rxjs/operators';
 
+/**
+ * 
+ * @param {*} param0 
+ */
 function LevelSelection({ value, values = {}, onSelect }) {
 
   const listOnSelect = value => ev => {
@@ -33,6 +37,10 @@ function LevelSelection({ value, values = {}, onSelect }) {
   );
 }
 
+/**
+ * 
+ * @param {*} param0 
+ */
 function MapSelection({ value, values = {}, onSelect }) {
   const onClick = value => ev => {
     if (!!onSelect) {
@@ -59,16 +67,24 @@ function MapSelection({ value, values = {}, onSelect }) {
   );
 }
 
+/**
+ * 
+ */
 class Home extends Component {
 
+  /**
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super();
-    this.handleLevel = this.handleLevel.bind(this);
-    this.handleMap = this.handleMap.bind(this);
-    this.handleStart = this.handleStart.bind(this);
     this.state = {};
+    _.bindAll(this, ['handleLevel', 'handleMap', 'handleStart', 'handleLoad']);
   }
 
+  /**
+   * 
+   */
   componentDidMount() {
     const th = this;
     mapDao.maps().pipe(
@@ -83,24 +99,49 @@ class Home extends Component {
         th.setState({ levels, level: levels.levels[0] });
       })
     ).subscribe()
+
+    sessionDao.getSessions().pipe(
+      tap(sessions => {
+        th.setState({ sessions });
+      })
+    ).subscribe();
   }
 
+  /**
+   * 
+   */
   handleStart() {
     const { level, map } = this.state;
     const session = sessionDao.create(level.id, map.id);
     window.location.href = process.env.REACT_APP_BASENAME + '#/sessions/' + session.id;
   }
 
+  handleLoad() {
+    console.log('reload');
+    window.location.href = process.env.REACT_APP_BASENAME + '#/sessions/' + this.state.sessions[0].id;
+  }
+
+  /**
+   * 
+   * @param {*} level 
+   */
   handleLevel(level) {
     this.setState({ level });
   }
 
+  /**
+   * 
+   * @param {*} map 
+   */
   handleMap(map) {
     this.setState({ map });
   }
 
+  /**
+   * 
+   */
   render() {
-    const { levels = {}, level = {}, maps = {}, map = {} } = this.state;
+    const { levels = {}, level = {}, maps = {}, map = {}, sessions = [] } = this.state;
 
     return (
       <Container fluid>
@@ -119,7 +160,15 @@ class Home extends Component {
               </Row>
               <Row>
                 <Col>
-                  <Button onClick={this.handleStart} >Start</Button>
+                  <ButtonToolbar aria-label="Buttons">
+                    <ButtonGroup className="mr-2" aria-label="Start">
+                      <Button onClick={this.handleStart} >Start</Button>
+                    </ButtonGroup>
+                    <ButtonGroup className="mr-2" aria-label="Load">
+                      <Button disabled={sessions.length === 0}
+                        onClick={this.handleLoad}>Load last game</Button>
+                    </ButtonGroup>
+                  </ButtonToolbar>
                 </Col>
               </Row>
             </Container>

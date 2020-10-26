@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
-import { EVENT_TYPES } from './Events';
+import { EVENT_TYPES, MESSAGE_TYPES } from './Events';
 import { FLIGHT_STATES } from './Flight';
 import { NODE_TYPES } from './TrafficSimulator';
 
-const ATC_VOICE = 'george';
-const FLIGHT_VOICE = 'john';
 const PAUSE = 'pause';
 
 /**
@@ -141,15 +139,15 @@ class AudioBuilder {
     }
 
     flightAudio(msg) {
-        return this.say(`${FLIGHT_VOICE} pause $atc $flightId ${msg}`);
+        return this.say(`${this.event.flight.voice} pause $atc $flightId ${msg}`);
     }
 
     atcAudio(msg) {
-        return this.say(`${ATC_VOICE} pause $flightId $atc ${msg}`);
+        return this.say(`${this.event.map.voice} pause $flightId $atc ${msg}`);
     }
 
     readbackAudio(msg) {
-        return this.say(`${FLIGHT_VOICE} pause ${msg} pause1 $flightId`);
+        return this.say(`${this.event.flight.voice} pause ${msg} pause1 $flightId`);
     }
 
     toAudio() {
@@ -365,7 +363,7 @@ class AudioBuilder {
     }
 
     unknownFlight() {
-        return this.say(`${ATC_VOICE} pause operator $cmdFlight notinarea`);
+        return this.say(`${this.event.map.voice} pause operator $cmdFlight notinarea`);
     }
 
     enter() {
@@ -449,7 +447,12 @@ const MESSAGES = {
     pause1: ' '
 };
 
-function toMessage(clip) {
+/**
+ * 
+ * @param {*} clip 
+ * @param {*} atcVoice 
+ */
+function toMessage(clip, atcVoice) {
     const tags = clip.split(' ');
     const msg = _(tags)
         .drop(1)
@@ -472,9 +475,9 @@ function toMessage(clip) {
         })
         .join('').trim().replace(/\s+/gi, ' ');
     return {
-        type: tags[0],
+        type: tags[0] === atcVoice ? MESSAGE_TYPES.ATC : MESSAGE_TYPES.FLIGHT,
         msg
     }
 }
 
-export { ATC_VOICE, FLIGHT_VOICE, MESSAGES, AudioBuilder, toMp3, sayFL, spell, sayHdg, toMessage };
+export { MESSAGES, AudioBuilder, toMp3, sayFL, spell, sayHdg, toMessage };

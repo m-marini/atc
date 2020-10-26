@@ -35,7 +35,7 @@ function ATCNavBar({ session, muted, onMuted }) {
         <Col>
           <Form inline className="text-light">
             <FormControl type="checkbox" className="mr-sm-2"
-              checked={muted} onClick={onMuted} />Muted
+              checked={muted} onChange={onMuted} />Muted
           </Form>
         </Col>
       </Container >
