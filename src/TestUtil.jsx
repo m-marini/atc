@@ -231,7 +231,7 @@ function toBeHoldHdg(received, holdHdg) {
   } else {
     return {
       message: () =>
-      `Expected {\n  holdHdg: ${holdHdg}\n}\nReceived: {\n  holdHdg: ${received.holdHdg}\n}`,
+        `Expected {\n  holdHdg: ${holdHdg}\n}\nReceived: {\n  holdHdg: ${received.holdHdg}\n}`,
       pass: pass
     };
   }
@@ -356,7 +356,8 @@ class FlightBuilder {
     hdg: 360,
     alt: 0,
     toAlt: 0,
-    status: FLIGHT_STATES.FLYING
+    status: FLIGHT_STATES.FLYING,
+    voice: 'john'
   }) {
     this.flight = flight;
   }

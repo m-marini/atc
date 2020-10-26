@@ -6,8 +6,8 @@ import { sprintf } from 'sprintf-js';
 import { FLIGHT_STATES } from './Flight';
 
 const RadarConf = {
-    width: 800,
-    height: 800,
+    width: 850,
+    height: 850,
 };
 
 const ImageConf = {

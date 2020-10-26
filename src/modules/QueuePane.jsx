@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
 import { FLIGHT_STATES } from './TrafficSimulator';
@@ -56,7 +55,7 @@ function toLines(flight) {
 function QueuePane({ session }) {
     if (!session) {
         return (
-            <Card bg="dark">Queue</Card>
+            <pre className="terminal" />
         );
     } else {
         const lines = _(session.flights)
@@ -65,12 +64,7 @@ function QueuePane({ session }) {
             .flatMap(toLines)
             .join('\n');
         return (
-            <Card bg="dark" text="white">
-                <Card.Header>Flights</Card.Header>
-                <Card.Body>
-                    <pre className="terminal">{lines}</pre>
-                </Card.Body>
-            </Card>
+            <pre className="terminal">{lines}</pre>
         );
     }
 }

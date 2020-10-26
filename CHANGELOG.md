@@ -5,15 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2020-10-26
+
+### Added
+
+- Issue #35: Assignment of audio voices to ATC and pilots.
+- Issue #46: Restore previous game
+
+### Changed
+
+- Issue #45: Accordion for Queue panel and cockpit log
 
 ## [0.2.0] - 2020-10-25
 
-# Fixed
+### Fixed
 
 - Issue #42: Sort flight in command panel and queue panel
 
-# Changed
+### Changed
 
 - Issue #39: New queue terminal
 - Issue #43: Simplify comunication for fl passing

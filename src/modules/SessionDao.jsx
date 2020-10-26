@@ -3,6 +3,7 @@ import { filter, map } from "rxjs/operators";
 import { v4 as uuidv4 } from 'uuid';
 
 const KEY = 'atc.session';
+const CURRENT_VERSION = '1.0';
 
 class SessionDao {
 
@@ -17,6 +18,14 @@ class SessionDao {
         );
     }
 
+    getSessions() {
+        return this.session.pipe(
+            map(session => {
+                return [session];
+            })
+        );
+    }
+
     putSession(session) {
         localStorage.setItem(KEY, JSON.stringify(session));
         return session;
@@ -25,6 +34,7 @@ class SessionDao {
     create(levelId, mapId) {
         const session = {
             id: uuidv4(),
+            version: CURRENT_VERSION,
             level: levelId,
             map: mapId,
             t: 0,
