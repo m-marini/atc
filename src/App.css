@@ -98,13 +98,15 @@
   color: black;
   background: #aead97;
 }
+
 circle.runway {
   fill: none;
   stroke: #eceacc;
   r: 3
 }
+
 .radar {
-  background-color:black;
+  background-color:#202020;
 }
 
 text {

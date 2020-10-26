@@ -127,6 +127,31 @@ class RadarPane extends Component {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
+        _.bindAll(this, ['handleDown', 'handleMove', 'handleUp']);
+    }
+
+    handleDown(ev) {
+        this.setState({
+            offsetX: ev.clientX,
+            offsetY: ev.clientY
+        })
+    }
+
+    handleUp(ev) {
+        console.log(ev.offsetX, ev.offsetY, ev);
+    }
+
+    handleMove(ev) {
+        console.log(ev.button);
+    }
+    handleMove1(ev) {
+        if (ev.button === 0) {
+            const { offsetX, offsetY } = this.state;
+            const { clientX, clientY } = ev;
+            const dx = clientX - offsetX;
+            const dy = clientY - offsetY;
+            console.log(dx, dy);
+        }
     }
 
     render() {
@@ -142,7 +167,11 @@ class RadarPane extends Component {
             });
             const flights = (session || { flights: {} }).flights;
             return (
-                <svg width={RadarConf.width} height={RadarConf.height} className="radar">
+                <svg width={RadarConf.width} height={RadarConf.height}
+                    onMouseMove={this.handleMove}
+                    onMouseDown={this.handleDown}
+                    onMouseUp={this.handleUp}
+                    className="radar">
                     {
                         _.map(map.routes, (route, i) => {
                             return (<Route key={i} radarMap={radarMap} route={route} />);
