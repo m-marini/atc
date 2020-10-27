@@ -5,6 +5,8 @@ import RadarMap from './RadarMap';
 import { sprintf } from 'sprintf-js';
 import { FLIGHT_STATES } from './Flight';
 
+const ZOOM_SCALE = Math.log(10) / 4 / 57;
+
 const RadarConf = {
     width: 850,
     height: 850,
@@ -126,7 +128,135 @@ class RadarPane extends Component {
 
     constructor(props) {
         super(props);
-        this.render = this.render.bind(this);
+        const { map, nodeMap, session } = this.props;
+        const scale = (!!nodeMap && !!map && !!session)
+            ? new RadarMap({
+                map,
+                nodeMap,
+                width: RadarConf.width,
+                height: RadarConf.height
+            }).scale
+            : 1;
+
+        this.state = {
+            dragging: false,
+            offsetX: 0,
+            offsetY: 0,
+            scale
+        };
+        _.bindAll(this, ['handleDown', 'handleMove', 'handleUp', 'handleWheel', 'render']);
+    }
+
+    /**
+     * 
+     * @param {*} ev 
+     */
+    handleDown(ev) {
+        switch (ev.button) {
+            case 0:
+                // Drag map
+                ev.preventDefault();
+                this.setState({
+                    dragging: true,
+                    pivotX: ev.clientX,
+                    pivotY: ev.clientY,
+                    clientX: ev.clientX,
+                    clientY: ev.clientY
+                });
+                break;
+            case 1: {
+                // fit the map to the viewport
+                ev.preventDefault();
+                const { map, nodeMap, session } = this.props;
+                const scale = (!!nodeMap && !!map && !!session)
+                    ? new RadarMap({
+                        map,
+                        nodeMap,
+                        width: RadarConf.width,
+                        height: RadarConf.height
+                    }).scale
+                    : 1;
+                this.setState({
+                    dragging: false,
+                    offsetX: 0,
+                    offsetY: 0,
+                    scale
+                });
+            }
+                break;
+            default:
+        }
+    }
+
+    /**
+     * 
+     * @param {*} ev 
+     */
+    handleUp(ev) {
+        ev.preventDefault();
+        const rm = this.radarMap;
+        this.setState({
+            dragging: false,
+            offsetX: rm.offsetX,
+            offsetY: rm.offsetY
+        });
+    }
+
+    /**
+     * 
+     * @param {*} ev 
+     */
+    handleLeave(ev) {
+        ev.preventDefault();
+        this.setState({
+            dragging: false
+        });
+    }
+
+    handleWheel(ev) {
+        const { deltaY } = ev;
+        const factor = Math.exp(-deltaY * ZOOM_SCALE);
+        const scale = this.radarMap.scale * factor;
+        this.setState({ scale });
+    }
+
+    /**
+     * 
+     * @param {*} ev 
+     */
+    handleMove(ev) {
+        const { dragging } = this.state;
+        if (dragging) {
+            ev.preventDefault();
+            const { clientX, clientY } = ev;
+            this.setState({ clientX, clientY });
+        }
+    }
+
+    get radarMap() {
+        const { map, nodeMap } = this.props;
+        const { dragging, clientX, clientY, pivotX, pivotY, offsetX, offsetY, scale } = this.state;
+        if (dragging) {
+            return new RadarMap({
+                map,
+                nodeMap,
+                width: RadarConf.width,
+                height: RadarConf.height,
+                offsetX,
+                offsetY,
+                scale
+            }).moveByPts(clientX - pivotX, clientY - pivotY);
+        } else {
+            return new RadarMap({
+                map,
+                nodeMap,
+                width: RadarConf.width,
+                height: RadarConf.height,
+                offsetX,
+                offsetY,
+                scale
+            });
+        }
     }
 
     render() {
@@ -134,15 +264,16 @@ class RadarPane extends Component {
         if (!nodeMap || !map || !session) {
             return (<svg width={RadarConf.width} height={RadarConf.height} className="radar" />);
         } else {
-            const radarMap = new RadarMap({
-                map,
-                nodeMap,
-                width: RadarConf.width,
-                height: RadarConf.height
-            });
+            const radarMap = this.radarMap;
             const flights = (session || { flights: {} }).flights;
             return (
-                <svg width={RadarConf.width} height={RadarConf.height} className="radar">
+                <svg width={RadarConf.width} height={RadarConf.height}
+                    onMouseMove={this.handleMove}
+                    onMouseDown={this.handleDown}
+                    onMouseUp={this.handleUp}
+                    onMouseLeave={this.handleUp}
+                    onWheel={this.handleWheel}
+                    className="radar">
                     {
                         _.map(map.routes, (route, i) => {
                             return (<Route key={i} radarMap={radarMap} route={route} />);
@@ -169,6 +300,5 @@ class RadarPane extends Component {
         }
     }
 }
-/*
-*/
+
 export default RadarPane;
