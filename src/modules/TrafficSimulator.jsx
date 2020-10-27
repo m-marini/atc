@@ -56,7 +56,7 @@ const TRAFFIC_SIM_DEFAULTS = {
     }
 };
 
-const VOICES = ['geroge', 'john'];
+const VOICES = ['george', 'john'];
 
 /**
  * 

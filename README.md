@@ -1,23 +1,29 @@
+
+![Node.js CI](https://github.com/m-marini/atc/workflows/Node.js%20CI/badge.svg) ![Deploy](https://github.com/m-marini/atc/workflows/Deploy/badge.svg)
+
 The game is based on the ATC Game for Linux by Ed James, UC Berkleey: [edjames@ucbvax.berkeley.edu](mailto:edjames@ucbvax.berkeley.edu), ucbvax!edjames.
 
 ## GOAL.
 
-Your goal is to direct safely the planes in your area.
-
+Your goal is to route safely the planes in your area.
 You need to:
-* take off planes waiting at runways;
-* land the planes at destination runways;
-* manoeuver the planes out of destination points at altitude of 36000 feet.
 
-The simulation ends when:
-* user requests to exit the simulation;
-* a plane collinsion is detected, the collision happend when the distance between two planes are lower then 4 nautic miles and the altitude difference is lower then 1000 feet;
-* wrong destintation is reached;
-* a plane crash is reported whenever a plane lands in wrong direction.
+- take off planes waiting at runways
+- land the planes at destination runways
+- fly the planes via the leaving beacons at altitude of 36000 feet.
 
-Scores are sorted in order of the number of planes safe. Suspending a game is not permitted.
+You must avoid:
+
+- planes collinsion, the collision happend when the distance between two planes
+  are lower then 4 nautic miles and the altitude difference is lower then 1000 feet
+- leaving to a wrong beacons
+- landing to a wrong runway
+
+You can zoom the map using the mouse wheel or move the map by dragging it with the left mouse button
+A click with the center mouse button fits the map to the viewport.
 
 [Select for more help](https://github.com/m-marini/atc/wiki)
+[Web game](http://www.mmarini.org/atc)
 
 ### Author
 
