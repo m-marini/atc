@@ -9,20 +9,25 @@ class RadarMap {
 
     /**
      * Creates the radar map
-     * @param {*} props the props {nodeMap, map, width=800, height=800, borders=30}
+     * @param {*} props the props {nodeMap, map, width=800, height=800, borders=30, offsetX, offsetY, scale}
      */
     constructor(props) {
-        this.props = _.defaults({}, props, {
+        const props1 = _.defaults({}, props, {
             width: 800,
             height: 800,
             borders: 30
         });
-        const { nodeMap, width, height, borders } = this.props;
-        const xRange = Math.max(nodeMap.xmax, -nodeMap.xmin);
-        const yRange = Math.max(nodeMap.ymax, -nodeMap.ymin);
-        const xscale = (width - borders * 2) / xRange / 2;
-        const yscale = (height - borders * 2) / yRange / 2;
-        this.scale = Math.min(xscale, yscale);
+        const { nodeMap, width, height, borders, offsetX = 0, offsetY = 0 } = props1;
+        if (props1.scale === undefined) {
+            const xRange = Math.max(nodeMap.xmax, -nodeMap.xmin);
+            const yRange = Math.max(nodeMap.ymax, -nodeMap.ymin);
+            const xscale = (width - borders * 2) / xRange / 2;
+            const yscale = (height - borders * 2) / yRange / 2;
+            const scale1 = Math.min(xscale, yscale);
+            this.props = _.defaults({ scale: scale1, offsetX, offsetY }, props1);
+        } else {
+            this.props = _.defaults({ offsetX, offsetY }, props1);
+        }
     }
 
     /**
@@ -51,6 +56,21 @@ class RadarMap {
     get nodes() { return this.nodeMap.nodes; }
 
     /**
+     * 
+     */
+    get scale() { return this.props.scale; }
+
+    /**
+     * 
+     */
+    get offsetX() { return this.props.offsetX; }
+
+    /**
+     * 
+     */
+    get offsetY() { return this.props.offsetY; }
+
+    /**
      * Return a node
      * @param {*} id the node id 
      */
@@ -64,8 +84,8 @@ class RadarMap {
      */
     pointByNm(coords) {
         const { width, height } = this.props;
-        const x = coords[0] * this.scale + width / 2;
-        const y = -coords[1] * this.scale + height / 2;
+        const x = (coords[0] - this.offsetX) * this.scale + width / 2;
+        const y = -(coords[1] - this.offsetY) * this.scale + height / 2;
         return [x, y];
     }
 
@@ -101,6 +121,29 @@ class RadarMap {
      */
     pointByGeo(location) {
         return this.pointByNm(mapDao.xy(location, this.map.center));
+    }
+
+    /**
+     * 
+     * @param {*} dx 
+     * @param {*} dy 
+     */
+    moveByNm(dx, dy) {
+        return new RadarMap(_.defaults({
+            offsetX: this.offsetX + dx,
+            offsetY: this.offsetY + dy
+        }, this.props));
+    }
+
+    /**
+     * 
+     * @param {*} dx 
+     * @param {*} dy 
+     */
+    moveByPts(dx, dy) {
+        const dxnms = -dx / this.scale;
+        const dynms = dy / this.scale;
+        return this.moveByNm(dxnms, dynms);
     }
 }
 

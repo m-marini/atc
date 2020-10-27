@@ -189,6 +189,8 @@ class Home extends Component {
             <li>leaving to a wrong beacons</li>
             <li>landing to a wrong runway</li>
           </ul>
+          <p>You can zoom the map using the mouse wheel or move the map by dragging it with the left mouse button</p>
+          <p>A click with the center mouse button fits the map to the viewport.</p>
         </Container>
       </Container >
     );
