@@ -60,7 +60,6 @@ class Flight {
         const { onEvent } = this.props;
         if (!!onEvent) {
             const event = buildEvent(type, this.flight, this.props.map, cmd);
-            console.log(event);
             onEvent(event);
         }
         return this;
