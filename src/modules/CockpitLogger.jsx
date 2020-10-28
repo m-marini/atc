@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import { Alert } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { MESSAGE_TYPES } from './Events';
 
@@ -8,7 +7,9 @@ const DEFAULT_CONF = {
     maxMessage: 10
 };
 
-
+/**
+ * 
+ */
 class CockpitLogger {
 
     constructor(props = {}) {
@@ -26,15 +27,24 @@ class CockpitLogger {
 
     /**
      * 
+     * @param {*} msg 
      */
     sendMessage(msg) {
         const { maxMessage } = this.props;
         switch (msg.type) {
             case MESSAGE_TYPES.ATC:
-                toast.dark((<Alert variant="success">{msg.msg}</Alert>));
+                toast.dark(
+                    <div className="bg-light text-success border-success border rounded p-2">
+                        {msg.msg}
+                    </div>
+                );
                 break;
             default:
-                toast.dark((<Alert variant="light">{msg.msg}</Alert>));
+                toast.dark(
+                    <div className="bg-light text-dark border-light border rounded p-2">
+                        {msg.msg}
+                    </div>
+                );
                 break;
         }
 
@@ -43,6 +53,9 @@ class CockpitLogger {
     }
 }
 
+/**
+ * 
+ */
 function cockpitLogger() {
     return new CockpitLogger();
 }

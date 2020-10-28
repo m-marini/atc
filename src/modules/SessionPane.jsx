@@ -18,7 +18,8 @@ import ReactAudioPlayer from 'react-audio-player';
 import _ from 'lodash';
 import { AudioBuilder, toMessage, toMp3 } from './Audio';
 
-const INTERVAL = 4000;
+const RADAR_INTERVAL = 4000;
+const SIM_INTERVAL = 4;
 
 /**
  * 
@@ -106,7 +107,7 @@ class Session extends Component {
     const logger = cockpitLogger();
     const reader = new Reader();
     this.state = { logger, reader, muted: false, speed: 10 };
-    this.clock = interval(INTERVAL);
+    this.clock = interval(RADAR_INTERVAL);
     _.bindAll(this, [
       'handleClock', 'handleCommand', 'handleAudioEnded', 'handleSimulationEvent', 'handleAudioError',
       'handleMuted', 'handleSpeed'
@@ -145,9 +146,9 @@ class Session extends Component {
    * @param {*} cmd 
    */
   handleCommand(cmd) {
-    const { session, map, level, speed } = this.state;
+    const { session, map, level } = this.state;
     const sim = new TrafficSimulator(session, {
-      map, level, dt: speed * INTERVAL / 1000,
+      map, level,
       onEvent: this.handleSimulationEvent
     });
     const next = sim.processCommand(cmd).session;
@@ -173,12 +174,14 @@ class Session extends Component {
    */
   handleClock(t) {
     const { session, map, level, speed } = this.state;
-    const sim = new TrafficSimulator(session, {
-      map, level, dt: speed * INTERVAL / 1000,
+    var sim = new TrafficSimulator(session, {
+      map, level, dt: SIM_INTERVAL,
       onEvent: this.handleSimulationEvent
     });
-    const next = sim.transition().session;
-    const newSession = sessionDao.putSession(next);
+    for (var i = 0; i < RADAR_INTERVAL * speed; i += SIM_INTERVAL * 1000) {
+      sim = sim.transition();
+    }
+    const newSession = sessionDao.putSession(sim.session);
     this.setState({ session: newSession });
   }
 
