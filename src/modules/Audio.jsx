@@ -182,7 +182,7 @@ class AudioBuilder {
                 return this.unableToLandDistance();
             case EVENT_TYPES.UNABLE_TO_LAND_ALTITUDE:
                 return this.unableToLandAlt();
-            case EVENT_TYPES.ATC_GO_AROUD:
+            case EVENT_TYPES.ATC_GO_AROUND:
                 return this.atcGoAround();
             case EVENT_TYPES.RIGHT_LAND:
                 return this.rightLand();
@@ -190,7 +190,7 @@ class AudioBuilder {
                 return this.wrongLand();
             case EVENT_TYPES.GO_AROUND_APPROACH:
                 return this.goingAroundApproach();
-            case EVENT_TYPES.GO_AROUD_RUNWAY:
+            case EVENT_TYPES.GO_AROUND_RUNWAY:
                 return this.goingAroundRwy();
             case EVENT_TYPES.HOLD:
                 return this.hold();

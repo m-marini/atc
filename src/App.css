@@ -148,6 +148,14 @@ line.land {
   stroke: #797429;
 }
 
+.gridmap {
+  stroke: #202020;
+}
+
+.gridmarker {
+  stroke: #a0a0a0;
+}
+
 line.connection {
   stroke: #523010;
 }

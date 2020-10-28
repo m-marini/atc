@@ -20,14 +20,14 @@ const EVENT_TYPES = {
     FLY_TO: 'flyTo',
     FLY_TO_VIA: 'flyToVia',
     CLEARED_TO_TAKE_OFF: 'clearedToTakeOff',
-    ATC_GO_AROUD: 'atcGoAround',
+    ATC_GO_AROUND: 'atcGoAround',
     CLIMB_TO: 'climbTo',
     DESCEND_TO: 'descendTo',
     MAINTAIN_FLIGHT_LEVEL: 'maintainFLightLavel',
 
     COLLISION: 'collision',
     GO_AROUND_APPROACH: 'goAroundApproach',
-    GO_AROUD_RUNWAY: 'goAroundRunway',
+    GO_AROUND_RUNWAY: 'goAroundRunway',
     WRONG_LEAVE: 'wrongLeave',
     WRONG_LAND: 'wrongLand',
     OUT_OF_AREA: 'outOfArea',
@@ -56,8 +56,8 @@ const AUDIO_BUILDERS = (() => {
     builders[EVENT_TYPES.MAINTAIN_FLIGHT_LEVEL] = builders[EVENT_TYPES.CLIMB_TO];
     builders[EVENT_TYPES.PASSING] = builders[EVENT_TYPES.CLIMB_TO];
     builders[EVENT_TYPES.CLEARED_TO_TAKE_OFF] = builders[EVENT_TYPES.CLIMB_TO];
-    builders[EVENT_TYPES.ATC_GO_AROUD] = builders[EVENT_TYPES.CLIMB_TO];
-    builders[EVENT_TYPES.GO_AROUD_RUNWAY] = builders[EVENT_TYPES.CLIMB_TO];
+    builders[EVENT_TYPES.ATC_GO_AROUND] = builders[EVENT_TYPES.CLIMB_TO];
+    builders[EVENT_TYPES.GO_AROUND_RUNWAY] = builders[EVENT_TYPES.CLIMB_TO];
     builders[EVENT_TYPES.GO_AROUND_APPROACH] = builders[EVENT_TYPES.CLIMB_TO];
     builders[EVENT_TYPES.FLY_TO] = event => {
         return _.concat(
@@ -308,7 +308,7 @@ const MESSAGES_BUILDERS = (() => {
         ];
     };
 
-    builders[EVENT_TYPES.ATC_GO_AROUD] = event => {
+    builders[EVENT_TYPES.ATC_GO_AROUND] = event => {
         const { cmd } = event;
         return [
             atcEmergency(`pull up and go around, climb to ${cmd.flightLevel}00ft`, event),
@@ -340,14 +340,14 @@ const MESSAGES_BUILDERS = (() => {
         ];
     };
 
-    builders[EVENT_TYPES.GO_AROUD_APPROACH] = event => {
+    builders[EVENT_TYPES.GO_AROUND_APPROACH] = event => {
         return [
             flightEmergency(`going around, missing approach`, event),
             atcMessage(`roger`, event)
         ];
     };
 
-    builders[EVENT_TYPES.GO_AROUD_RUNWAY] = event => {
+    builders[EVENT_TYPES.GO_AROUND_RUNWAY] = event => {
         return [
             flightEmergency(`going around, missing runway`, event),
             atcMessage(`roger`, event)

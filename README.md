@@ -19,10 +19,11 @@ You must avoid:
 - leaving to a wrong beacons
 - landing to a wrong runway
 
-You can zoom the map using the mouse wheel or move the map by dragging it with the left mouse button
+You can zoom the map using the mouse wheel and the shift key or move the map by dragging it with the left mouse button.
 A click with the center mouse button fits the map to the viewport.
 
 [Select for more help](https://github.com/m-marini/atc/wiki)
+
 [Web game](http://www.mmarini.org/atc)
 
 ### Author

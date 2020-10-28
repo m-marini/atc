@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Accordion, Card, Col, Container, Row } from 'react-bootstrap';
+import { Accordion, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { sessionDao } from './SessionDao';
 import ATCNavbar from './ATCNavbar';
@@ -18,15 +18,14 @@ import ReactAudioPlayer from 'react-audio-player';
 import _ from 'lodash';
 import { AudioBuilder, toMessage, toMp3 } from './Audio';
 
-const INTERVAL = 1000;
-const SIM_INTERVAL = 10;
+const INTERVAL = 4000;
 
 /**
  * 
  * @param {*} param0 
  */
-function AccordionPane({ session, logger }) {
-    return (
+function AccordionPane({ session, logger, muted, onMuted, speed, onSpeed }) {
+  return (
     <Accordion defaultActiveKey="0">
       <Card bg="dark" text="white">
         <Accordion.Toggle as={Card.Header} eventKey="0">
@@ -54,6 +53,44 @@ function AccordionPane({ session, logger }) {
           </Card.Body>
         </Accordion.Collapse>
       </Card>
+      <Card bg="dark" text="white">
+        <Accordion.Toggle as={Card.Header} eventKey="2">
+          Options
+          </Accordion.Toggle>
+        <Accordion.Collapse eventKey="2">
+          <Card.Body>
+            <Form>
+              <Form.Group controlId="muted">
+                <Form.Label>Audio</Form.Label>
+                <Form.Check
+                  type="switch"
+                  id="muted"
+                  label="Muted"
+                  onChange={onMuted}
+                  checked={muted} />
+              </Form.Group>
+              <Form.Group controlId="speed">
+                <Form.Label>Speed</Form.Label>
+                {
+                  [1, 3, 10].map(sp => {
+                    return (
+                      <Form.Check
+                        type="radio"
+                        name="speed"
+                        checked={speed === sp}
+                        id={sp}
+                        key={sp}
+                        value={sp}
+                        onChange={onSpeed}
+                        label={`x ${sp}`} />
+                    );
+                  })
+                }
+              </Form.Group>
+            </Form>
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
     </Accordion>
   );
 }
@@ -68,11 +105,11 @@ class Session extends Component {
     super(props);
     const logger = cockpitLogger();
     const reader = new Reader();
-    this.state = { logger, reader, muted: false };
+    this.state = { logger, reader, muted: false, speed: 10 };
     this.clock = interval(INTERVAL);
     _.bindAll(this, [
       'handleClock', 'handleCommand', 'handleAudioEnded', 'handleSimulationEvent', 'handleAudioError',
-      'handleMuted'
+      'handleMuted', 'handleSpeed'
     ]);
   }
 
@@ -108,9 +145,9 @@ class Session extends Component {
    * @param {*} cmd 
    */
   handleCommand(cmd) {
-    const { session, map, level } = this.state;
+    const { session, map, level, speed } = this.state;
     const sim = new TrafficSimulator(session, {
-      map, level,
+      map, level, dt: speed * INTERVAL / 1000,
       onEvent: this.handleSimulationEvent
     });
     const next = sim.processCommand(cmd).session;
@@ -135,9 +172,9 @@ class Session extends Component {
    * @param {*} t 
    */
   handleClock(t) {
-    const { session, map, level } = this.state;
+    const { session, map, level, speed } = this.state;
     const sim = new TrafficSimulator(session, {
-      map, level, dt: SIM_INTERVAL,
+      map, level, dt: speed * INTERVAL / 1000,
       onEvent: this.handleSimulationEvent
     });
     const next = sim.transition().session;
@@ -155,24 +192,42 @@ class Session extends Component {
     this.setState({ reader: reader.next() })
   }
 
-  handleMuted(ev) {
+  /**
+   * 
+   */
+  handleMuted() {
     const { muted } = this.state;
     this.setState({ muted: !muted });
   }
 
+  /**
+   * 
+   * @param {*} ev 
+   */
+  handleSpeed(ev) {
+    this.setState({ speed: parseFloat(ev.target.value) })
+  }
+
+  /**
+   * 
+   */
   render() {
-    const { session, map, nodeMap, level, logger, reader, muted } = this.state;
+    const { session, map, nodeMap, level, logger, reader, muted, speed } = this.state;
     const src = reader.src;
     if (!nodeMap || !session || !map || !level) {
       return (<div></div>);
     } else {
       return (
         <Container fluid>
-          <ATCNavbar session={session} muted={muted} onMuted={this.handleMuted} />
+          <ATCNavbar session={session} />
           <Container fluid className="ATC">
             <Row>
               <Col xs={2}>
-                <AccordionPane session={session} logger={logger} />
+                <AccordionPane session={session} logger={logger}
+                  speed={speed}
+                  onSpeed={this.handleSpeed}
+                  muted={muted}
+                  onMuted={this.handleMuted} />
               </Col>
               <Col><RadarPane session={session} nodeMap={nodeMap} map={map} /></Col>
               <Col xs={2}>

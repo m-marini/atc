@@ -106,7 +106,7 @@ ATC:    "(flight) (atc) cleared to land runway (rwy)"
 Flight: "(atc) (flight) negative wrong flight level"
 ATC:    "(flight) (atc) roger"
 
-#### ATC_GO_AROUD
+#### ATC_GO_AROUND
 
 ATC:    "(flight) (atc) pull up and go around climb to flight level (fl)"
 Flight: "(flight) pulling up and going around climbing to flight level (fl) (flight)"
@@ -123,13 +123,13 @@ ATC:    "(flight) (atc) runway (rwy)) vacated`
 Flight: "(atc) (flight) wrong arrival runway leaving frequency"
 ATC:    "(flight) (atc) good day"
 
-#### GO_AROUD_APPROACH
+#### GO_AROUND_APPROACH
 
 Flight: "(atc) (flight) going around missing approach"
 ATC:    "(flight) (atc) climb to flight level (fl)"
 Flight: "climbing to flight level (fl) (flight)"
 
-#### GO_AROUD_RUNWAY
+#### GO_AROUND_RUNWAY
 
 Flight: "(atc) (flight) going around, missing runway"
 ATC:    "(flight) (atc) climb to flight level (fl)"

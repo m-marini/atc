@@ -60,6 +60,7 @@ class Flight {
         const { onEvent } = this.props;
         if (!!onEvent) {
             const event = buildEvent(type, this.flight, this.props.map, cmd);
+            console.log(event);
             onEvent(event);
         }
         return this;
@@ -234,7 +235,7 @@ class Flight {
                 .set('status', FLIGHT_STATES.FLYING)
                 .delete('om')
                 .delete('rwy').toJS();
-            return this.with(newFlight).fireEvent(EVENT_TYPES.ATC_GO_AROUD, cmd);
+            return this.with(newFlight).fireEvent(EVENT_TYPES.ATC_GO_AROUND, cmd);
         }
         const newFlight = Map(this.flight)
             .set('toAlt', cmdAlt).toJS();
@@ -443,7 +444,7 @@ class Flight {
                 .delete('om')
                 .delete('runway')
                 .toJS();
-            return this.with(newFlight).moveHoriz().moveVert().fireEvent(EVENT_TYPES.GO_AROUD_APPROACH);
+            return this.with(newFlight).moveHoriz().moveVert().fireEvent(EVENT_TYPES.GO_AROUND_APPROACH);
         }
 
         // Approaching
@@ -505,7 +506,7 @@ class Flight {
                     .delete('rwy')
                     .toJS();
                 return this.with(newFlight).moveHoriz().moveVert()
-                    .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
+
             }
             // Landed
             const newFlight = Map(this.flight)
