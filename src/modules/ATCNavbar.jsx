@@ -1,7 +1,7 @@
 import React from 'react';
-import { Badge, Col, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
+import { Badge, Col, Container, Nav, Navbar } from 'react-bootstrap';
 
-function ATCNavBar({ session, muted, onMuted }) {
+function ATCNavBar({ session }) {
 
   const home = process.env.REACT_APP_BASENAME;
 
@@ -32,12 +32,6 @@ function ATCNavBar({ session, muted, onMuted }) {
         <Col>
           <span><Badge variant="danger">Collisions: {noCollision}</Badge></span>
         </Col >
-        <Col>
-          <Form inline className="text-light">
-            <FormControl type="checkbox" className="mr-sm-2"
-              checked={muted} onChange={onMuted} />Muted
-          </Form>
-        </Col>
       </Container >
     );
   }

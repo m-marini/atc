@@ -353,7 +353,7 @@ describe('events', () => {
       .rwy('36C')
       .status(FLIGHT_STATES.APPROACHING)
       .flight;
-    const ev = event(EVENT_TYPES.ATC_GO_AROUD, flight);
+    const ev = event(EVENT_TYPES.ATC_GO_AROUND, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
       'george pause a pause 1 LONatc goaround fl040',
@@ -418,7 +418,7 @@ describe('events', () => {
       .rwy('36C')
       .status(FLIGHT_STATES.FLYING_TO)
       .flight;
-    const ev = event(EVENT_TYPES.GO_AROUD_RUNWAY, flight);
+    const ev = event(EVENT_TYPES.GO_AROUND_RUNWAY, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
       'john pause LONatc a pause 1 goingaroundrwy',

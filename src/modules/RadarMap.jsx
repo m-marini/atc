@@ -31,6 +31,31 @@ class RadarMap {
     }
 
     /**
+     * 
+     */
+    get gridSize() {
+        const { width, height, borders, scale } = this.props;
+        const mapSize = (Math.min(width, height) - borders * 2) / scale;
+        const gs10 = mapSize / 5;
+        const logGs = Math.round(Math.log10(gs10));
+        const gs = Math.pow(10, logGs);
+        return gs;
+    }
+
+    /**
+     * 
+     */
+    get rect() {
+        const { nodeMap } = this.props;
+        const xRange = Math.max(nodeMap.xmax, -nodeMap.xmin);
+        const yRange = Math.max(nodeMap.ymax, -nodeMap.ymin);
+        return {
+            topLeft: [-xRange, -yRange],
+            bottomRight: [xRange, yRange]
+        };
+    }
+
+    /**
      * Returns the width of map in px
      */
     get witdh() { return this.props.width; }

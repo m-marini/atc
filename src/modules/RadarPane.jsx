@@ -6,6 +6,7 @@ import { sprintf } from 'sprintf-js';
 import { FLIGHT_STATES } from './Flight';
 
 const ZOOM_SCALE = Math.log(10) / 4 / 57;
+const GRID_MARKER_HEIGHT = 4;
 
 const RadarConf = {
     width: 850,
@@ -25,6 +26,11 @@ const PlaneConf = {
 
 const FlightLevels = ['040', '080', '120', '160', '200', '240', '280', '320', '360'];
 
+/**
+ * 
+ * @param {*} pt 
+ * @param {*} props 
+ */
 function textPos(pt, props) {
     const { alignment = 'E', width = 20, height = 8, radius = 6 } = props;
     var x = pt[0];
@@ -60,11 +66,18 @@ function textPos(pt, props) {
     return [x, y];
 }
 
-
+/**
+ * 
+ * @param {*} altitude 
+ */
 function flightLevel(altitude) {
     return FlightLevels[Math.max(0, Math.floor((altitude - 2000) / 4000))];
 }
 
+/**
+ * 
+ * @param {*} param0 
+ */
 function Node({ node, radarMap }) {
     const pt = radarMap.pointByNode(node);
     const textPt = textPos(pt, { alignment: node.node.alignment });
@@ -76,14 +89,29 @@ function Node({ node, radarMap }) {
     </g>);
 }
 
+/**
+ * 
+ * @param {*} a 
+ * @param {*} x 
+ * @param {*} y 
+ */
 function rotate(a, x, y) {
     return sprintf('rotate(%f,%f,%f)', a, x, y);
 }
 
+/**
+ * 
+ * @param {*} x 
+ * @param {*} y 
+ */
 function translate(x, y) {
     return sprintf('translate(%g,%g)', x, y);
 }
 
+/**
+ * 
+ * @param {*} param0 
+ */
 function Flight({ flight, radarMap }) {
     if (flight.status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
         return (<g />);
@@ -118,6 +146,87 @@ function Flight({ flight, radarMap }) {
     }
 }
 
+/**
+ *    x0   x1   x2
+ * y1  |   |
+ * y0  |---|    legend
+ * y2  |   |
+ * 
+ * @param {*} param0 
+ */
+function GridMarker({ radarMap }) {
+    const { borders } = radarMap.props;
+    const gridSize = radarMap.gridSize;
+    const x0 = borders / 2;
+    const x1 = x0 + gridSize * radarMap.scale;
+    const x2 = x1 + 10;
+    const y0 = borders / 2;
+    const y1 = borders / 2 - GRID_MARKER_HEIGHT;
+    const y2 = borders / 2 + GRID_MARKER_HEIGHT;
+    const gridMarkerText = sprintf("%g nms", gridSize);
+    return (<g className="gridmarker">
+        <line x1={x0} y1={y0} x2={x1} y2={y0} />
+        <line x1={x0} y1={y1} x2={x0} y2={y2} />
+        <line x1={x1} y1={y1} x2={x1} y2={y2} />
+        <text x={x2} y={y0}>{gridMarkerText}</text>
+    </g>
+    );
+}
+
+/**
+ * 
+ * @param {*} param0 
+ */
+function Grid({ radarMap }) {
+    const { topLeft, bottomRight } = radarMap.rect;
+    const gridSize = radarMap.gridSize;
+    const gxmin = Math.floor(topLeft[0] / gridSize);
+    const gxmax = Math.ceil(bottomRight[0] / gridSize);
+    const gymin = Math.floor(topLeft[1] / gridSize);
+    const gymax = Math.ceil(bottomRight[1] / gridSize);
+    const xidx = _.range(gxmin, gxmax + 1);
+    const yidx = _.range(gymin, gymax + 1);
+    const { borders, width, height } = radarMap.props;
+    const x0 = borders;
+    const x1 = width - borders;
+    const y0 = borders;
+    const y1 = height - borders;
+    return (
+        <g className="gridmap">
+            {xidx.map(i => {
+                const upnms = [i * gridSize, gymin * gridSize];
+                const dwnnms = [i * gridSize, gymax * gridSize];
+                const pts = [
+                    radarMap.pointByNm(upnms),
+                    radarMap.pointByNm(dwnnms)
+                ];
+                return (
+                    <line key={`v${i}`}
+                        x1={pts[0][0]} y1={y0}
+                        x2={pts[1][0]} y2={y1} />
+                );
+            })}
+            {yidx.map(i => {
+                const lnms = [gxmin * gridSize, i * gridSize];
+                const rpnms = [gxmax * gridSize, i * gridSize];
+                const pts = [
+                    radarMap.pointByNm(lnms),
+                    radarMap.pointByNm(rpnms)
+                ];
+                return (
+                    <line key={`h${i}`}
+                        x1={x0} y1={pts[0][1]}
+                        x2={x1} y2={pts[1][1]} />
+                );
+            })}
+        </g>
+    );
+}
+
+/**
+ * 
+ * @param {*} param0 
+ */
 function Route({ route, radarMap }) {
     const pts = radarMap.routePath(route);
     const cl = route.type;
@@ -126,6 +235,10 @@ function Route({ route, radarMap }) {
 
 class RadarPane extends Component {
 
+    /**
+     * 
+     * @param {*} props 
+     */
     constructor(props) {
         super(props);
         const { map, nodeMap, session } = this.props;
@@ -148,8 +261,8 @@ class RadarPane extends Component {
     }
 
     /**
-     * 
-     * @param {*} ev 
+     *
+     * @param {*} ev
      */
     handleDown(ev) {
         switch (ev.button) {
@@ -189,8 +302,8 @@ class RadarPane extends Component {
     }
 
     /**
-     * 
-     * @param {*} ev 
+     *
+     * @param {*} ev
      */
     handleUp(ev) {
         ev.preventDefault();
@@ -203,8 +316,8 @@ class RadarPane extends Component {
     }
 
     /**
-     * 
-     * @param {*} ev 
+     *
+     * @param {*} ev
      */
     handleLeave(ev) {
         ev.preventDefault();
@@ -213,16 +326,23 @@ class RadarPane extends Component {
         });
     }
 
-    handleWheel(ev) {
-        const { deltaY } = ev;
-        const factor = Math.exp(-deltaY * ZOOM_SCALE);
-        const scale = this.radarMap.scale * factor;
-        this.setState({ scale });
-    }
-
     /**
      * 
      * @param {*} ev 
+     */
+    handleWheel(ev) {
+        if (ev.shiftKey) {
+            // ev.preventDefault();
+            const { deltaY } = ev;
+            const factor = Math.exp(-deltaY * ZOOM_SCALE);
+            const scale = this.radarMap.scale * factor;
+            this.setState({ scale });
+        }
+    }
+
+    /**
+     *
+     * @param {*} ev
      */
     handleMove(ev) {
         const { dragging } = this.state;
@@ -233,6 +353,9 @@ class RadarPane extends Component {
         }
     }
 
+    /**
+     * 
+     */
     get radarMap() {
         const { map, nodeMap } = this.props;
         const { dragging, clientX, clientY, pivotX, pivotY, offsetX, offsetY, scale } = this.state;
@@ -259,6 +382,9 @@ class RadarPane extends Component {
         }
     }
 
+    /**
+     * 
+     */
     render() {
         const { map, nodeMap, session } = this.props;
         if (!nodeMap || !map || !session) {
@@ -274,6 +400,7 @@ class RadarPane extends Component {
                     onMouseLeave={this.handleUp}
                     onWheel={this.handleWheel}
                     className="radar">
+                    <Grid radarMap={radarMap} />
                     {
                         _.map(map.routes, (route, i) => {
                             return (<Route key={i} radarMap={radarMap} route={route} />);
@@ -286,6 +413,7 @@ class RadarPane extends Component {
                             );
                         }).value()
                     }
+                    <GridMarker radarMap={radarMap} />
                     {
                         _(flights).values().orderBy('alt', 'asc').map(flight => {
                             return (
