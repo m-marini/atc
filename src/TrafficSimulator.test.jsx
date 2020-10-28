@@ -118,20 +118,20 @@ describe('Traffic simulation should createFlight', () => {
 
     const result = ts.createFlight().session;
     expect(result).toMatchObject({
-      noFlights: 1,
-      flights: {
-        A1: {
-          id: 'A1',
-          type: FLIGHT_TYPES.JET,
-          alt: 0,
-          toAlt: 0,
-          to: 'RUNWAY',
-          lat: 45,
-          lon: 11,
-          hdg: 132,
-          speed: 0
-        }
-      }
+      noFlights: 1
+    });
+
+    const id = _.keys(result.flights)[0];
+    expect(result.flights[id]).toMatchObject({
+      id,
+      type: FLIGHT_TYPES.JET,
+      alt: 0,
+      toAlt: 0,
+      to: 'RUNWAY',
+      lat: 45,
+      lon: 11,
+      hdg: 132,
+      speed: 0
     });
   });
 
@@ -142,19 +142,18 @@ describe('Traffic simulation should createFlight', () => {
     const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
-      flights: {
-        A1: {
-          id: 'A1',
-          type: FLIGHT_TYPES.AIRPLANE,
-          alt: 0,
-          toAlt: 0,
-          to: 'RUNWAY',
-          lat: 45,
-          lon: 11,
-          hdg: 132,
-          speed: 0
-        }
-      }
+    });
+    const id = _.keys(result.flights)[0];
+    expect(result.flights[id]).toMatchObject({
+      id,
+      type: FLIGHT_TYPES.AIRPLANE,
+      alt: 0,
+      toAlt: 0,
+      to: 'RUNWAY',
+      lat: 45,
+      lon: 11,
+      hdg: 132,
+      speed: 0
     });
   });
 
@@ -165,20 +164,19 @@ describe('Traffic simulation should createFlight', () => {
     const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
-      flights: {
-        A1: {
-          id: 'A1',
-          type: FLIGHT_TYPES.JET,
-          alt: 28000,
-          toAlt: 28000,
-          to: 'ENTRY',
-          lat: 46,
-          lon: 10,
-          hdg: 132,
-          speed: 373
-        }
-      },
       entries: { ENTRY: 10 }
+    });
+    const id = _.keys(result.flights)[0];
+    expect(result.flights[id]).toMatchObject({
+      id,
+      type: FLIGHT_TYPES.JET,
+      alt: 28000,
+      toAlt: 28000,
+      to: 'ENTRY',
+      lat: 46,
+      lon: 10,
+      hdg: 132,
+      speed: 373
     });
   });
 
@@ -189,20 +187,19 @@ describe('Traffic simulation should createFlight', () => {
     const result = ts.createFlight().session;
     expect(result).toMatchObject({
       noFlights: 1,
-      flights: {
-        A1: {
-          id: 'A1',
-          type: FLIGHT_TYPES.AIRPLANE,
-          alt: 28000,
-          toAlt: 28000,
-          to: 'ENTRY',
-          lat: 46,
-          lon: 10,
-          hdg: 132,
-          speed: 236
-        }
-      },
       entries: { ENTRY: 10 }
+    });
+    const id = _.keys(result.flights)[0];
+    expect(result.flights[id]).toMatchObject({
+      id,
+      type: FLIGHT_TYPES.AIRPLANE,
+      alt: 28000,
+      toAlt: 28000,
+      to: 'ENTRY',
+      lat: 46,
+      lon: 10,
+      hdg: 132,
+      speed: 236
     });
   });
 });
@@ -222,18 +219,17 @@ describe('Traffic simulation should processForNewFlight ', () => {
       .processForNewFlight().session;
 
     expect(result).toMatchObject({
-      noFlights: 1,
-      flights: {
-        A1: {}
-      }
+      noFlights: 1
     });
-    expect(result.flights.A1).toBeHdg(RUNWAY.hdg);
-    expect(result.flights.A1).toBeAlt(0);
-    expect(result.flights.A1).toBeToAlt(0);
-    expect(result.flights.A1).toBeSpeed(0);
-    expect(result.flights.A1).toBeFrom(RUNWAY.id);
-    expect(result.flights.A1).toBeStatus(FLIGHT_STATES.WAITING_FOR_TAKEOFF);
-    expect(result.flights.A1).toBePos(RUNWAY);
+
+    const id = _.keys(result.flights)[0];
+    expect(result.flights[id]).toBeHdg(RUNWAY.hdg);
+    expect(result.flights[id]).toBeAlt(0);
+    expect(result.flights[id]).toBeToAlt(0);
+    expect(result.flights[id]).toBeSpeed(0);
+    expect(result.flights[id]).toBeFrom(RUNWAY.id);
+    expect(result.flights[id]).toBeStatus(FLIGHT_STATES.WAITING_FOR_TAKEOFF);
+    expect(result.flights[id]).toBePos(RUNWAY);
     expect(result.entries).toEqual({})
   });
 
@@ -293,16 +289,16 @@ describe('Traffic simulation should processForNewFlight ', () => {
     expect(result).toMatchObject({
       noFlights: 2,
       flights: {
-        A1: {},
-        B1: {}
+        A1: {}
       }
     });
-    expect(result.flights.B1).toBeHdg(132);
-    expect(result.flights.B1).toBeAlt(0);
-    expect(result.flights.B1).toBeToAlt(0);
-    expect(result.flights.B1).toBeStatus(FLIGHT_STATES.WAITING_FOR_TAKEOFF);
-    expect(result.flights.B1).toBePos(RUNWAY);
-    expect(result.flights.B1).toBeFrom(RUNWAY.id);
+    const id = _(result.flights).keys().reject(x => x === 'A1').first();
+    expect(result.flights[id]).toBeHdg(132);
+    expect(result.flights[id]).toBeAlt(0);
+    expect(result.flights[id]).toBeToAlt(0);
+    expect(result.flights[id]).toBeStatus(FLIGHT_STATES.WAITING_FOR_TAKEOFF);
+    expect(result.flights[id]).toBePos(RUNWAY);
+    expect(result.flights[id]).toBeFrom(RUNWAY.id);
     expect(result.entries).toEqual({})
   });
 
