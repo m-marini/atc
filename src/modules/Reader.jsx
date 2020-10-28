@@ -18,6 +18,12 @@ class Reader {
   next() {
     return new Reader(_.drop(this.queue, 1));
   }
+
+  clear() {
+    return new Reader();
+  }
+
+  get empty() { return this.queue.length === 0; }
 }
 
 export default Reader;

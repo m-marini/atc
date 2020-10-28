@@ -161,11 +161,12 @@ class Session extends Component {
    * @param {*} event 
    */
   handleSimulationEvent(event) {
-    const { reader, logger } = this.state;
+    const { reader, logger, muted } = this.state;
     const clips = new AudioBuilder(event).toAudio().clips;
     clips.forEach(clip => logger.sendMessage(toMessage(clip, event.map.voice)));
-    const newReader = reader.say(clips.flatMap(toMp3));
-    this.setState({ reader: newReader });
+    if (!muted) {
+      this.setState({ reader: reader.say(clips.flatMap(toMp3)) });
+    }
   }
 
   /**
@@ -200,7 +201,14 @@ class Session extends Component {
    */
   handleMuted() {
     const { muted } = this.state;
-    this.setState({ muted: !muted });
+    const newState = muted
+      ? {
+        muted: false
+      } : {
+        muted: true,
+        reader: new Reader()
+      };
+    this.setState(newState);
   }
 
   /**

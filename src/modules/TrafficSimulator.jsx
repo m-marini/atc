@@ -60,6 +60,19 @@ const VOICES = ['george', 'john'];
 
 /**
  * 
+ * @param {*} len 
+ */
+function rndFlightId(tmpl = 'X99X') {
+    const id = _.map(tmpl, mode =>
+        (mode === 'X')
+            ? String.fromCharCode(65 + Math.floor(Math.random() * 26))
+            : String.fromCharCode(48 + Math.floor(Math.random() * 10))
+    ).join('');
+    return id;
+}
+
+/**
+ * 
  * @param {*} alt 
  * @param {*} template 
  */
@@ -386,11 +399,15 @@ class TrafficSimulator {
      */
     createFlight() {
         const { jetProb, entryAlt, flightTempl } = this.props;
-        const { noFlights, t } = this.session;
+        const { noFlights, t, flights } = this.session;
         const entry = choose(this.createEntryCandidates());
         const to = choose(this.createExitCandidates());
         const type = rndByProb(jetProb) ? FLIGHT_TYPES.JET : FLIGHT_TYPES.AIRPLANE;
-        const id = String.fromCharCode(noFlights % 26 + 65) + Math.floor(noFlights / 26 + 1);
+        var id = undefined;
+        do {
+            id = rndFlightId();
+        } while (flights[id] !== undefined);
+        //const id = String.fromCharCode(noFlights % 26 + 65) + Math.floor(noFlights / 26 + 1);
         const alt = entry.type === NODE_TYPES.RUNWAY ? 0 : entryAlt;
         const status = entry.type === NODE_TYPES.RUNWAY ? FLIGHT_STATES.WAITING_FOR_TAKEOFF : FLIGHT_STATES.FLYING;
         const speed = entry.type === NODE_TYPES.RUNWAY ? 0 : flightSpeed(alt, flightTempl[type]);
