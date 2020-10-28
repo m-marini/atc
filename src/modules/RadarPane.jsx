@@ -122,8 +122,8 @@ function Flight({ flight, radarMap }) {
             + rotate(flight.hdg, ImageConf.width / 2, ImageConf.height / 2);
         const url = `${process.env.REACT_APP_BASENAME}/images/${flight.type === 'J' ? 'jet' : 'plane'
             }-${fl}.png`;
-        const txt1 = sprintf("%s %s", flight.id, flight.type);
-        const txt2 = sprintf('%03d %02d', Math.round(flight.alt / 100), Math.round(flight.speed / 10));
+        const txt1 = sprintf("%s-%s", flight.id, flight.type);
+        const txt2 = sprintf('%03d', Math.round(flight.alt / 100));
         const x1 = pt[0] + PlaneConf.text1.x;
         const x2 = pt[0] + PlaneConf.text2.x;
         const y1 = pt[1] + PlaneConf.text1.y;

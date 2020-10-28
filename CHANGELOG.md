@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Issue #59: Clear audio clips
+- Issue #60: Random flight name
+
 ## [0.5.1] - 2020-10-28
 
 ### Fixed
 
-Issue #56: Simulation interval indipendent from radar interval
+- Issue #56: Simulation interval indipendent from radar interval
 
 ## [0.5.0] - 2020-10-28
 
