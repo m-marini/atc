@@ -20,7 +20,12 @@ function sayFL(alt) {
  * @param {*} word 
  */
 function spell(word) {
-    return _(word.toLowerCase()).join(' ' + PAUSE + ' ');
+    const x = word.toLowerCase();
+    const y = x.substring(1);
+    const z = _.zipWith(Array.from(x), Array.from(y), (a, b) =>
+        a === b ? (a + ' ' + PAUSE) : a
+    ).join(' ');
+    return z;
 }
 
 function sayHdg(hdg) {
@@ -312,13 +317,13 @@ class AudioBuilder {
     goingAroundApproach() {
         return this.flightAudio('goingaroundapr')
             .atcAudio('climbto $toAlt')
-            .readbackAudio('climbingto $toAlt');
+            .readbackAudio('climbing $toAlt');
     }
 
     goingAroundRwy() {
         return this.flightAudio('goingaroundrwy')
             .atcAudio('climbto $toAlt')
-            .readbackAudio('climbingto $toAlt');
+            .readbackAudio('climbing $toAlt');
     }
 
     hold() {

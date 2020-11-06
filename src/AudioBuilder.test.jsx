@@ -53,9 +53,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ENTER, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 holdingshort 36C readyfordepartureto 09L',
-      'george pause a pause 1 LONatc holdshort 36C',
-      'john pause holdingshort 36C pause1 a pause 1'
+      'john pause LONatc a 1 holdingshort 36C readyfordepartureto 09L',
+      'george pause a 1 LONatc holdshort 36C',
+      'john pause holdingshort 36C pause1 a 1'
     ]);
   });
 
@@ -70,9 +70,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ENTER, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 holdingshort 36C readyfordeparturevia TO',
-      'george pause a pause 1 LONatc holdshort 36C',
-      'john pause holdingshort 36C pause1 a pause 1'
+      'john pause LONatc a 1 holdingshort 36C readyfordeparturevia TO',
+      'george pause a 1 LONatc holdshort 36C',
+      'john pause holdingshort 36C pause1 a 1'
     ]);
   });
 
@@ -87,9 +87,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ENTER, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 enter AT at fl280 heading 3 pause 6 pause 0 to 09L',
-      'george pause a pause 1 LONatc maintain fl280 heading 3 pause 6 pause 0',
-      'john pause maintaining fl280 heading 3 pause 6 pause 0 pause1 a pause 1'
+      'john pause LONatc a 1 enter AT at fl280 heading 3 6 0 to 09L',
+      'george pause a 1 LONatc maintain fl280 heading 3 6 0',
+      'john pause maintaining fl280 heading 3 6 0 pause1 a 1'
     ]);
   });
 
@@ -104,9 +104,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ENTER, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 enter AT at fl280 heading 3 pause 6 pause 0 leavevia TO',
-      'george pause a pause 1 LONatc maintain fl280 heading 3 pause 6 pause 0',
-      'john pause maintaining fl280 heading 3 pause 6 pause 0 pause1 a pause 1'
+      'john pause LONatc a 1 enter AT at fl280 heading 3 6 0 leavevia TO',
+      'george pause a 1 LONatc maintain fl280 heading 3 6 0',
+      'john pause maintaining fl280 heading 3 6 0 pause1 a 1'
     ]);
   });
 
@@ -121,8 +121,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.CLIMB_TO, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc climbto fl360',
-      'john pause climbing fl360 pause1 a pause 1'
+      'george pause a 1 LONatc climbto fl360',
+      'john pause climbing fl360 pause1 a 1'
     ]);
   });
 
@@ -137,8 +137,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.DESCEND_TO, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc descendto fl240',
-      'john pause descending fl240 pause1 a pause 1'
+      'george pause a 1 LONatc descendto fl240',
+      'john pause descending fl240 pause1 a 1'
     ]);
   });
 
@@ -153,8 +153,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.MAINTAIN_FLIGHT_LEVEL, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc maintain fl360',
-      'john pause maintaining fl360 pause1 a pause 1'
+      'george pause a 1 LONatc maintain fl360',
+      'john pause maintaining fl360 pause1 a 1'
     ]);
   });
 
@@ -168,8 +168,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.CLEARED_TO_TAKE_OFF, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc 36C clearedtotakeoff fl040',
-      'john pause 36C clearedtotakeoffclimbing fl040 pause1 a pause 1'
+      'george pause a 1 LONatc 36C clearedtotakeoff fl040',
+      'john pause 36C clearedtotakeoffclimbing fl040 pause1 a 1'
     ]);
   });
 
@@ -184,8 +184,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.PASSING, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 passing fl040',
-      'george pause a pause 1 LONatc roger'
+      'john pause LONatc a 1 passing fl040',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -199,8 +199,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.FLY_TO, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc flyto AT',
-      'john pause flyingto AT pause1 a pause 1'
+      'george pause a 1 LONatc flyto AT',
+      'john pause flyingto AT pause1 a 1'
     ]);
   });
 
@@ -215,8 +215,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.FLY_TO_VIA, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc flyto TT via AT',
-      'john pause flyingto TT via AT pause1 a pause 1'
+      'george pause a 1 LONatc flyto TT via AT',
+      'john pause flyingto TT via AT pause1 a 1'
     ]);
   });
 
@@ -231,8 +231,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.FLYING_TO, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 flyingto AT',
-      'george pause a pause 1 LONatc clearedto AT'
+      'john pause LONatc a 1 flyingto AT',
+      'george pause a 1 LONatc clearedto AT'
     ]);
   });
 
@@ -250,9 +250,9 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc flyto AT',
-      'john pause LONatc a pause 1 negholdingshort 36C',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc flyto AT',
+      'john pause LONatc a 1 negholdingshort 36C',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -271,9 +271,9 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc flyto TT via AT',
-      'john pause LONatc a pause 1 negholdingshort 36C',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc flyto TT via AT',
+      'john pause LONatc a 1 negholdingshort 36C',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -287,8 +287,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.CLEARED_TO_LAND, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc clearedtoland 36C',
-      'john pause clearedtoland 36C pause1 a pause 1'
+      'george pause a 1 LONatc clearedtoland 36C',
+      'john pause clearedtoland 36C pause1 a 1'
     ]);
   });
 
@@ -304,9 +304,9 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc clearedtoland 09L',
-      'john pause LONatc a pause 1 negholdingshort 36C',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc clearedtoland 09L',
+      'john pause LONatc a 1 negholdingshort 36C',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -322,9 +322,9 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc clearedtoland 09L',
-      'john pause LONatc a pause 1 negdistance',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc clearedtoland 09L',
+      'john pause LONatc a 1 negdistance',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -340,9 +340,9 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc clearedtoland 09L',
-      'john pause LONatc a pause 1 negfl',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc clearedtoland 09L',
+      'john pause LONatc a 1 negfl',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -356,8 +356,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ATC_GO_AROUND, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc goaround fl040',
-      'john pause goingaround fl040 pause1 a pause 1'
+      'george pause a 1 LONatc goaround fl040',
+      'john pause goingaround fl040 pause1 a 1'
     ]);
   });
 
@@ -372,9 +372,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.RIGHT_LAND, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc 36C vacated',
-      'john pause LONatc a pause 1 leavingfrequency',
-      'george pause a pause 1 LONatc goodday'
+      'george pause a 1 LONatc 36C vacated',
+      'john pause LONatc a 1 leavingfrequency',
+      'george pause a 1 LONatc goodday'
     ]);
   });
 
@@ -389,9 +389,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.WRONG_LAND, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc 36C vacated',
-      'john pause LONatc a pause 1 wrongrunway',
-      'george pause a pause 1 LONatc goodday'
+      'george pause a 1 LONatc 36C vacated',
+      'john pause LONatc a 1 wrongrunway',
+      'george pause a 1 LONatc goodday'
     ]);
   });
 
@@ -405,9 +405,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.GO_AROUND_APPROACH, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 goingaroundapr',
-      'george pause a pause 1 LONatc climbto fl040',
-      'john pause climbingto fl040 pause1 a pause 1'
+      'john pause LONatc a 1 goingaroundapr',
+      'george pause a 1 LONatc climbto fl040',
+      'john pause climbing fl040 pause1 a 1'
     ]);
   });
 
@@ -421,9 +421,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.GO_AROUND_RUNWAY, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 goingaroundrwy',
-      'george pause a pause 1 LONatc climbto fl040',
-      'john pause climbingto fl040 pause1 a pause 1'
+      'john pause LONatc a 1 goingaroundrwy',
+      'george pause a 1 LONatc climbto fl040',
+      'john pause climbing fl040 pause1 a 1'
     ]);
   });
 
@@ -437,8 +437,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.HOLD, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc holdpos',
-      'john pause holdingpos pause1 a pause 1'
+      'george pause a 1 LONatc holdpos',
+      'john pause holdingpos pause1 a 1'
     ]);
   });
 
@@ -453,8 +453,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.HOLD_AT, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc holdat AT',
-      'john pause holdingat AT pause1 a pause 1'
+      'george pause a 1 LONatc holdat AT',
+      'john pause holdingat AT pause1 a 1'
     ]);
   });
 
@@ -466,9 +466,9 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.UNABLE_TO_HOLD, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc holdpos',
-      'john pause LONatc a pause 1 negholdingshort 36C',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc holdpos',
+      'john pause LONatc a 1 negholdingshort 36C',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -482,9 +482,9 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause a pause 1 LONatc holdat AT',
-      'john pause LONatc a pause 1 negholdingshort 36C',
-      'george pause a pause 1 LONatc roger'
+      'george pause a 1 LONatc holdat AT',
+      'john pause LONatc a 1 negholdingshort 36C',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -498,8 +498,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.RIGHT_LEAVE, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 leavingvia TO at fl360',
-      'george pause a pause 1 LONatc clearedto TO departure'
+      'john pause LONatc a 1 leavingvia TO at fl360',
+      'george pause a 1 LONatc clearedto TO departure'
     ]);
   });
 
@@ -513,8 +513,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.WRONG_LEAVE, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 leavingvia TO at fl320 missingdep',
-      'george pause a pause 1 LONatc roger'
+      'john pause LONatc a 1 leavingvia TO at fl320 missingdep',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -529,8 +529,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.OUT_OF_AREA, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 leaving fl320 heading 3 pause 2 pause 5 missingdep',
-      'george pause a pause 1 LONatc roger'
+      'john pause LONatc a 1 leaving fl320 heading 3 2 5 missingdep',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -545,7 +545,7 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.COLLISION, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a pause 1 collision'
+      'john pause LONatc a 1 collision'
     ]);
   });
 
@@ -555,7 +555,7 @@ describe('events', () => {
     });
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'george pause operator a pause 1 notinarea'
+      'george pause operator a 1 notinarea'
     ]);
   });
 
@@ -585,7 +585,7 @@ describe('say', () => {
 
   test('$hdg', () => {
     const result = new AudioBuilder(EVENT).say('$hdg');
-    expect(result.clips).toEqual(['heading 3 pause 6 pause 0']);
+    expect(result.clips).toEqual(['heading 3 6 0']);
   });
 
   test('$toAlt', () => {
@@ -620,7 +620,7 @@ describe('say', () => {
 
   test('$flightId', () => {
     const result = new AudioBuilder(EVENT).say('$flightId');
-    expect(result.clips).toEqual(['a pause 1']);
+    expect(result.clips).toEqual(['a 1']);
   });
 
   test('$atc', () => {
@@ -635,16 +635,16 @@ describe('audio', () => {
 
   test('atc', () => {
     const result = new AudioBuilder(EVENT).atcAudio('$hdg');
-    expect(result.clips).toEqual(['george pause a pause 1 LONatc heading 3 pause 6 pause 0']);
+    expect(result.clips).toEqual(['george pause a 1 LONatc heading 3 6 0']);
   });
 
   test('flight', () => {
     const result = new AudioBuilder(EVENT).flightAudio('$hdg');
-    expect(result.clips).toEqual(['john pause LONatc a pause 1 heading 3 pause 6 pause 0']);
+    expect(result.clips).toEqual(['john pause LONatc a 1 heading 3 6 0']);
   });
 
   test('readback', () => {
     const result = new AudioBuilder(EVENT).readbackAudio('$hdg');
-    expect(result.clips).toEqual(['john pause heading 3 pause 6 pause 0 pause1 a pause 1']);
+    expect(result.clips).toEqual(['john pause heading 3 6 0 pause1 a 1']);
   });
 });

@@ -19,8 +19,10 @@ function status(flight) {
             return sprintf('holding rwy %s', from);
         case FLIGHT_STATES.LANDING:
             return sprintf('landing rwy %s', rwy);
+        case FLIGHT_STATES.ALIGNING:
+            return sprintf('aligning rwy %s', rwy);
         case FLIGHT_STATES.APPROACHING:
-            return sprintf('approach rwy %s', rwy);
+            return sprintf('approaching rwy %s', rwy);
         case FLIGHT_STATES.HOLDING_FROM:
         case FLIGHT_STATES.HOLDING_TO:
             return 'holding';

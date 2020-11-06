@@ -1,7 +1,22 @@
-import _, { round } from 'lodash';
+import _ from 'lodash';
 import { mapDao } from './modules/MapDao';
 import { FLIGHT_STATES, FLIGHT_TYPES } from './modules/Flight';
 
+function turnedHdg(fromHdg, toHdg, dt) {
+  const a = mapDao.normAngle(toHdg - fromHdg);
+  const maxAngle = 3 * dt;
+  const da = Math.sign(a) * Math.min(Math.abs(a), maxAngle);
+  const hdg = mapDao.normHdg(fromHdg + da);
+  return hdg;
+}
+
+function turnedRight(fromHdg, toHdg, dt) {
+  const a = mapDao.normHdg(toHdg - fromHdg);
+  const maxAngle = 3 * dt;
+  const da = Math.min(a, maxAngle);
+  const hdg = mapDao.normHdg(fromHdg + da);
+  return hdg;
+}
 
 function climb(alt, dt) {
   return Math.round(alt + 1500 * dt / 60);
@@ -15,7 +30,7 @@ function distance(speed, dt) {
   return speed * dt / 3600;
 }
 
-function approachAlt(d) {
+function landingAlt(d) {
   return Math.round(d * Math.tan(3 * Math.PI / 180) * 1852 / 0.3048);
 }
 
@@ -75,6 +90,23 @@ function toBeToAlt(received, alt) {
   }
 }
 
+function toBeRight(received, right) {
+  const pass = received.right === right;
+  if (pass) {
+    return {
+      message: () =>
+        `Expected not {\n  right: ${right}\n}\nReceived: {\n  right: ${received.right}\n}`,
+      pass: pass
+    };
+  } else {
+    return {
+      message: () =>
+        `Expected {\n  right: ${right}\n}\nReceived: {\n  right: ${received.right}\n}`,
+      pass: pass
+    };
+  }
+}
+
 function toBePos(received, loc, eps = 0.01) {
   const hdg = mapDao.hdg(received, loc);
   const d = mapDao.distance(received, loc);
@@ -122,49 +154,12 @@ function toBeSpeedAtAlt(received) {
 
 function toBeApproachAlt(received, runway, eps = 0) {
   const d = mapDao.distance(outerMarker(runway), received) + 7;
-  return toBeAlt(received, approachAlt(d), eps);
+  return toBeAlt(received, landingAlt(d), eps);
 }
 
 function toBeLandingAlt(received, runway, eps = 0) {
   const d = mapDao.distance(runway, received);
-  return toBeAlt(received, approachAlt(d), eps);
-}
-
-function toBeOm(received, rwy, eps = 0.01) {
-  if (rwy === undefined) {
-    const pass = received.om === undefined;
-    if (pass) {
-      return {
-        message: () =>
-          `Expected not {\n  om: undefined\n}\nReceived: {\n  om: undefined\n}`,
-        pass: pass
-      };
-    } else {
-      return {
-        message: () =>
-          `Expected {\n  om: undefined\n}\nReceived: {\n  om:\n    lat: ${received.om.lat},\n    lon: ${received.om.lon}\n  }\n}`,
-        pass: pass
-      }
-    }
-  } else {
-    const om = outerMarker(rwy);
-    const hdg = mapDao.hdg(received.om, om);
-    const d = mapDao.distance(received.om, om);
-    const pass = d <= eps;
-    if (pass) {
-      return {
-        message: () =>
-          `Expected not {\n  om:\n    lat: ${om.lat},\n    lon: ${om.lon}\n  }\n}\nReceived: {\n  om:\n    lat: ${received.om.lat},\n    lon: ${received.om.lon}\n  }\n}\nDistance: ${d}\nHeading: ${hdg}`,
-        pass: pass
-      };
-    } else {
-      return {
-        message: () =>
-          `Expected {\n  om:\n    lat: ${om.lat},\n    lon: ${om.lon}\n  }\n}\nReceived: {\n  om:\n    lat: ${received.om.lat},\n    lon: ${received.om.lon}\n  }\n}\nDistance: ${d}\nHeading: ${hdg}`,
-        pass: pass
-      }
-    }
-  }
+  return toBeAlt(received, landingAlt(d), eps);
 }
 
 function toBeFix(received, fix, eps = 0.01) {
@@ -179,7 +174,7 @@ function toBeFix(received, fix, eps = 0.01) {
     } else {
       return {
         message: () =>
-          `Expected {\n  fix: undefined\n}\nReceived: {\n  fix:\n    lat: ${received.om.lat},\n    lon: ${received.om.lon}\n  }\n}`,
+          `Expected {\n  fix: undefined\n}\nReceived: {\n  fix:\n    lat: ${received.fix.lat},\n    lon: ${received.fix.lon}\n  }\n}`,
         pass: pass
       }
     }
@@ -190,7 +185,7 @@ function toBeFix(received, fix, eps = 0.01) {
     if (pass) {
       return {
         message: () =>
-          `Expected not {\n  fix:\n    lat: ${om.lat},\n    lon: ${om.lon}\n  }\n}\nReceived: {\n  fix:\n    lat: ${received.fix.lat},\n    lon: ${received.fix.lon}\n  }\n}\nDistance: ${d}\nHeading: ${hdg}`,
+          `Expected not {\n  fix:\n    lat: ${fix.lat},\n    lon: ${fix.lon}\n  }\n}\nReceived: {\n  fix:\n    lat: ${received.fix.lat},\n    lon: ${received.fix.lon}\n  }\n}\nDistance: ${d}\nHeading: ${hdg}`,
         pass: pass
       };
     } else {
@@ -215,6 +210,23 @@ function toBeHdg(received, hdg) {
     return {
       message: () =>
         `Expected {\n  hdg: ${hdg}\n}\nReceived: {\n  hdg: ${received.hdg}\n}`,
+      pass: pass
+    };
+  }
+}
+
+function toBeLoopTimer(received, loopTimer) {
+  const pass = received.loopTimer === loopTimer;
+  if (pass) {
+    return {
+      message: () =>
+        `Expected not {\n  loopTimer: ${loopTimer}\n}\nReceived: {\n  loopTimer: ${received.loopTimer}\n}`,
+      pass: pass
+    };
+  } else {
+    return {
+      message: () =>
+        `Expected n  loopTimer: ${loopTimer}\n}\nReceived: {\n  loopTimer: ${received.loopTimer}\n}`,
       pass: pass
     };
   }
@@ -342,8 +354,8 @@ function toBeRunway(received, runway) {
 expect.extend({
   toBeAlt, toBePos, toBeRadial, toBeStatus, toBeSpeed, toBeTurnTo,
   toBeHdg, toBeSpeedAtAlt, toBeApproachAlt, toBeToAlt, toBeAt, toBeRunway,
-  toBeDescentFrom, toBeClimbedFrom, toBeOm, toBeLandingAlt, toBeFrom,
-  toBeExit, toBeFix, toBeHoldHdg
+  toBeDescentFrom, toBeClimbedFrom, toBeLandingAlt, toBeFrom,
+  toBeExit, toBeFix, toBeHoldHdg, toBeRight, toBeLoopTimer
 });
 
 class FlightBuilder {
@@ -422,6 +434,10 @@ class FlightBuilder {
     return new FlightBuilder(_.defaults({ turnTo }, this.flight));
   }
 
+  loopTimer(loopTimer) {
+    return new FlightBuilder(_.defaults({ loopTimer }, this.flight));
+  }
+
   toAlt(toAlt) {
     return new FlightBuilder(_.defaults({ toAlt }, this.flight));
   }
@@ -430,13 +446,17 @@ class FlightBuilder {
     return new FlightBuilder(_.defaults({ status }, this.flight));
   }
 
-  approachAlt(distance) {
-    return this.alt(approachAlt(distance));
+  right(right) {
+    return new FlightBuilder(_.defaults({ right }, this.flight));
+  }
+
+  landingAlt(distance) {
+    return this.alt(landingAlt(distance));
   }
 
   approachRadial(loc, distance, radial) {
     return this.radial(loc, distance, radial)
-      .approachAlt(distance)
+      .landingAlt(distance)
       .status(FLIGHT_STATES.LANDING);
   }
 
@@ -447,6 +467,50 @@ class FlightBuilder {
   }
 }
 
+function multipleTest(msg, func, n = 10) {
+  describe(msg, () => {
+    for (var i = 0; i < n; i++) {
+      func(i);
+    }
+  });
+}
+
+function multipleTestWithData(msg, data, func) {
+  describe(msg, () => {
+    data.forEach(d => func(d));
+  });
+}
+
+function digits(eps) {
+  return -Math.log10(2 * eps);
+}
+
+function rndFloat(from, to) {
+  return Math.random() * (to - from) + from;
+}
+
+function rndInt(from, to) {
+  if (to === undefined) {
+    to = from;
+    from = 0;
+  }
+  return Math.floor(rndFloat(from, to));
+}
+
+function rndHdg() {
+  return rndInt(1, 361);
+}
+
+function rndFL() {
+  return rndInt(1, 10) * 4000;
+}
+
+function rndMidFL() {
+  return rndInt(2, 9) * 4000;
+}
+
 export {
-  distance, climb, descend, outerMarker, flightBuilder
+  distance, climb, descend, outerMarker, flightBuilder, speedByAlt,
+  landingAlt, turnedHdg, multipleTestWithData, multipleTest, turnedRight,
+  rndFloat, rndInt, rndHdg, rndFL, rndMidFL, digits
 };

@@ -64,10 +64,18 @@ class MapDao {
      * @param {*} to 
      * @param {*} from 
      */
-    hdg(to, from) {
+    hdgSingle(to, from) {
         const nms = this.xy(to, from);
-        const deg = this.normHdg(Math.round(Math.atan2(nms[0], nms[1]) * DEGS_PER_RAD));
+        const deg = Math.atan2(nms[0], nms[1]) * DEGS_PER_RAD;
         return deg;
+    }
+
+    hdg(to, from) {
+        const hft = this.normAngle(this.hdgSingle(to, from));
+        const htf = this.normAngle(this.hdgSingle(from, to) + 180);
+        const hdg = this.normHdg(Math.round(hft + this.normAngle((htf - hft) / 2)));
+        // const hdg = Math.round((hft + htf) / 2);
+        return hdg;
     }
 
     normHdg(hdg) {

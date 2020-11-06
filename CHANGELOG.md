@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Issue #58: Turn reality
 - Issue #59: Clear audio clips
 - Issue #60: Random flight name
 

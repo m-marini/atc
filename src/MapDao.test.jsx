@@ -1,6 +1,7 @@
 import { mapDao } from './modules/MapDao';
 import maps from '../public/data/maps.json';
 import _ from 'lodash';
+import { multipleTest, rndFloat } from './TestUtil';
 
 function map(mapId, nodeId) {
   return maps.maps[mapId].nodes[nodeId];
@@ -25,6 +26,12 @@ function createTestHdgMapEntry(mapId) {
       });
     });
 }
+
+// test('MM', () => {
+//   const rwy = maps.maps['PAR'].nodes['27L'];
+//   const om = mapDao.radial(rwy, rwy.hdg + 180, 7);
+//   expect(om).toEqual({});
+// });
 
 describe('MapDao FFM entries1', () => {
   createTestHdgMapEntry('FFM');
@@ -221,6 +228,51 @@ describe('MapDao should generate coords', () => {
   });
 });
 
+multipleTest('MapDao should compute distance between same point', () => {
+  const lat = rndFloat(-80, 80);
+  const lon = rndFloat(-180, 180);
+  test(`lat: ${lat}, lon=${lon}`, () => {
+    const p = { lat, lon };
+    expect(mapDao.distance(p, p)).toBeCloseTo(0);
+  });
+});
+
+multipleTest('MapDao should compute distance along meridian', () => {
+  const lat0 = rndFloat(-80, 80);
+  const lon = rndFloat(-180, 180);
+  const dl = rndFloat(0, 200)
+  const lat1 = lat0 + dl / 60;
+  test(`lat0: ${lat0}, lat1: ${lat1}, lon:${lon}`, () => {
+    const p0 = { lat: lat0, lon };
+    const p1 = { lat: lat1, lon };
+
+    const result0 = mapDao.distance(p0, p1);
+    expect(result0).toBeCloseTo(dl);
+
+    const result1 = mapDao.distance(p1, p0);
+    expect(result1).toBeCloseTo(dl);
+  });
+});
+
+multipleTest('MapDao should compute distance along parallel', () => {
+  const lat = rndFloat(-80, 80);
+  const lon0 = rndFloat(-180, 180);
+  const dl = rndFloat(0, 2);
+  const l = lon0 + dl;
+  const lon1 = l >= 180 ? l - 360 : l;
+  test(`lat: ${lat}, lon0: ${lon0}, lon1:${lon1}`, () => {
+    const p0 = { lat, lon: lon0 };
+    const p1 = { lat, lon: lon1 };
+    const exp = dl * 60 * Math.cos(lat * Math.PI / 180);
+
+    const result0 = mapDao.distance(p0, p1);
+    expect(result0).toBeCloseTo(exp);
+
+    const result1 = mapDao.distance(p1, p0);
+    expect(result1).toBeCloseTo(exp);
+  });
+});
+
 describe('MapDao should generate route info', () => {
 
   const NODE = {
@@ -308,7 +360,6 @@ describe('MapDao should generate route info', () => {
     const result = mapDao.route(NODE, NODE);
 
     expect(result).toMatchObject({
-      hdg: 360,
       d: 0,
       to: false,
       from: false

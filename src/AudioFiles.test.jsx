@@ -4,14 +4,22 @@ import maps from '../public/data/maps.json';
 import { MESSAGES, toMp3 } from './modules/Audio';
 import { map } from 'rxjs/operators';
 import fs from 'fs';
+import { NODE_TYPES } from './modules/TrafficSimulator';
 
 function createFileList() {
   // numbers
   const nums = _.range(0, 10).map(n => n.toString());
   const alphas = _.range(0, 26).map(n => String.fromCharCode(97 + n));
-  const nodes = _(maps.maps).flatMap(map => {
-    return _(map.nodes).values().map('id').value();
-  }).value();
+  const nodes = _(maps.maps)
+    .flatMap(map => _(map.nodes)
+      .filter(node =>
+        node.type === NODE_TYPES.BEACON
+        || node.type === NODE_TYPES.ENTRY
+        || node.type === NODE_TYPES.RUNWAY)
+      .values()
+      .map('id')
+      .value()
+    ).value();
   const tags = _(MESSAGES).keys().value();
   return _(_.concat(nums, alphas, nodes, tags))
     .map(f => f.toLowerCase())
@@ -26,7 +34,7 @@ describe('Check for audio files', () => {
     const missing = files.filter(f => {
       return !fs.existsSync(f);
     })
-    .sort();
+      .sort();
     fs.writeFileSync('george-missing.txt', missing.join('\n'));
     expect(missing).toHaveLength(0);
   })
@@ -37,7 +45,7 @@ describe('Check for audio files', () => {
     const missing = files.filter(f => {
       return !fs.existsSync(f);
     })
-    .sort();
+      .sort();
     fs.writeFileSync('john-missing.txt', missing.join('\n'));
     expect(missing).toHaveLength(0);
   })
