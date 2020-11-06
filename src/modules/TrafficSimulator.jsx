@@ -32,13 +32,11 @@ const TRAFFIC_SIM_DEFAULTS = {
     collisionDistance: 4,       // nms
     collisionAlt: 1000,         // feet
     om: 7,                      // nms
-    clearToLandDistance: 25,    // nms
+    mm: 0.9,                    // nms (5469')
+    clearToLandDistance: 30,    // nms
     exitDistance: 2,            // nms
-    landingHdgRange: 1,         // DEG
-    approachHdgRange: 15,       // DEG
+    landingHdgRange: 2,         // DEG
     landingAngle: 3,            // DEG
-    landingHdgTrim: 1,          // DEG
-    touchdownRange: 500,        // feet
     conditionDistance: 400 / 3600 * 10 * 1.5, // nms
     holdingDuration: 240,       // sec
     goAroundAlt: 4000,          // feet
@@ -55,6 +53,11 @@ const TRAFFIC_SIM_DEFAULTS = {
         }
     }
 };
+
+// Descend speed 1500 feet/min = 25 feet/s
+// Descend speed 700 feet/min = 12 feet/s
+// Descent speed for landing slope from FL040 at 173 Knots = 173/60/1852*0.3*tan(3DEG) = 932 feet/min = 15 feet/s
+// Descent speed for landing slope from FL040 at 102 Knots = 80/60/1852*0.3*tan(3DEG) = 431 feet/min = 7 feet/s
 
 const VOICES = ['george', 'john'];
 

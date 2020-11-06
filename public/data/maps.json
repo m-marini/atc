@@ -14,17 +14,31 @@
                     "id": "25C",
                     "type": "runway",
                     "hdg": 251,
-                    "alignment": "SE",
+                    "alignment": "NW",
                     "lat": 50.0436277,
                     "lon": 8.5806709
+                },
+                "25COM":{
+                    "id": "",
+                    "type": "om",
+                    "alignment": "W",
+                    "lat": 50.08161065135334,
+                    "lon": 8.752439496391881
                 },
                 "07R": {
                     "id": "07R",
                     "type": "runway",
                     "hdg": 71,
-                    "alignment": "SW",
+                    "alignment": "SE",
                     "lat": 50.0289425,
                     "lon": 8.5400342
+                },
+                "07ROM":{
+                    "id": "",
+                    "type": "om",
+                    "alignment": "W",
+                    "lat": 49.990959548646664,
+                    "lon": 8.368318130255819
                 },
                 "BUB": {
                     "id": "BUB",
@@ -156,7 +170,7 @@
                 "TRA": {
                     "id": "TRA",
                     "type": "entry",
-                    "hdg": 30,
+                    "hdg": 31,
                     "alignment": "S",
                     "lat": 47.6916629589822,
                     "lon": 8.43833332881332
@@ -167,13 +181,20 @@
                     "type": "land",
                     "edges": [
                         "CHA",
-                        "25C"
+                        "25COM"
                     ]
                 },
                 {
                     "type": "land",
                     "edges": [
                         "MTR",
+                        "25COM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "25COM",
                         "25C"
                     ]
                 },
@@ -181,13 +202,20 @@
                     "type": "land",
                     "edges": [
                         "TAU",
-                        "07R"
+                        "07ROM"
                     ]
                 },
                 {
                     "type": "land",
                     "edges": [
                         "RID",
+                        "07ROM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "07ROM",
                         "07R"
                     ]
                 },
@@ -442,6 +470,13 @@
                     "lat": 51.1461759,
                     "lon": -0.2045476
                 },
+                "08ROM":{
+                    "id": "",
+                    "type": "om",
+                    "alignment": "W",
+                    "lat": 51.12993903822133,
+                    "lon": -0.38870941914702384
+                },
                 "26": {
                     "id": "26",
                     "type": "runway",
@@ -450,6 +485,13 @@
                     "lat": 51.8766325,
                     "lon": -0.3567447
                 },
+                "26OM":{
+                    "id": "",
+                    "type": "om",
+                    "alignment": "SE",
+                    "lat": 51.898893549460595,
+                    "lon": -0.17123904512091664
+                },
                 "27L": {
                     "id": "27L",
                     "type": "runway",
@@ -457,6 +499,13 @@
                     "hdg": 275,
                     "lat": 51.4649432,
                     "lon": -0.4363281
+                },
+                "27LOM":{
+                    "id": "",
+                    "type": "om",
+                    "alignment": "NE",
+                    "lat": 51.454775030012776,
+                    "lon": -0.24977279863337867
                 },
                 "BCN": {
                     "id": "BCN",
@@ -512,7 +561,7 @@
                 "DPE": {
                     "id": "DPE",
                     "type": "entry",
-                    "hdg": 322,
+                    "hdg": 321,
                     "alignment": "SE",
                     "lat": 49.9266648336542,
                     "lon": 1.17166659794748
@@ -582,13 +631,20 @@
                     "type": "land",
                     "edges": [
                         "BIG",
-                        "27L"
+                        "27LOM"
                     ]
                 },
                 {
                     "type": "land",
                     "edges": [
                         "BNN",
+                        "27LOM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "27LOM",
                         "27L"
                     ]
                 },
@@ -596,6 +652,13 @@
                     "type": "land",
                     "edges": [
                         "MAY",
+                        "08ROM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "08ROM",
                         "08R"
                     ]
                 },
@@ -603,6 +666,13 @@
                     "type": "land",
                     "edges": [
                         "BKY",
+                        "26OM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "26OM",
                         "26"
                     ]
                 },
@@ -829,6 +899,13 @@
                     "lat": 45.4342909,
                     "lon": 9.28833332844079
                 },
+                "36ROM": {
+                    "id": "",
+                    "type": "om",
+                    "alignment": "W",
+                    "lat": 45.3177841209453,
+                    "lon": 9.297034523365944
+                },
                 "ABN": {
                     "id": "ABN",
                     "type": "entry",
@@ -879,7 +956,7 @@
                 "FRZ": {
                     "id": "FRZ",
                     "type": "entry",
-                    "hdg": 328,
+                    "hdg": 327,
                     "alignment": "SE",
                     "lat": 44.0266583347915,
                     "lon": 11.0033333301544
@@ -909,7 +986,7 @@
                 "PIS": {
                     "id": "PIS",
                     "type": "entry",
-                    "hdg": 357,
+                    "hdg": 356,
                     "alignment": "S",
                     "lat": 43.6766645836979,
                     "lon": 10.3916666284204
@@ -1027,20 +1104,27 @@
                     "type": "land",
                     "edges": [
                         "COD",
-                        "36R"
+                        "36ROM"
                     ]
                 },
                 {
                     "type": "land",
                     "edges": [
                         "SRN",
-                        "36R"
+                        "36ROM"
                     ]
                 },
                 {
                     "type": "land",
                     "edges": [
                         "VOG",
+                        "36ROM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "36ROM",
                         "36R"
                     ]
                 },
@@ -1246,6 +1330,13 @@
                     "lat": 48.9660858,
                     "lon": 2.4287931
                 },
+                "07OM": {
+                    "id": "",
+                    "type": "om",
+                    "alignment": "SW",
+                    "lat": 48.93003381732292,
+                    "lon": 2.2597822229831226
+                },
                 "24": {
                     "id": "24",
                     "type": "runway",
@@ -1253,6 +1344,13 @@
                     "alignment": "SE",
                     "lat": 48.7335613,
                     "lon": 2.3552368
+                },
+                "24OM": {
+                    "id": "",
+                    "type": "om",
+                    "alignment": "SW",
+                    "lat": 48.781013908358844,
+                    "lon": 2.516829469874467
                 },
                 "27L": {
                     "id": "27L",
@@ -1262,10 +1360,17 @@
                     "lat": 49.0231963,
                     "lon": 2.5612735
                 },
+                "27LOM": {
+                    "id": "",
+                    "type": "om",
+                    "alignment": "SW",
+                    "lat": 49.02523241408435,
+                    "lon": 2.7391588033565566
+                },
                 "ANG": {
                     "id": "ANG",
                     "type": "entry",
-                    "hdg": 52,
+                    "hdg": 53,
                     "alignment": "SW",
                     "lat": 47.5366650836104,
                     "lon": -0.853333314880738
@@ -1324,7 +1429,7 @@
                 "MOU": {
                     "id": "MOU",
                     "type": "entry",
-                    "hdg": 334,
+                    "hdg": 333,
                     "alignment": "S",
                     "lat": 46.7066593346165,
                     "lon": 3.63333332352341
@@ -1339,7 +1444,7 @@
                 "REM": {
                     "id": "REM",
                     "type": "entry",
-                    "hdg": 241,
+                    "hdg": 240,
                     "alignment": "E",
                     "lat": 49.3116584597696,
                     "lon": 4.04666659422219
@@ -1357,6 +1462,13 @@
                     "type": "land",
                     "edges": [
                         "TSU",
+                        "24OM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "24OM",
                         "24"
                     ]
                 },
@@ -1364,6 +1476,13 @@
                     "type": "land",
                     "edges": [
                         "PON",
+                        "07OM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "07OM",
                         "07"
                     ]
                 },
@@ -1371,6 +1490,13 @@
                     "type": "land",
                     "edges": [
                         "CRL",
+                        "27LOM"
+                    ]
+                },
+                {
+                    "type": "land",
+                    "edges": [
+                        "27LOM",
                         "27L"
                     ]
                 },

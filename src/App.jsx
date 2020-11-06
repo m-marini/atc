@@ -5,6 +5,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import SessionPane from './modules/SessionPane';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AudioTest from './modules/AudioTest';
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         <Switch>
           <Route exact path="/">
             <Home />
+          </Route>
+          <Route exact path="/audiotest">
+            <AudioTest />
           </Route>
           <Route path="/sessions/:id" children={<SessionPane />} >
           </Route>

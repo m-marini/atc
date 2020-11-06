@@ -4,8 +4,13 @@ import _ from 'lodash';
 import RadarMap from './RadarMap';
 import { sprintf } from 'sprintf-js';
 import { FLIGHT_STATES } from './Flight';
+import { ButtonGroup, Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-svg-icons'
 
-const ZOOM_SCALE = Math.log(10) / 4 / 57;
+
+const ZOOM_TICK = 57;
+const ZOOM_SCALE = Math.log(10) / 4 / ZOOM_TICK;
 const GRID_MARKER_HEIGHT = 4;
 
 const RadarConf = {
@@ -257,7 +262,10 @@ class RadarPane extends Component {
             offsetY: 0,
             scale
         };
-        _.bindAll(this, ['handleDown', 'handleMove', 'handleUp', 'handleWheel', 'render']);
+        _.bindAll(this, [
+            'handleDown', 'handleMove', 'handleUp', 'handleWheel', 'render',
+            'handleFit', 'handleZoomIn', 'handleZoomOut'
+        ]);
     }
 
     /**
@@ -277,30 +285,32 @@ class RadarPane extends Component {
                     clientY: ev.clientY
                 });
                 break;
-            case 1: {
+            case 1:
                 // fit the map to the viewport
                 ev.preventDefault();
-                const { map, nodeMap, session } = this.props;
-                const scale = (!!nodeMap && !!map && !!session)
-                    ? new RadarMap({
-                        map,
-                        nodeMap,
-                        width: RadarConf.width,
-                        height: RadarConf.height
-                    }).scale
-                    : 1;
-                this.setState({
-                    dragging: false,
-                    offsetX: 0,
-                    offsetY: 0,
-                    scale
-                });
-            }
+                this.fit();
                 break;
             default:
         }
     }
 
+    fit() {
+        const { map, nodeMap, session } = this.props;
+        const scale = (!!nodeMap && !!map && !!session)
+            ? new RadarMap({
+                map,
+                nodeMap,
+                width: RadarConf.width,
+                height: RadarConf.height
+            }).scale
+            : 1;
+        this.setState({
+            dragging: false,
+            offsetX: 0,
+            offsetY: 0,
+            scale
+        });
+    }
     /**
      *
      * @param {*} ev
@@ -333,11 +343,26 @@ class RadarPane extends Component {
     handleWheel(ev) {
         if (ev.shiftKey) {
             // ev.preventDefault();
-            const { deltaY } = ev;
-            const factor = Math.exp(-deltaY * ZOOM_SCALE);
-            const scale = this.radarMap.scale * factor;
-            this.setState({ scale });
+            this.zoom(ev.deltaY);
         }
+    }
+
+    zoom(deltaY) {
+        const factor = Math.exp(-deltaY * ZOOM_SCALE);
+        const scale = this.radarMap.scale * factor;
+        this.setState({ scale });
+    }
+
+    handleZoomIn() {
+        this.zoom(-ZOOM_TICK);
+    }
+
+    handleZoomOut() {
+        this.zoom(ZOOM_TICK);
+    }
+
+    handleFit() {
+        this.fit();
     }
 
     /**
@@ -393,37 +418,48 @@ class RadarPane extends Component {
             const radarMap = this.radarMap;
             const flights = (session || { flights: {} }).flights;
             return (
-                <svg width={RadarConf.width} height={RadarConf.height}
-                    onMouseMove={this.handleMove}
-                    onMouseDown={this.handleDown}
-                    onMouseUp={this.handleUp}
-                    onMouseLeave={this.handleUp}
-                    onWheel={this.handleWheel}
-                    className="radar">
-                    <Grid radarMap={radarMap} />
-                    {
-                        _.map(map.routes, (route, i) => {
-                            return (<Route key={i} radarMap={radarMap} route={route} />);
-                        })
-                    }
-                    {
-                        _(nodeMap.nodes).values().map(node => {
-                            return (
-                                <Node key={node.node.id} radarMap={radarMap} node={node} />
-                            );
-                        }).value()
-                    }
-                    <GridMarker radarMap={radarMap} />
-                    {
-                        _(flights).values().orderBy('alt', 'asc').map(flight => {
-                            return (
-                                <Flight key={flight.id} radarMap={radarMap} flight={flight} />
-                            );
-                        }).value()
-                    })
-
-                    }
-                </svg>
+                <div>
+                    <svg width={RadarConf.width} height={RadarConf.height}
+                        onMouseMove={this.handleMove}
+                        onMouseDown={this.handleDown}
+                        onMouseUp={this.handleUp}
+                        onMouseLeave={this.handleUp}
+                        onWheel={this.handleWheel}
+                        className="radar">
+                        <Grid radarMap={radarMap} />
+                        {
+                            _.map(map.routes, (route, i) => {
+                                return (<Route key={i} radarMap={radarMap} route={route} />);
+                            })
+                        }
+                        {
+                            _(nodeMap.nodes).values().map((node,i) => {
+                                return (
+                                    <Node key={i} radarMap={radarMap} node={node} />
+                                );
+                            }).value()
+                        }
+                        <GridMarker radarMap={radarMap} />
+                        {
+                            _(flights).values().orderBy('alt', 'asc').map(flight => {
+                                return (
+                                    <Flight key={flight.id} radarMap={radarMap} flight={flight} />
+                                );
+                            }).value()
+                        }
+                    </svg>
+                    <ButtonGroup vertical size="sm">
+                        <Button variant="dark" onClick={this.handleZoomIn}>
+                            <FontAwesomeIcon icon={faSearchPlus} />
+                        </Button>
+                        <Button variant="dark" onClick={this.handleZoomOut}>
+                            <FontAwesomeIcon icon={faSearchMinus} />
+                        </Button>
+                        <Button variant="dark" onClick={this.handleFit}>
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                    </ButtonGroup>
+                </div >
             );
         }
     }

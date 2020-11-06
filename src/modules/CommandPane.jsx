@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup, Card, Col, Container, Row } from 'react-bootstrap';
 import _ from 'lodash';
-import { COMMAND_TYPES } from './TrafficSimulator';
+import { COMMAND_TYPES, NODE_TYPES } from './TrafficSimulator';
 
 const FlightSelectionStatus = "flightSelection";
 const CommandSelectionStatus = "commandSelection";
@@ -88,7 +88,11 @@ function RunwaySelection({ flight, map, onAbort, onSelect }) {
 }
 
 function DestinationSelection({ flight, map, onAbort, onSelect }) {
-    const nodes = _(map.nodes).sortBy(['id']);
+    const nodes = _(map.nodes)
+        .filter(node =>
+            node.type === NODE_TYPES.ENTRY
+            || node.type === NODE_TYPES.BEACON)
+        .sortBy(['id']);
     const numCol1 = Math.ceil((nodes.size() + 1) / 2) - 1;
     const nodes1 = nodes.take(numCol1);
     const nodes2 = nodes.drop(numCol1);
@@ -137,7 +141,11 @@ function DestinationSelection({ flight, map, onAbort, onSelect }) {
 }
 
 function ConditionButtons({ map, onAbort, onSelect }) {
-    const nodes = _(map.nodes).filter(node => node.type !== 'runway').sortBy(['id']);
+    const nodes = _(map.nodes)
+        .filter(node =>
+            node.type === NODE_TYPES.ENTRY
+            || node.type === NODE_TYPES.BEACON)
+        .sortBy(['id']);
 
     const numCol1 = Math.ceil((nodes.size() + 2) / 2) - 2;
     const nodes1 = nodes.take(numCol1);

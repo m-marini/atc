@@ -123,6 +123,16 @@ text.beacon {
   stroke: #fc7e04;
 }
 
+circle.om {
+  fill: none;
+  stroke: #5e93c8;
+  r: 3
+}
+
+text.om {
+  stroke: #5e93c8;
+}
+
 circle.entry {
   fill: none;
   stroke: #ea332a;

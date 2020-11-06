@@ -32,12 +32,17 @@ describe('Spell', () => {
 
   test('ab1', () => {
     const result = spell('ab1');
-    expect(result).toBe('a pause b pause 1');
+    expect(result).toBe('a b 1');
   });
 
   test('AB1', () => {
     const result = spell('AB1');
-    expect(result).toEqual('a pause b pause 1');
+    expect(result).toEqual('a b 1');
+  });
+
+  test('AA1', () => {
+    const result = spell('AA1');
+    expect(result).toEqual('a pause a 1');
   });
 });
 
