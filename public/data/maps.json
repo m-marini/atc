@@ -1326,7 +1326,7 @@
                     "id": "07",
                     "type": "runway",
                     "hdg": 72,
-                    "alignment": "SW",
+                    "alignment": "SE",
                     "lat": 48.9660858,
                     "lon": 2.4287931
                 },
@@ -1341,7 +1341,7 @@
                     "id": "24",
                     "type": "runway",
                     "hdg": 246,
-                    "alignment": "SE",
+                    "alignment": "SW",
                     "lat": 48.7335613,
                     "lon": 2.3552368
                 },
@@ -1356,7 +1356,7 @@
                     "id": "27L",
                     "type": "runway",
                     "hdg": 269,
-                    "alignment": "E",
+                    "alignment": "NW",
                     "lat": 49.0231963,
                     "lon": 2.5612735
                 },
