@@ -74,6 +74,17 @@ function rndFlightId(tmpl = 'X99X') {
     return id;
 }
 
+function rndPoisson(lambda) {
+    var k = -1;
+    var p = 1;
+    var l = Math.exp(-lambda);
+    do {
+        ++k;
+        p *= Math.random();
+    } while (p > l);
+    return k;
+}
+
 /**
  * 
  * @param {*} alt 
@@ -97,16 +108,6 @@ function choose(items) {
  */
 function rndByProb(prob) {
     return Math.random() < prob;
-}
-
-/**
- * 
- * @param {*} prob 
- */
-function rndByFreq(t, f) {
-    const prob = -Math.expm1(-t * f);
-    const result = rndByProb(prob);
-    return result;
 }
 
 /**
@@ -361,10 +362,14 @@ class TrafficSimulator {
         const { maxPlane, flightFreq } = level;
         const { flights, t, noFlights } = this.session;
         //Check for new flight eligibility
-        if (_.size(flights) < maxPlane && (
-            rndByFreq(dt, flightFreq / 3600)
-            || (noFlights === 0 && t >= MAX_INITIAL_IDLE_INTERVAL))) {
-            return this.createFlight();
+        const max = maxPlane - _.size(flights);
+        const n = Math.min(rndPoisson(dt * flightFreq / 3600), max);
+        if (n > 0 || (noFlights === 0 && t >= MAX_INITIAL_IDLE_INTERVAL)) {
+            var tmp = this;
+            for (var i = 0; i < n; i++) {
+                tmp = tmp.createFlight();
+            }
+            return tmp;
         } else {
             return this;
         }
@@ -401,45 +406,49 @@ class TrafficSimulator {
      * @param {*} sessionMap 
      */
     createFlight() {
-        const { jetProb, entryAlt, flightTempl } = this.props;
-        const { noFlights, t, flights } = this.session;
-        const entry = choose(this.createEntryCandidates());
-        const to = choose(this.createExitCandidates());
-        const type = rndByProb(jetProb) ? FLIGHT_TYPES.JET : FLIGHT_TYPES.AIRPLANE;
-        var id = undefined;
-        do {
-            id = rndFlightId();
-        } while (flights[id] !== undefined);
-        //const id = String.fromCharCode(noFlights % 26 + 65) + Math.floor(noFlights / 26 + 1);
-        const alt = entry.type === NODE_TYPES.RUNWAY ? 0 : entryAlt;
-        const status = entry.type === NODE_TYPES.RUNWAY ? FLIGHT_STATES.WAITING_FOR_TAKEOFF : FLIGHT_STATES.FLYING;
-        const speed = entry.type === NODE_TYPES.RUNWAY ? 0 : flightSpeed(alt, flightTempl[type]);
-        const atcVoice = this.props.map.voice;
-        const voices = VOICES.filter(v => v !== atcVoice);
-        const voice = choose(voices);
-        const flight = {
-            id,
-            type,
-            alt,
-            toAlt: alt,
-            hdg: entry.hdg,
-            to: to.id,
-            lat: entry.lat,
-            lon: entry.lon,
-            speed,
-            from: entry.id,
-            status,
-            voice
-        };
+        const candidates = this.createEntryCandidates();
+        if (candidates.length > 0) {
+            const { jetProb, entryAlt, flightTempl } = this.props;
+            const { noFlights, t, flights } = this.session;
+            const entry = choose(candidates);
+            const to = choose(this.createExitCandidates());
+            const type = rndByProb(jetProb) ? FLIGHT_TYPES.JET : FLIGHT_TYPES.AIRPLANE;
+            var id = undefined;
+            do {
+                id = rndFlightId();
+            } while (flights[id] !== undefined);
+            const alt = entry.type === NODE_TYPES.RUNWAY ? 0 : entryAlt;
+            const status = entry.type === NODE_TYPES.RUNWAY ? FLIGHT_STATES.WAITING_FOR_TAKEOFF : FLIGHT_STATES.FLYING;
+            const speed = entry.type === NODE_TYPES.RUNWAY ? 0 : flightSpeed(alt, flightTempl[type]);
+            const atcVoice = this.props.map.voice;
+            const voices = VOICES.filter(v => v !== atcVoice);
+            const voice = choose(voices);
+            const flight = {
+                id,
+                type,
+                alt,
+                toAlt: alt,
+                hdg: entry.hdg,
+                to: to.id,
+                lat: entry.lat,
+                lon: entry.lon,
+                speed,
+                from: entry.id,
+                status,
+                voice
+            };
 
-        this.fireEvent(EVENT_TYPES.ENTER, flight);
-        const sessionMap = fromJS(this.session)
-            .set('noFlights', noFlights + 1)
-            .setIn(['flights', flight.id], flight);
-        const sessionMap1 = entry.type === NODE_TYPES.RUNWAY
-            ? sessionMap
-            : sessionMap.setIn(['entries', entry.id], t);
-        return this.withSession(sessionMap1.toJS());
+            this.fireEvent(EVENT_TYPES.ENTER, flight);
+            const sessionMap = fromJS(this.session)
+                .set('noFlights', noFlights + 1)
+                .setIn(['flights', flight.id], flight);
+            const sessionMap1 = entry.type === NODE_TYPES.RUNWAY
+                ? sessionMap
+                : sessionMap.setIn(['entries', entry.id], t);
+            return this.withSession(sessionMap1.toJS());
+        } else {
+            return this;
+        }
     }
 }
 

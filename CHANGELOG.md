@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.7.0] - 2020-11-08
+
+### Fixed
+
+- Issue #67: Mixed map leggend
+- Issue #68: Simplify ATC COM
+
+### Changed
+
+- Issue #65: Performance indicators
+- Issue #66: new flight with Poisson distribution
+
 ## [0.6.0] - 2020-11-06
 
 ### Changed

@@ -87,9 +87,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ENTER, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a 1 enter AT at fl280 heading 3 6 0 to 09L',
-      'george pause a 1 LONatc maintain fl280 heading 3 6 0',
-      'john pause maintaining fl280 heading 3 6 0 pause1 a 1'
+      'john pause LONatc a 1 enter AT to 09L',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -104,9 +103,8 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.ENTER, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a 1 enter AT at fl280 heading 3 6 0 leavevia TO',
-      'george pause a 1 LONatc maintain fl280 heading 3 6 0',
-      'john pause maintaining fl280 heading 3 6 0 pause1 a 1'
+      'john pause LONatc a 1 enter AT leavevia TO',
+      'george pause a 1 LONatc roger'
     ]);
   });
 
@@ -498,7 +496,7 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.RIGHT_LEAVE, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a 1 leavingvia TO at fl360',
+      'john pause LONatc a 1 leavingvia TO',
       'george pause a 1 LONatc clearedto TO departure'
     ]);
   });
@@ -513,7 +511,7 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.WRONG_LEAVE, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a 1 leavingvia TO at fl320 missingdep',
+      'john pause LONatc a 1 leavingvia TO missingdep',
       'george pause a 1 LONatc roger'
     ]);
   });
@@ -529,7 +527,7 @@ describe('events', () => {
     const ev = event(EVENT_TYPES.OUT_OF_AREA, flight);
     const result = new AudioBuilder(ev).toAudio();
     expect(result.clips).toEqual([
-      'john pause LONatc a 1 leaving fl320 heading 3 2 5 missingdep',
+      'john pause LONatc a 1 leaving missingdep',
       'george pause a 1 LONatc roger'
     ]);
   });

@@ -181,7 +181,8 @@ multipleTest('Flight should process time when missing runway cause land alignmen
 
 multipleTest('Flight should process time when missing runway cause too right', () => {
   const radial = mapDao.normHdg(RUNWAY.hdg + 180 - rndInt(46, 90));
-  const d0 = rndInt(50, 89) / 100;
+  // 0.55 is the minimal distance for 46DEG 
+  const d0 = rndInt(55, 89) / 100;
   test(`D${d0}, R${radial}, hdg: ${RUNWAY.hdg}`, () => {
     const A1 = flightBuilder()
       .approachRunway(RUNWAY, d0)
@@ -211,8 +212,9 @@ multipleTest('Flight should process time when missing runway cause too right', (
 });
 
 multipleTest('Flight should process time when missing runway cause too left', () => {
-  const radial = mapDao.normHdg(RUNWAY.hdg + 180 + rndInt(47, 90));
-  const d0 = rndInt(50, 89) / 100;
+  const radial = mapDao.normHdg(RUNWAY.hdg + 180 + rndInt(46, 90));
+  // 0.55 is the minimal distance for 46DEG 
+  const d0 = rndInt(55, 89) / 100;
   test(`D${d0}, R${radial}, hdg: ${RUNWAY.hdg}`, () => {
     const A1 = flightBuilder()
       .approachRunway(RUNWAY, d0)
@@ -239,7 +241,7 @@ multipleTest('Flight should process time when missing runway cause too left', ()
       map
     }]);
   });
-});
+}, 1);
 
 multipleTest('Flight should process time when missing runway cause flying away', () => {
   const hdg = mapDao.normHdg(RUNWAY.hdg + 180 + rndInt(-89, 90));

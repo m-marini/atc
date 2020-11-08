@@ -349,17 +349,17 @@ class AudioBuilder {
     }
 
     rightLeave() {
-        return this.flightAudio('leavingvia $to at $alt')
+        return this.flightAudio('leavingvia $to')
             .atcAudio('clearedto $to departure');
     }
 
     wrongLeave() {
-        return this.flightAudio('leavingvia $exit at $alt missingdep')
+        return this.flightAudio('leavingvia $exit missingdep')
             .atcAudio('roger');
     }
 
     outOfArea() {
-        return this.flightAudio('leaving $alt $hdg missingdep')
+        return this.flightAudio('leaving missingdep')
             .atcAudio('roger');
     }
 
@@ -386,13 +386,11 @@ class AudioBuilder {
                     .readbackAudio('holdingshort $from');
             }
         } else if (toNode.type === NODE_TYPES.RUNWAY) {
-            return this.flightAudio('enter $from at $alt $hdg to $to')
-                .atcAudio('maintain $alt $hdg')
-                .readbackAudio('maintaining $alt $hdg');
+            return this.flightAudio('enter $from to $to')
+                .atcAudio('roger');
         } else {
-            return this.flightAudio('enter $from at $alt $hdg leavevia $to')
-                .atcAudio('maintain $alt $hdg')
-                .readbackAudio('maintaining $alt $hdg');
+            return this.flightAudio('enter $from leavevia $to')
+                .atcAudio('roger');
         }
     }
 }
