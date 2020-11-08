@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
+import { Badge, Col, Container, Nav, Navbar } from 'react-bootstrap';
 import { sprintf } from 'sprintf-js';
 
 function ATCNavBar({ session }) {
