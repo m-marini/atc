@@ -10,13 +10,12 @@ import { mapDao } from './MapDao';
 import { flatMap, map, tap } from 'rxjs/operators';
 import '../App.css';
 import { interval } from 'rxjs';
-import { TrafficSimulator } from './TrafficSimulator';
+import { TrafficSimulator, choose } from './TrafficSimulator';
 import { levelDao } from './LevelDao';
 import { cockpitLogger } from './CockpitLogger';
-import Reader from './Reader';
-import ReactAudioPlayer from 'react-audio-player';
 import _ from 'lodash';
-import { AudioBuilder, toMessage, toMp3 } from './Audio';
+import { AudioBuilder, MessageBuilder, synthSay, synthVoices } from './Audio';
+import { MESSAGE_TYPES } from './Events';
 
 const CLOCK_INTERVAL = 400;
 const RADAR_INTERVAL = 4;
@@ -106,11 +105,17 @@ class Session extends Component {
   constructor(props) {
     super(props);
     const logger = cockpitLogger();
-    const reader = new Reader();
-    this.state = { logger, reader, muted: false, speed: 10, ts: 0 };
+    this.state = {
+      logger,
+      muted: false,
+      speed: 10,
+      ts: 0,
+      atcVoice: '0',
+      flightVoices: []
+    };
     this.clock = interval(CLOCK_INTERVAL);
     _.bindAll(this, [
-      'handleClock', 'handleCommand', 'handleAudioEnded', 'handleSimulationEvent', 'handleAudioError',
+      'handleClock', 'handleCommand', 'handleSimulationEvent',
       'handleMuted', 'handleSpeed'
     ]);
   }
@@ -137,6 +142,15 @@ class Session extends Component {
       tap(data => { self.setState(data) })
     ).subscribe();
 
+    synthVoices().pipe(
+      tap(voices => {
+        const indices = _.range(0, voices.length).map(i => i.toString());
+        const atcVoice = choose(indices);
+        const flightVoices = _.filter(indices, i => i !== atcVoice);
+        self.setState({ atcVoice, flightVoices })
+      })
+    ).subscribe();
+
     this.clock.pipe(
       tap(this.handleClock)
     ).subscribe()
@@ -147,9 +161,9 @@ class Session extends Component {
    * @param {*} cmd 
    */
   handleCommand(cmd) {
-    const { session, map, level } = this.state;
+    const { session, map, level, flightVoices } = this.state;
     const sim = new TrafficSimulator(session, {
-      map, level,
+      map, level, flightVoices,
       onEvent: this.handleSimulationEvent
     });
     const next = sim.processCommand(cmd).session;
@@ -162,11 +176,12 @@ class Session extends Component {
    * @param {*} event 
    */
   handleSimulationEvent(event) {
-    const { reader, logger, muted } = this.state;
-    const clips = new AudioBuilder(event).toAudio().clips;
-    clips.forEach(clip => logger.sendMessage(toMessage(clip, event.map.voice)));
+    const { logger, muted, atcVoice } = this.state;
     if (!muted) {
-      this.setState({ reader: reader.say(clips.flatMap(toMp3)) });
+      const clips = new AudioBuilder(event, atcVoice).build();
+      synthSay(clips).subscribe();
+      const msgs = new MessageBuilder(event, atcVoice).build();
+      msgs.forEach(logger.sendMessage);
     }
   }
 
@@ -175,13 +190,13 @@ class Session extends Component {
    * @param {*} t 
    */
   handleClock(t) {
-    const { session, map, level, speed, ts } = this.state;
+    const { session, map, level, speed, ts, flightVoices } = this.state;
 
     const ts1 = ts + CLOCK_INTERVAL * speed / 1000;
     if (ts1 >= RADAR_INTERVAL) {
 
       var sim = new TrafficSimulator(session, {
-        map, level, dt: SIM_INTERVAL,
+        map, level, dt: SIM_INTERVAL, flightVoices,
         onEvent: this.handleSimulationEvent
       });
       for (var ts2 = ts1; ts2 >= SIM_INTERVAL; ts2 -= SIM_INTERVAL) {
@@ -194,29 +209,12 @@ class Session extends Component {
     }
   }
 
-  handleAudioEnded() {
-    this.setState({ reader: this.state.reader.next() })
-  }
-
-  handleAudioError() {
-    const { reader } = this.state;
-    console.error('missing src', reader.src);
-    this.setState({ reader: reader.next() })
-  }
-
   /**
    * 
    */
   handleMuted() {
-    const { muted } = this.state;
-    const newState = muted
-      ? {
-        muted: false
-      } : {
-        muted: true,
-        reader: new Reader()
-      };
-    this.setState(newState);
+    const muted = !this.state.muted;
+    this.setState({ muted });
   }
 
   /**
@@ -231,8 +229,7 @@ class Session extends Component {
    * 
    */
   render() {
-    const { session, map, nodeMap, level, logger, reader, muted, speed } = this.state;
-    const src = reader.src;
+    const { session, map, nodeMap, level, logger, muted, speed } = this.state;
     if (!nodeMap || !session || !map || !level) {
       return (<div></div>);
     } else {
@@ -255,11 +252,6 @@ class Session extends Component {
               </Col>
             </Row>
           </Container>
-          <ReactAudioPlayer autoPlay
-            src={src}
-            muted={muted}
-            onEnded={this.handleAudioEnded}
-            onError={this.handleAudioError} />
         </Container >
       );
     }

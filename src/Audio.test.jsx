@@ -1,59 +1,49 @@
 import _ from 'lodash';
-import { ATC_VOICE, FLIGHT_VOICE, say, sayFL, spell, sayAtcSign, toMp3 } from './modules/Audio';
+import { ATC_VOICE, FLIGHT_VOICE, say, sayFL, spell, toMp3, sayId } from './modules/Audio';
 
-describe('Say words', () => {
-
-  test('atc words', () => {
-    const result = toMp3('atc a b');
-    expect(result).toEqual([
-      '/atc/audio/atc/a.mp3',
-      '/atc/audio/atc/b.mp3'
-    ]);
+describe('Say id', () => {
+  test('09R', () => {
+    const result = sayId('09R');
+    expect(result).toBe('runway zero niner right');
   });
 
-  test('flight words', () => {
-    const result = toMp3('flight a b');
-    expect(result).toEqual([
-      '/atc/audio/flight/a.mp3',
-      '/atc/audio/flight/b.mp3'
-    ]);
+  test('12C', () => {
+    const result = sayId('12C');
+    expect(result).toBe('runway 1 2 center');
   });
 
-  test('atc words', () => {
-    const result = toMp3('atc ab');
-    expect(result).toEqual([
-      '/atc/audio/atc/ab.mp3',
-    ]);
+  test('34C', () => {
+    const result = sayId('34L');
+    expect(result).toBe('runway 3 4 left');
   });
 
+  test('15', () => {
+    const result = sayId('15');
+    expect(result).toBe('runway 1 5');
+  });
+
+  test('VIL', () => {
+    const result = sayId('VIL');
+    expect(result).toBe('victor india lima');
+  });
 });
 
+
 describe('Spell', () => {
-
-  test('ab1', () => {
-    const result = spell('ab1');
-    expect(result).toBe('a b 1');
-  });
-
-  test('AB1', () => {
-    const result = spell('AB1');
-    expect(result).toEqual('a b 1');
-  });
-
-  test('AA1', () => {
-    const result = spell('AA1');
-    expect(result).toEqual('a pause a 1');
+  test('abcdefghijklmnopqrstuvwxyz0123456789', () => {
+    const result = spell('abcdefghijklmnopqrstuvwxyz0123456789');
+    expect(result).toBe('alpha bravo charlie delta echo fox trot golf hotel india juliet kilo lima mike november oscar papa quebeck romeo sierra tango uniform victor whiskey x-ray yenkee zulu zero 1 2 3 4 5 6 7 8 niner');
   });
 });
 
 describe('Say FL', () => {
   test('27000', () => {
     const result = sayFL(27000);
-    expect(result).toBe('fl280');
+    expect(result).toBe('flight level 2 7 zero');
   });
 
   test('27050', () => {
     const result = sayFL(27050);
-    expect(result).toBe('fl280');
+    expect(result).toBe('flight level 2 7 1');
   });
 });

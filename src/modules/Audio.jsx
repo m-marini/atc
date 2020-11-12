@@ -1,18 +1,189 @@
 import _ from 'lodash';
+import { empty, interval, of } from 'rxjs';
+import { filter, first, map, tap } from 'rxjs/operators';
 import { sprintf } from 'sprintf-js';
 import { EVENT_TYPES, MESSAGE_TYPES } from './Events';
 import { FLIGHT_STATES } from './Flight';
 import { NODE_TYPES } from './TrafficSimulator';
 
-const PAUSE = 'pause';
+// prefix atc, flight, readback, op
+const MESSAGE_TEMPLATES = {
+    'rightLeave': [
+        'flight leaving controlled zone via $to',
+        'atc cleared to $to departure'
+    ],
+    'rightLand': [
+        'atc $rwy vacated',
+        'flight leaving frequency',
+        'atc good day'
+    ],
+    'hold': [
+        'atc hold at current position',
+        'readback holding at current position'
+    ],
+    'holdAt': [
+        'atc hold at $at',
+        'readback holding at $at'
+    ],
+    'clearedToLand': [
+        'atc cleared to land $cmdTo',
+        'readback cleared to land $cmdTo'
+    ],
+    'flyTo': [
+        'atc fly to $at',
+        'readback flying to $at'
+    ],
+    'flyToVia': [
+        'atc fly to $turnTo via $at',
+        'readback flying to $turnTo via $at'
+    ],
+    'clearedToTakeOff': [
+        'atc $from cleared to take off climb to $toAlt',
+        'readback $from cleared to take off climbing to $toAlt'
+    ],
+    'atcGoAround': [
+        'atc pull up and go around climb to $toAlt',
+        'readback pulling up and going around climbing to $toAlt'
+    ],
+    'climbTo': [
+        'atc climb to $toAlt',
+        'readback climbing to $toAlt'
+    ],
+    'descendTo': [
+        'atc descend to $toAlt',
+        'readback descending to $toAlt'
+    ],
+    'maintainFlightLavel': [
+        'atc maintain $toAlt',
+        'readback maintaining $toAlt'
+    ],
+    'collision': [
+        'flight mayday mayday mayday collision'
+    ],
+    'goAroundApproach': [
+        'flight going around missing approach',
+        'atc climb to $toAlt',
+        'readback climbing to $toAlt'
+    ],
+    'goAroundRunway': [
+        'flight going around missing runway',
+        'atc climb to $toAlt',
+        'readback climbing to $toAlt'
+    ],
+    'wrongLeave': [
+        'flight leaving controlled zone via $exit missing departure',
+        'atc roger'
+    ],
+    'wrongLand': [
+        'atc $rwy vacated',
+        'flight wrong arrival runway leaving frequency',
+        'atc good day'
+    ],
+    'outOfArea': [
+        'flight leaving controlled zone missing departure',
+        'atc roger'
+    ],
+    'flyingTo': [
+        'flight flying to $at',
+        'atc cleared to $at'
+    ],
+    'passing': [
+        'flight passing $alt',
+        'atc roger'
+    ],
+    'unableToHold': [
+        'atc hold at current position',
+        'flight negative holding short $from',
+        'atc roger'
+    ],
+    'unableToHoldAt': [
+        'atc hold at $when',
+        'flight negative holding short $from',
+        'atc roger'
+    ],
+    'unableToLandGround': [
+        'atc cleared to land $cmdTo',
+        'flight negative holding short $from',
+        'atc roger'
+    ],
+    'unableToLandDistance': [
+        'atc cleared to land $cmdTo',
+        'flight negative wrong distance',
+        'atc roger'
+    ],
+    'unableToLandAltitude': [
+        'atc cleared to land $cmdTo',
+        'flight negative wrong flight level',
+        'atc roger'
+    ],
+    'unableToFlyTo': [
+        'atc fly to $cmdTo',
+        'flight negative holding short $from',
+        'atc roger'
+    ],
+    'unableToFlyToVia': [
+        'atc fly to $cmdTo via $when',
+        'flight negative holding short $from',
+        'atc roger'
+    ],
+    'unknownFlight': [
+        'op flight $cmdFlight not in area'
+    ],
+};
+
+const SPELLING = {
+    a: 'alpha',
+    b: 'bravo',
+    c: 'charlie',
+    d: 'delta',
+    e: 'echo',
+    f: 'fox trot',
+    g: 'golf',
+    h: 'hotel',
+    i: 'india',
+    j: 'juliet',
+    k: 'kilo',
+    l: 'lima',
+    m: 'mike',
+    n: 'november',
+    o: 'oscar',
+    p: 'papa',
+    q: 'quebeck',
+    r: 'romeo',
+    s: 'sierra',
+    t: 'tango',
+    u: 'uniform',
+    v: 'victor',
+    x: 'x-ray',
+    w: 'whiskey',
+    y: 'yenkee',
+    z: 'zulu',
+    '0': 'zero',
+    '9': 'niner'
+};
+
+const RWY_SUFFIX = {
+    r: 'right',
+    c: 'center',
+    l: 'left'
+};
 
 /**
  * 
  * @param {*} alt 
  */
 function sayFL(alt) {
-    const fl = Math.round(alt / 4000) * 40;
-    return sprintf('fl%03d', fl);
+    const fl = Math.round(alt / 100);
+    return 'flight level ' + spell(sprintf('%03d', fl));
+}
+
+/**
+ * 
+ * @param {*} alt 
+ */
+function showFL(alt) {
+    const fl = Math.round(alt / 100);
+    return sprintf('FL%03d', fl);
 }
 
 /**
@@ -21,39 +192,47 @@ function sayFL(alt) {
  */
 function spell(word) {
     const x = word.toLowerCase();
-    const y = x.substring(1);
-    const z = _.zipWith(Array.from(x), Array.from(y), (a, b) =>
-        a === b ? (a + ' ' + PAUSE) : a
-    ).join(' ');
+    const z = _(x).map(a => {
+        const sp = SPELLING[a];
+        return sp !== undefined ? sp : a;
+    }).join(' ');
     return z;
-}
-
-function sayHdg(hdg) {
-    return `heading ${spell(sprintf('%03d', hdg))}`;
 }
 
 /**
  * 
- * @param {*} voice 
- * @param {*} words 
+ * @param {id} id 
  */
-function toMp3(words) {
-    const wl = words.replace(/\s+/gi, ' ').toLowerCase().split(' ');
-    const voice = wl[0];
-    return _(wl)
-        .drop(1)
-        .reject(tag => tag === '')
-        .map(word =>
-            `${process.env.REACT_APP_BASENAME}/audio/${voice}/${word}.mp3`
-        ).value();
+function sayId(id) {
+    const m = /(\d.)(r|l|c)?/g.exec(id.toLowerCase());
+    if (m && m.length === 3) {
+        return !!m[2]
+            ? `runway ${spell(m[1])} ${RWY_SUFFIX[m[2]]}`
+            : `runway ${spell(m[1])}`
+
+    } else {
+        return spell(id);
+    }
 }
 
+/**
+ * 
+ * @param {id} id 
+ */
+function showId(id) {
+    const m = /(\d.)(r|l|c)?/g.exec(id.toLowerCase());
+    if (m && m.length === 3) {
+        return `runway ${id}`
+    } else {
+        return id;
+    }
+}
 
 class AudioBuilder {
-    constructor(event, clips = []) {
+    constructor(event, atcVoice) {
         _.bindAll(this);
         this._event = event;
-        this._clips = clips;
+        this._atcVoice = atcVoice;
     }
 
     /**
@@ -64,15 +243,14 @@ class AudioBuilder {
     /**
      * 
      */
-    get clips() { return this._clips; }
+    get atcVoice() { return this._atcVoice; }
 
     /**
      * 
-     * @param {*} voice 
      * @param {*} text 
      */
     say(text) {
-        const newClip = text.split(' ').map(clip => {
+        return text.split(' ').map(clip => {
             if (clip.startsWith('$')) {
                 const fn = clip.substring(1);
                 return this[fn]();
@@ -80,27 +258,26 @@ class AudioBuilder {
                 return clip;
             }
         }).join(' ');
-        return new AudioBuilder(this.event, _.concat(this.clips, [newClip]));
     }
 
     to() {
-        return this.event.flight.to;
+        return sayId(this.event.flight.to);
     }
 
     at() {
-        return this.event.flight.at;
+        return sayId(this.event.flight.at);
     }
 
     rwy() {
-        return this.event.flight.rwy;
+        return sayId(this.event.flight.rwy);
     }
 
     from() {
-        return this.event.flight.from;
+        return sayId(this.event.flight.from);
     }
 
     turnTo() {
-        return this.event.flight.turnTo;
+        return sayId(this.event.flight.turnTo);
     }
 
     flightId() {
@@ -108,7 +285,7 @@ class AudioBuilder {
     }
 
     atc() {
-        return this.event.map.id + 'atc';
+        return this.event.map.name;
     }
 
     alt() {
@@ -119,20 +296,16 @@ class AudioBuilder {
         return sayFL(this.event.flight.toAlt);
     }
 
-    hdg() {
-        return sayHdg(this.event.flight.hdg);
-    }
-
     cmdTo() {
-        return this.event.cmd.to;
+        return sayId(this.event.cmd.to);
     }
 
     when() {
-        return this.event.cmd.when;
+        return sayId(this.event.cmd.when);
     }
 
     cmdRwy() {
-        return this.event.cmd.rwy;
+        return sayId(this.event.cmd.rwy);
     }
 
     cmdFlight() {
@@ -140,236 +313,72 @@ class AudioBuilder {
     }
 
     exit() {
-        return this.event.flight.exit;
+        return sayId(this.event.flight.exit);
     }
 
+    /**
+     * 
+     * @param {*} msg 
+     */
     flightAudio(msg) {
-        return this.say(`${this.event.flight.voice} pause $atc $flightId ${msg}`);
+        return this.event.flight.voice + ' ' + this.say(`$atc $flightId ${msg}`);
     }
 
+    /**
+     * 
+     * @param {*} msg 
+     */
     atcAudio(msg) {
-        return this.say(`${this.event.map.voice} pause $flightId $atc ${msg}`);
+        return this.atcVoice + ' ' + this.say(`$flightId $atc ${msg}`)
     }
 
+    /**
+     * 
+     * @param {*} msg 
+     */
+    opAudio(msg) {
+        return `${this.atcVoice} operator ${this.say(`$atc ${msg}`)}`;
+    }
+
+    /**
+     * 
+     * @param {*} msg 
+     */
     readbackAudio(msg) {
-        return this.say(`${this.event.flight.voice} pause ${msg} pause1 $flightId`);
+        return this.event.flight.voice + ' ' + this.say(`${msg} $flightId`);
     }
 
-    toAudio() {
-        switch (this.event.type) {
-            case EVENT_TYPES.ENTER:
-                return this.enter();
-            case EVENT_TYPES.CLIMB_TO:
-                return this.climb();
-            case EVENT_TYPES.DESCEND_TO:
-                return this.descend();
-            case EVENT_TYPES.MAINTAIN_FLIGHT_LEVEL:
-                return this.maintain();
-            case EVENT_TYPES.CLEARED_TO_TAKE_OFF:
-                return this.clearToTakeoff();
-            case EVENT_TYPES.PASSING:
-                return this.passing();
-            case EVENT_TYPES.FLY_TO:
-                return this.flyTo();
-            case EVENT_TYPES.FLY_TO_VIA:
-                return this.flyToVia();
-            case EVENT_TYPES.FLYING_TO:
-                return this.flyingTo();
-            case EVENT_TYPES.UNABLE_TO_FLY_TO:
-                return this.unableFlyTo();
-            case EVENT_TYPES.UNABLE_TO_FLY_TO_VIA:
-                return this.unableFlyToVia();
-            case EVENT_TYPES.CLEARED_TO_LAND:
-                return this.clearedToLand();
-            case EVENT_TYPES.UNABLE_TO_LAND_GROUND:
-                return this.unableToLandGround();
-            case EVENT_TYPES.UNABLE_TO_LAND_DISTANCE:
-                return this.unableToLandDistance();
-            case EVENT_TYPES.UNABLE_TO_LAND_ALTITUDE:
-                return this.unableToLandAlt();
-            case EVENT_TYPES.ATC_GO_AROUND:
-                return this.atcGoAround();
-            case EVENT_TYPES.RIGHT_LAND:
-                return this.rightLand();
-            case EVENT_TYPES.WRONG_LAND:
-                return this.wrongLand();
-            case EVENT_TYPES.GO_AROUND_APPROACH:
-                return this.goingAroundApproach();
-            case EVENT_TYPES.GO_AROUND_RUNWAY:
-                return this.goingAroundRwy();
-            case EVENT_TYPES.HOLD:
-                return this.hold();
-            case EVENT_TYPES.HOLD_AT:
-                return this.holdAt();
-            case EVENT_TYPES.UNABLE_TO_HOLD:
-                return this.unableToHold();
-            case EVENT_TYPES.UNABLE_TO_HOLD_AT:
-                return this.unableToHoldAt();
-            case EVENT_TYPES.RIGHT_LEAVE:
-                return this.rightLeave();
-            case EVENT_TYPES.WRONG_LEAVE:
-                return this.wrongLeave();
-            case EVENT_TYPES.OUT_OF_AREA:
-                return this.outOfArea();
-            case EVENT_TYPES.COLLISION:
-                return this.collision();
-            case EVENT_TYPES.UNKWOWN_FLIGHT:
-                return this.unknownFlight();
-            default:
-                return this;
+    /**
+     * 
+     * @param {*} messages 
+     */
+    parse(messages) {
+        return messages.map(tmpl => {
+            const toks = _(tmpl.split(' '));
+            const mode = toks.head();
+            const msg = toks.drop(1).join(' ');
+            switch (mode) {
+                case 'atc':
+                    return this.atcAudio(msg);
+                case 'flight':
+                    return this.flightAudio(msg);
+                case 'readback':
+                    return this.readbackAudio(msg);
+                default:
+                    return this.opAudio(msg);
+            };
+        });
+    }
+
+    build() {
+        if (this.event.type === EVENT_TYPES.ENTER) {
+            return this.enter();
+        } else {
+            const tmpl = MESSAGE_TEMPLATES[this.event.type];
+            return !!tmpl ? this.parse(tmpl) : '';
         }
     }
 
-    climb() {
-        return this.atcAudio('climbto $toAlt')
-            .readbackAudio('climbing $toAlt');
-    }
-
-    descend() {
-        return this.atcAudio('descendto $toAlt')
-            .readbackAudio('descending $toAlt');
-    }
-
-    maintain() {
-        return this.atcAudio('maintain $toAlt')
-            .readbackAudio('maintaining $toAlt');
-    }
-
-    clearToTakeoff() {
-        return this.atcAudio('$from clearedtotakeoff $toAlt')
-            .readbackAudio('$from clearedtotakeoffclimbing $toAlt');
-    }
-
-    passing() {
-        return this.flightAudio('passing $alt')
-            .atcAudio('roger');
-    }
-
-    flyTo() {
-        return this.atcAudio('flyto $at')
-            .readbackAudio('flyingto $at');
-    }
-
-    flyToVia() {
-        return this.atcAudio('flyto $turnTo via $at')
-            .readbackAudio('flyingto $turnTo via $at');
-    }
-
-    flyingTo() {
-        return this.flightAudio('flyingto $at')
-            .atcAudio('clearedto $at');
-    }
-
-    unableFlyTo() {
-        return this.atcAudio('flyto $cmdTo')
-            .flightAudio('negholdingshort $from')
-            .atcAudio('roger');
-    }
-
-    unableFlyToVia() {
-        return this.atcAudio('flyto $cmdTo via $when')
-            .flightAudio('negholdingshort $from')
-            .atcAudio('roger');
-    }
-
-    clearedToLand() {
-        return this.atcAudio('clearedtoland $rwy')
-            .readbackAudio('clearedtoland $rwy');
-    }
-
-    unableToLandGround() {
-        return this.atcAudio('clearedtoland $cmdRwy')
-            .flightAudio('negholdingshort $from')
-            .atcAudio('roger');
-    }
-
-    unableToLandDistance() {
-        return this.atcAudio('clearedtoland $cmdRwy')
-            .flightAudio('negdistance')
-            .atcAudio('roger')
-    }
-
-    unableToLandAlt() {
-        return this.atcAudio('clearedtoland $cmdRwy')
-            .flightAudio('negfl')
-            .atcAudio('roger')
-    }
-
-    atcGoAround() {
-        return this.atcAudio('goaround $toAlt')
-            .readbackAudio('goingaround $toAlt');
-    }
-
-    rightLand() {
-        return this.atcAudio('$rwy vacated')
-            .flightAudio('leavingfrequency')
-            .atcAudio('goodday');
-
-    }
-
-    wrongLand() {
-        return this.atcAudio('$rwy vacated')
-            .flightAudio('wrongrunway')
-            .atcAudio('goodday');
-
-    }
-
-    goingAroundApproach() {
-        return this.flightAudio('goingaroundapr')
-            .atcAudio('climbto $toAlt')
-            .readbackAudio('climbing $toAlt');
-    }
-
-    goingAroundRwy() {
-        return this.flightAudio('goingaroundrwy')
-            .atcAudio('climbto $toAlt')
-            .readbackAudio('climbing $toAlt');
-    }
-
-    hold() {
-        return this.atcAudio('holdpos')
-            .readbackAudio('holdingpos');
-    }
-
-    holdAt() {
-        return this.atcAudio('holdat $at')
-            .readbackAudio('holdingat $at');
-    }
-
-    unableToHold() {
-        return this.atcAudio('holdpos')
-            .flightAudio('negholdingshort $from')
-            .atcAudio('roger');
-    }
-
-    unableToHoldAt() {
-        return this.atcAudio('holdat $when')
-            .flightAudio('negholdingshort $from')
-            .atcAudio('roger');
-    }
-
-    rightLeave() {
-        return this.flightAudio('leavingvia $to')
-            .atcAudio('clearedto $to departure');
-    }
-
-    wrongLeave() {
-        return this.flightAudio('leavingvia $exit missingdep')
-            .atcAudio('roger');
-    }
-
-    outOfArea() {
-        return this.flightAudio('leaving missingdep')
-            .atcAudio('roger');
-    }
-
-    collision() {
-        return this.flightAudio('collision');
-    }
-
-    unknownFlight() {
-        return this.say(`${this.event.map.voice} pause operator $cmdFlight notinarea`);
-    }
 
     enter() {
         const { flight, map } = this.event;
@@ -377,110 +386,200 @@ class AudioBuilder {
         const toNode = map.nodes[to];
         if (status === FLIGHT_STATES.WAITING_FOR_TAKEOFF) {
             if (toNode.type === NODE_TYPES.RUNWAY) {
-                return this.flightAudio('holdingshort $from readyfordepartureto $to')
-                    .atcAudio('holdshort $from')
-                    .readbackAudio('holdingshort $from');
+                return this.parse([
+                    'flight holding short $from ready for departure to $to',
+                    'atc hold short $from',
+                    'readback holding short $from'
+                ]);
             } else {
-                return this.flightAudio('holdingshort $from readyfordeparturevia $to')
-                    .atcAudio('holdshort $from')
-                    .readbackAudio('holdingshort $from');
+                return this.parse([
+                    'flight holding short $from ready for departure via $to',
+                    'atc hold short $from',
+                    'readback holding short $from'
+                ]);
             }
         } else if (toNode.type === NODE_TYPES.RUNWAY) {
-            return this.flightAudio('enter $from to $to')
-                .atcAudio('roger');
+            return this.parse([
+                'flight enter control zone via $from to $to',
+                'atc roger'
+            ]);
         } else {
-            return this.flightAudio('enter $from leavevia $to')
-                .atcAudio('roger');
+            return this.parse([
+                'flight enter control zone via $from leave via $to',
+                'atc roger'
+            ]);
         }
     }
 }
 
-const MESSAGES = {
-    LONatc: 'London ATC',
-    LINatc: 'Milan ATC',
-    FFMatc: 'Frankfurt ATC',
-    PARatc: 'Paris ATC',
-    heading: 'hdg',
-    clearedto: 'cleared to',
-    clearedtoland: 'cleared to land',
-    via: 'via',
-    holdingshort: 'holding short',
-    readyfordepartureto: 'ready for departure to',
-    readyfordeparturevia: 'ready for departure via',
-    enter: 'enter control zone via',
-    maintaining: 'maintaining',
-    at: 'at',
-    to: 'to',
-    leavevia: 'leave via',
-    climbing: 'climbing to',
-    descending: 'descending to',
-    clearedtotakeoffclimbing: 'cleared to take off climbing to',
-    passing: 'passing',
-    flyingto: 'flying to',
-    negholdingshort: 'negative holding short',
-    negdistance: 'negative wrong distance',
-    negfl: 'negative wrong flight level',
-    goingaround: 'pulling up and going around climbing to',
-    leavingfrequency: 'leaving frequency',
-    wrongRunway: 'wrong arrival runway leaving frequency',
-    goingaroundapr: 'going around missing approach',
-    goingaroundrwy: 'going around missing runway',
-    holdingpos: 'holding at current position',
-    holdingat: 'holding at',
-    leavingvia: 'leaving controlled zone via',
-    missingdep: 'missing depature',
-    leaving: 'leaving controlled zone',
-    collision: 'mayday mayday mayday collision',
-    holdshort: 'hold short',
-    maintain: 'maintain',
-    climbto: 'climb to',
-    descendto: 'descend to',
-    clearedtotakeoff: 'cleared to take off climb to',
-    flyto: 'fly to',
-    roger: 'roger',
-    goaround: 'pull up and go around climb to',
-    vacated: 'vacated',
-    goodday: 'goodday',
-    holdpos: 'hold at current position',
-    holdat: 'hold at',
-    departure: 'departure',
-    operator: 'operator',
-    flight: 'flight',
-    notinarea: 'not in area',
-    pause1: ' '
-};
+class MessageBuilder extends AudioBuilder {
+    /**
+     * 
+     * @param {*} text 
+     */
+    say(text) {
+        return text.split(' ').map(clip => {
+            if (clip.startsWith('$')) {
+                const fn = clip.substring(1);
+                return this[fn]();
+            } else {
+                return clip;
+            }
+        }).join(' ');
+    }
+
+    to() {
+        return showId(this.event.flight.to);
+    }
+
+    at() {
+        return showId(this.event.flight.at);
+    }
+
+    rwy() {
+        return showId(this.event.flight.rwy);
+    }
+
+    from() {
+        return showId(this.event.flight.from);
+    }
+
+    turnTo() {
+        return showId(this.event.flight.turnTo);
+    }
+
+    flightId() {
+        return this.event.flight.id;
+    }
+
+    atc() {
+        return this.event.map.name;
+    }
+
+    alt() {
+        return showFL(this.event.flight.alt);
+    }
+
+    toAlt() {
+        return showFL(this.event.flight.toAlt);
+    }
+
+    cmdTo() {
+        return showId(this.event.cmd.to);
+    }
+
+    when() {
+        return showId(this.event.cmd.when);
+    }
+
+    cmdRwy() {
+        return showId(this.event.cmd.rwy);
+    }
+
+    cmdFlight() {
+        return this.event.cmd.flight;
+    }
+
+    exit() {
+        return showId(this.event.flight.exit);
+    }
+
+    /**
+     * 
+     * @param {*} msg 
+     */
+    flightAudio(msg) {
+        return {
+            type: MESSAGE_TYPES.FLIGHT,
+            msg: this.say(`$atc $flightId ${msg}`)
+        };
+    }
+
+    /**
+     * 
+     * @param {*} msg 
+     */
+    atcAudio(msg) {
+        return {
+            type: MESSAGE_TYPES.ATC,
+            msg: this.say(`$flightId $atc ${msg}`)
+        };
+    }
+
+    /**
+     * 
+     * @param {*} msg 
+     */
+    opAudio(msg) {
+        return {
+            type: MESSAGE_TYPES.ATC,
+            msg: this.say(`$atc ${msg} `)
+        };
+    }
+
+    /**
+     * 
+     * @param {*} msg 
+     */
+    readbackAudio(msg) {
+        return {
+            type: MESSAGE_TYPES.READBACK,
+            msg: this.say(`${msg} $flightId`)
+        }
+    }
+
+}
+
+function filterEng(voices) {
+    return voices.filter(voice => voice.lang.toLowerCase().startsWith('en'));
+}
 
 /**
- * 
- * @param {*} clip 
- * @param {*} atcVoice 
+ * Returns the single observable with the list of voices
  */
-function toMessage(clip, atcVoice) {
-    const tags = clip.split(' ');
-    const msg = _(tags)
-        .drop(1)
-        .reject(tag => tag === PAUSE)
-        .map(tag => {
-            const msg = MESSAGES[tag];
-            if (msg !== undefined) {
-                return ' ' + msg + ' ';
-            }
-            if (/^[A-Za-z\d]$/.test(tag)) {
-                return tag.toUpperCase();
-            }
-            if (/^\d{2}[LCR]?$/.test(tag)) {
-                return ` runway ${tag} `;
-            }
-            if (/^fl\d{3}$/.test(tag)) {
-                return ` ${tag.toUpperCase()} `;
-            }
-            return ' ' + tag + ' ';
-        })
-        .join('').trim().replace(/\s+/gi, ' ');
-    return {
-        type: tags[0] === atcVoice ? MESSAGE_TYPES.ATC : MESSAGE_TYPES.FLIGHT,
-        msg
+function synthVoices() {
+    const synth = window.speechSynthesis;
+    if (synth) {
+        const voices = filterEng(synth.getVoices());
+        return voices.length > 0
+            ? of(voices)
+            : interval(10).pipe(
+                map(() => filterEng(synth.getVoices())),
+                filter(v => v.length > 0),
+                first()
+            );
+    } else {
+        return of([]);
     }
 }
 
-export { MESSAGES, AudioBuilder, toMp3, sayFL, spell, sayHdg, toMessage };
+/**
+ * Returns the single observable that synthetizes a list of commands or empty observable if cannot synthetize
+ * @param {*} cmds the commad list 'voiceIndex text'
+ */
+function synthSay(cmds) {
+    const synth = window.speechSynthesis;
+    if (synth) {
+        return synthVoices().pipe(
+            tap(voices => {
+                cmds.forEach(cmd => {
+                    const m = /(\w)\b(.*)/.exec(cmd);
+                    if (m.length === 3) {
+                        const voice = voices[m[1]];
+                        const msg = m[2];
+                        if (voice) {
+                            const utt = new SpeechSynthesisUtterance(msg);
+                            utt.voice = voice;
+                            // utt.rate = 1.2;
+                            synth.speak(utt);
+                        }
+                    }
+                })
+            })
+        );
+    } else {
+        return empty();
+    }
+}
+
+export { AudioBuilder, MessageBuilder, sayFL, spell, sayId, synthVoices, synthSay };

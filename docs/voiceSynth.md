@@ -4,6 +4,12 @@
 
 http://www.fromtexttospeech.com/
 
+Fliters:
+
+high pass 300Hz
+low pass 3400Hz
+normalize -1 db
+
 ## Common audio file
 
 - a-z

@@ -51,15 +51,14 @@ const TRAFFIC_SIM_DEFAULTS = {
             speed360: 280,      // nmh
             vspeed: 700         // fpm
         }
-    }
+    },
+    flightVoices: []
 };
 
 // Descend speed 1500 feet/min = 25 feet/s
 // Descend speed 700 feet/min = 12 feet/s
 // Descent speed for landing slope from FL040 at 173 Knots = 173/60/1852*0.3*tan(3DEG) = 932 feet/min = 15 feet/s
 // Descent speed for landing slope from FL040 at 102 Knots = 80/60/1852*0.3*tan(3DEG) = 431 feet/min = 7 feet/s
-
-const VOICES = ['george', 'john'];
 
 /**
  * 
@@ -363,8 +362,10 @@ class TrafficSimulator {
         const { flights, t, noFlights } = this.session;
         //Check for new flight eligibility
         const max = maxPlane - _.size(flights);
-        const n = Math.min(rndPoisson(dt * flightFreq / 3600), max);
-        if (n > 0 || (noFlights === 0 && t >= MAX_INITIAL_IDLE_INTERVAL)) {
+        const n = Math.max(
+            Math.min(rndPoisson(dt * flightFreq / 3600), max),
+            (noFlights === 0 && t >= MAX_INITIAL_IDLE_INTERVAL) ? 1 : 0);
+        if (n > 0) {
             var tmp = this;
             for (var i = 0; i < n; i++) {
                 tmp = tmp.createFlight();
@@ -408,7 +409,7 @@ class TrafficSimulator {
     createFlight() {
         const candidates = this.createEntryCandidates();
         if (candidates.length > 0) {
-            const { jetProb, entryAlt, flightTempl } = this.props;
+            const { jetProb, entryAlt, flightTempl, flightVoices } = this.props;
             const { noFlights, t, flights } = this.session;
             const entry = choose(candidates);
             const to = choose(this.createExitCandidates());
@@ -420,9 +421,7 @@ class TrafficSimulator {
             const alt = entry.type === NODE_TYPES.RUNWAY ? 0 : entryAlt;
             const status = entry.type === NODE_TYPES.RUNWAY ? FLIGHT_STATES.WAITING_FOR_TAKEOFF : FLIGHT_STATES.FLYING;
             const speed = entry.type === NODE_TYPES.RUNWAY ? 0 : flightSpeed(alt, flightTempl[type]);
-            const atcVoice = this.props.map.voice;
-            const voices = VOICES.filter(v => v !== atcVoice);
-            const voice = choose(voices);
+            const voice = choose(flightVoices);
             const flight = {
                 id,
                 type,
@@ -452,4 +451,4 @@ class TrafficSimulator {
     }
 }
 
-export { TrafficSimulator, NODE_TYPES, FLIGHT_TYPES, FLIGHT_STATES, COMMAND_TYPES, COMMAND_CONDITIONS, TRAFFIC_SIM_DEFAULTS };
+export { TrafficSimulator, NODE_TYPES, FLIGHT_TYPES, FLIGHT_STATES, COMMAND_TYPES, COMMAND_CONDITIONS, TRAFFIC_SIM_DEFAULTS, choose };
