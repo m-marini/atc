@@ -19,7 +19,7 @@ const EVENT_TYPES = {
     ATC_GO_AROUND: 'atcGoAround',
     CLIMB_TO: 'climbTo',
     DESCEND_TO: 'descendTo',
-    MAINTAIN_FLIGHT_LEVEL: 'maintainFLightLavel',
+    MAINTAIN_FLIGHT_LEVEL: 'maintainFlightLavel',
 
     COLLISION: 'collision',
     GO_AROUND_APPROACH: 'goAroundApproach',

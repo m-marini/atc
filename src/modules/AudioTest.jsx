@@ -1,35 +1,34 @@
 import React, { Component } from 'react';
 import { Alert, Button, Card, Container, Form, FormGroup } from 'react-bootstrap';
-import Reader from './Reader';
-import ReactAudioPlayer from 'react-audio-player';
 import _ from 'lodash';
-import { toMp3 } from './Audio';
-
-const VOICES = [
-    'george',
-    'john',
-    'marco'
-];
+import { synthSay, synthVoices } from './Audio';
+import { tap } from 'rxjs/operators';
 
 class AudioTest extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            voice: 'george',
-            text: 'lonatc goodday',
-            reader: new Reader(),
+            voice: '0',
+            voices: [],
+            text: 'London ATC good day',
             errors: []
         };
         _.bindAll(this, [
-            'handlePlay', 'handleText', 'handleAudioEnded', 'handleAudioError',
+            'handlePlay', 'handleText',
             'handleCloseAlert', 'handleVoice'
         ]);
     }
 
+    componentDidMount() {
+        synthVoices().pipe(
+            tap(voices => this.setState({ voices }))
+        ).subscribe();
+    }
+
     handlePlay() {
-        const { reader, voice, text } = this.state;
-        this.setState({ reader: reader.say(toMp3(voice + ' ' + text)) });
+        const { voice, text } = this.state;
+        synthSay([voice + ' ' + text]).subscribe();
     }
 
     handleText(ev) {
@@ -40,28 +39,14 @@ class AudioTest extends Component {
         this.setState({ voice: ev.target.value })
     }
 
-    handleAudioEnded(ev) {
-        this.setState({ reader: this.state.reader.next() })
-    }
-
     handleCloseAlert(i) {
         const { errors } = this.state;
         errors.splice(i, 1);
         this.setState({ errors });
     }
 
-    handleAudioError(ev) {
-        const { reader, errors } = this.state;
-        errors.push(`Missing src ${reader.src}`);
-        this.setState({
-            reader: reader.next(),
-            errors
-        })
-    }
-
     render() {
-        const { voice, text, reader, errors } = this.state;
-        const src = reader.src;
+        const { voice, text, errors, voices } = this.state;
         return (
             <Container>
                 <Card>
@@ -86,9 +71,9 @@ class AudioTest extends Component {
                                 <Form.Control as="select" value={voice}
                                     onChange={this.handleVoice} >
                                     {
-                                        VOICES.map(voice =>
+                                        voices.map((voice, i) =>
                                             (
-                                                <option key={voice}>{voice}</option>
+                                                <option key={i} value={i}>{voice.name}</option>
                                             )
                                         )
                                     }
@@ -99,18 +84,10 @@ class AudioTest extends Component {
                                 <Form.Control type="text" placeholder="voice text" value={text}
                                     onChange={this.handleText} />
                             </FormGroup>
-                            <FormGroup controlId="mp3Input">
-                                <Form.Label>Mp3</Form.Label>
-                                <Form.Control plaintext readOnly defaultValue={src} />
-                            </FormGroup>
                             <Button onClick={this.handlePlay}>Play</Button>
                         </Form>
                     </Card.Body>
                 </Card>
-                <ReactAudioPlayer autoPlay
-                    src={src}
-                    onEnded={this.handleAudioEnded}
-                    onError={this.handleAudioError} />
             </Container>
         );
     }

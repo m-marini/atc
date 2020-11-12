@@ -6,6 +6,7 @@ import SessionPane from './modules/SessionPane';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AudioTest from './modules/AudioTest';
+import VoiceSynth from './modules/VoiceSynth';
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route exact path="/audiotest">
             <AudioTest />
+          </Route>
+          <Route exact path="/voicesynth">
+            <VoiceSynth />
           </Route>
           <Route path="/sessions/:id" children={<SessionPane />} >
           </Route>

@@ -2,13 +2,12 @@
     "maps": {
         "FFM": {
             "id": "FFM",
-            "name": "Frankfurt",
+            "name": "Frankfurt ATC",
             "descr": "Frankfurt (Germany)",
             "center": {
                 "lat": 50.0490097,
                 "lon": 8.5725258
             },
-            "voice": "george",
             "nodes": {
                 "25C": {
                     "id": "25C",
@@ -454,13 +453,12 @@
         },
         "LON": {
             "id": "LON",
-            "name": "London",
+            "name": "London ATC",
             "descr": "London (UK)",
             "center": {
                 "lat": 51.4766615842228,
                 "lon": -0.459999935701471
             },
-            "voice": "george",
             "nodes": {
                 "08R": {
                     "id": "08R",
@@ -883,13 +881,12 @@
         },
         "LIN": {
             "id": "LIN",
-            "name": "Linate",
-            "descr": "Milan Linate (Italy)",
+            "name": "Milan ATC",
+            "descr": "Milan (Italy)",
             "center": {
                 "lat": 45.6449981253281,
                 "lon": 9.0216665994376
             },
-            "voice": "george",
             "nodes": {
                 "36R": {
                     "id": "36R",
@@ -1314,13 +1311,12 @@
         },
         "PAR": {
             "id": "PAR",
-            "name": "Paris",
+            "name": "Paris ATC",
             "descr": "Paris (France)",
             "center": {
                 "lat": 49.0036689,
                 "lon": 2.5728901
             },
-            "voice": "george",
             "nodes": {
                 "07": {
                     "id": "07",
