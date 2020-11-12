@@ -15,7 +15,6 @@ import { levelDao } from './LevelDao';
 import { cockpitLogger } from './CockpitLogger';
 import _ from 'lodash';
 import { AudioBuilder, MessageBuilder, synthSay, synthVoices } from './Audio';
-import { MESSAGE_TYPES } from './Events';
 
 const CLOCK_INTERVAL = 400;
 const RADAR_INTERVAL = 4;
