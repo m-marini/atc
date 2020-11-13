@@ -27,11 +27,11 @@ function createTestHdgMapEntry(mapId) {
     });
 }
 
-// test('MM', () => {
-//   const rwy = maps.maps['PAR'].nodes['27L'];
-//   const om = mapDao.radial(rwy, rwy.hdg + 180, 7);
-//   expect(om).toEqual({});
-// });
+test('MM', () => {
+  const rwy = maps.maps['LON'].nodes['27'];
+  const om = mapDao.radial(rwy, rwy.hdg + 180, 7);
+  console.log(JSON.stringify(om, undefined, 2));
+});
 
 describe('MapDao FFM entries1', () => {
   createTestHdgMapEntry('FFM');
