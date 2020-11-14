@@ -9,17 +9,17 @@ describe('Say id', () => {
 
   test('12C', () => {
     const result = sayId('12C');
-    expect(result).toBe('runway 1 2 center');
+    expect(result).toBe('runway one two center');
   });
 
   test('34C', () => {
     const result = sayId('34L');
-    expect(result).toBe('runway 3 4 left');
+    expect(result).toBe('runway three four left');
   });
 
   test('15', () => {
     const result = sayId('15');
-    expect(result).toBe('runway 1 5');
+    expect(result).toBe('runway one five');
   });
 
   test('VIL', () => {
@@ -32,18 +32,18 @@ describe('Say id', () => {
 describe('Spell', () => {
   test('abcdefghijklmnopqrstuvwxyz0123456789', () => {
     const result = spell('abcdefghijklmnopqrstuvwxyz0123456789');
-    expect(result).toBe('alpha bravo charlie delta echo fox trot golf hotel india juliet kilo lima mike november oscar papa quebeck romeo sierra tango uniform victor whiskey x-ray yenkee zulu zero 1 2 3 4 5 6 7 8 niner');
+    expect(result).toBe('alpha bravo charlie delta echo fox trot golf hotel india juliet kilo lima mike november oscar papa quebeck romeo sierra tango uniform victor whiskey x-ray yenkee zulu zero one two three four five six seven eight niner');
   });
 });
 
 describe('Say FL', () => {
   test('27000', () => {
     const result = sayFL(27000);
-    expect(result).toBe('flight level 2 7 zero');
+    expect(result).toBe('flight level two seven zero');
   });
 
   test('27050', () => {
     const result = sayFL(27050);
-    expect(result).toBe('flight level 2 7 1');
+    expect(result).toBe('flight level two seven one');
   });
 });

@@ -1,7 +1,7 @@
 import { COMMAND_CONDITIONS, COMMAND_TYPES, NODE_TYPES, TRAFFIC_SIM_DEFAULTS } from './modules/TrafficSimulator';
 import _ from 'lodash';
 import { mapDao } from './modules/MapDao';
-import { Flight, FLIGHT_STATES } from './modules/Flight';
+import { Flight, FLIGHT_STATES, Modifier } from './modules/Flight';
 import { flightBuilder, distance, landingAlt, speedByAlt, multipleTest, rndHdg, rndFL, rndInt, digits } from './TestUtil';
 import { EVENT_TYPES } from './modules/Events';
 
@@ -62,6 +62,83 @@ function props(props = {}, withMessages) {
     }, TRAFFIC_SIM_DEFAULTS);
   }
 }
+
+describe('Null property', () => {
+  test(`null heading`, () => {
+    const A1 = flightBuilder()
+      .pos(RUNWAY)
+      .hdg(4000)
+      .alt(4000)
+      .toAlt(4000)
+      .rwy(RUNWAY.id)
+      .status(FLIGHT_STATES.FLYING).flight;
+    const result = new Flight(A1, props()).apply(
+      Modifier.set('hdg', null)
+    );
+
+    expect(result.flight).toBe(A1);
+  });
+
+  test(`null speed`, () => {
+    const A1 = flightBuilder()
+      .pos(RUNWAY)
+      .hdg(4000)
+      .alt(4000)
+      .toAlt(4000)
+      .rwy(RUNWAY.id)
+      .status(FLIGHT_STATES.FLYING).flight;
+    const result = new Flight(A1, props()).apply(
+      Modifier.set('speed', null)
+    );
+
+    expect(result.flight).toBe(A1);
+  });
+
+  test(`null alt`, () => {
+    const A1 = flightBuilder()
+      .pos(RUNWAY)
+      .hdg(4000)
+      .alt(4000)
+      .toAlt(4000)
+      .rwy(RUNWAY.id)
+      .status(FLIGHT_STATES.FLYING).flight;
+    const result = new Flight(A1, props()).apply(
+      Modifier.set('alt', null)
+    );
+
+    expect(result.flight).toBe(A1);
+  });
+
+  test(`null lat`, () => {
+    const A1 = flightBuilder()
+      .pos(RUNWAY)
+      .hdg(4000)
+      .alt(4000)
+      .toAlt(4000)
+      .rwy(RUNWAY.id)
+      .status(FLIGHT_STATES.FLYING).flight;
+    const result = new Flight(A1, props()).apply(
+      Modifier.set('lat', null)
+    );
+
+    expect(result.flight).toBe(A1);
+  });
+
+  test(`null lon`, () => {
+    const A1 = flightBuilder()
+      .pos(RUNWAY)
+      .hdg(4000)
+      .alt(4000)
+      .toAlt(4000)
+      .rwy(RUNWAY.id)
+      .status(FLIGHT_STATES.FLYING).flight;
+    const result = new Flight(A1, props()).apply(
+      Modifier.set('lon', null)
+    );
+
+    expect(result.flight).toBe(A1);
+  });
+});
 
 multipleTest('Flight should compute max approach alt', () => {
   const d = rndInt(7, 26);
