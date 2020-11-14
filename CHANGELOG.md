@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+## [0.9.0] - 2020-11-12
+
+- Issue #62: New map
+
 ## [0.8.0] - 2020-11-12
+
+### Changed
 
 - Issue #48: Voices synth
 
