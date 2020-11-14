@@ -10,6 +10,7 @@ const MINS_PER_SEC = 1.0 / 60;
 const FEET_PER_NM = 1852 / 0.3048;
 const RADS_PER_DEG = Math.PI / 180;
 const RADIUS_PER_KNOTS = 1 / 60 / Math.PI;
+const VALIDATION_PROPS = ['hdg', 'speed', 'lat', 'lon', 'alt'];
 
 const FLIGHT_TYPES = {
     JET: 'J',
@@ -164,7 +165,15 @@ class Flight {
      * @param {*} flight flight data
      */
     with(flight) {
-        return new Flight(flight, this.props);
+        const invalid = _(VALIDATION_PROPS).find(key => {
+            const value = flight[key];
+            return (!value && value !== 0);
+        });
+        if (!!invalid) {
+            console.trace('Flight with', invalid, 'invalid', flight);
+        }
+        const result = !invalid ? new Flight(flight, this.props) : this;
+        return result;
     }
 
     /**
@@ -876,4 +885,4 @@ class Flight {
     }
 }
 
-export { Flight, FLIGHT_TYPES, FLIGHT_STATES };
+export { Flight, FLIGHT_TYPES, FLIGHT_STATES, Modifier };
