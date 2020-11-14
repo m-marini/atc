@@ -42,9 +42,14 @@ function status(flight) {
  */
 function toLines(flight) {
     const fl = Math.round(flight.alt / 100);
+    const toFl = Math.round(flight.toAlt / 100);
     const st = status(flight);
     const line1 = sprintf('%3s to %s Class %s', flight.id, flight.to, flight.type);
-    const line2 = sprintf('    FL%03d  Hdg %03d', fl, flight.hdg);
+
+    const line2 = fl !== toFl
+        ? sprintf('    FL%03d to FL%03d Hdg %03d', fl, toFl, flight.hdg)
+        : sprintf('    FL%03d  Hdg %03d', fl, flight.hdg);
+
     return st.length === 0
         ? [line1, line2]
         : [line1, line2, sprintf('    %s', status(flight))];

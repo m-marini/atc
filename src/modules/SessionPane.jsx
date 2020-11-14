@@ -179,9 +179,9 @@ class Session extends Component {
     if (!muted) {
       const clips = new AudioBuilder(event, atcVoice).build();
       synthSay(clips).subscribe();
-      const msgs = new MessageBuilder(event, atcVoice).build();
-      msgs.forEach(logger.sendMessage);
     }
+    const msgs = new MessageBuilder(event, atcVoice).build();
+    msgs.forEach(logger.sendMessage);
   }
 
   /**
@@ -213,6 +213,9 @@ class Session extends Component {
    */
   handleMuted() {
     const muted = !this.state.muted;
+    if (muted && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
     this.setState({ muted });
   }
 

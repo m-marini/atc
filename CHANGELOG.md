@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.1] - 2020-11-14
+
+### Fixed
+
+- Issue #73: Fixed missing cancel of uttering queue when mute
+- Issue #75: Missing toast when muted
+
 ### Changed
 
-## [0.9.0] - 2020-11-12
+- Issue #74: Show target altitude in monitor
+
+## [0.9.0] - 2020-11-13
+
+### Changed
 
 - Issue #62: New map
 
