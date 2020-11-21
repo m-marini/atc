@@ -26,72 +26,78 @@ const SIM_INTERVAL = 1;
  */
 function AccordionPane({ session, logger, muted, onMuted, speed, onSpeed }) {
   return (
-    <Accordion defaultActiveKey="0">
-      <Card bg="dark" text="white">
-        <Accordion.Toggle as={Card.Header} eventKey="0">
-          Flights
+    <div>
+      <Accordion defaultActiveKey="0">
+        <Card bg="dark" text="white">
+          <Accordion.Toggle as={Card.Header} eventKey="0">
+            Flights
           </Accordion.Toggle>
-        <Accordion.Collapse eventKey="0">
-          <Card.Body>
-            <QueuePane session={session} />
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-      <Card bg="dark" text="white">
-        <Accordion.Toggle as={Card.Header} eventKey="1">
-          Cockpit Log
+          <Accordion.Collapse eventKey="0">
+            <Card.Body>
+              <QueuePane session={session} />
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+      <Accordion defaultActiveKey="1">
+        <Card bg="dark" text="white">
+          <Accordion.Toggle as={Card.Header} eventKey="1">
+            Options
           </Accordion.Toggle>
-        <Accordion.Collapse eventKey="1">
-          <Card.Body>
-            {
-              logger.log.map((msg, i) => {
-                return (
-                  <div key={i} className={`${msg.type} text-monospace`}>{msg.msg}</div>
-                );
-              })
-            }
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-      <Card bg="dark" text="white">
-        <Accordion.Toggle as={Card.Header} eventKey="2">
-          Options
+          <Accordion.Collapse eventKey="1">
+            <Card.Body>
+              <Form>
+                <Form.Group controlId="muted">
+                  <Form.Label>Audio</Form.Label>
+                  <Form.Check
+                    type="switch"
+                    id="muted"
+                    label="Muted"
+                    onChange={onMuted}
+                    checked={muted} />
+                </Form.Group>
+                <Form.Group controlId="speed">
+                  <Form.Label>Speed</Form.Label>
+                  {
+                    [1, 3, 10].map(sp => {
+                      return (
+                        <Form.Check
+                          type="radio"
+                          name="speed"
+                          checked={speed === sp}
+                          id={sp}
+                          key={sp}
+                          value={sp}
+                          onChange={onSpeed}
+                          label={`x ${sp}`} />
+                      );
+                    })
+                  }
+                </Form.Group>
+              </Form>
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+      <Accordion defaultActiveKey="0">
+        <Card bg="dark" text="white">
+          <Accordion.Toggle as={Card.Header} eventKey="2">
+            Cockpit Log
           </Accordion.Toggle>
-        <Accordion.Collapse eventKey="2">
-          <Card.Body>
-            <Form>
-              <Form.Group controlId="muted">
-                <Form.Label>Audio</Form.Label>
-                <Form.Check
-                  type="switch"
-                  id="muted"
-                  label="Muted"
-                  onChange={onMuted}
-                  checked={muted} />
-              </Form.Group>
-              <Form.Group controlId="speed">
-                <Form.Label>Speed</Form.Label>
-                {
-                  [1, 3, 10].map(sp => {
-                    return (
-                      <Form.Check
-                        type="radio"
-                        name="speed"
-                        checked={speed === sp}
-                        id={sp}
-                        key={sp}
-                        value={sp}
-                        onChange={onSpeed}
-                        label={`x ${sp}`} />
-                    );
-                  })
-                }
-              </Form.Group>
-            </Form>
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-    </Accordion>
+          <Accordion.Collapse eventKey="2">
+            <Card.Body>
+              {
+                logger.log.map((msg, i) => {
+                  return (
+                    <div key={i} className={`${msg.type} text-monospace`}>{msg.msg}</div>
+                  );
+                })
+              }
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+    </div>
   );
 }
 
@@ -120,7 +126,7 @@ class Session extends Component {
   }
 
   /**
-   * 
+   *
    */
   componentDidMount() {
     const self = this;
@@ -156,8 +162,8 @@ class Session extends Component {
   }
 
   /**
-   * 
-   * @param {*} cmd 
+   *
+   * @param {*} cmd
    */
   handleCommand(cmd) {
     const { session, map, level, flightVoices } = this.state;
@@ -171,8 +177,8 @@ class Session extends Component {
   }
 
   /**
-   * 
-   * @param {*} event 
+   *
+   * @param {*} event
    */
   handleSimulationEvent(event) {
     const { logger, muted, atcVoice } = this.state;
@@ -185,8 +191,8 @@ class Session extends Component {
   }
 
   /**
-   * 
-   * @param {*} t 
+   *
+   * @param {*} t
    */
   handleClock(t) {
     const { session, map, level, speed, ts, flightVoices } = this.state;
@@ -209,7 +215,7 @@ class Session extends Component {
   }
 
   /**
-   * 
+   *
    */
   handleMuted() {
     const muted = !this.state.muted;
@@ -220,15 +226,15 @@ class Session extends Component {
   }
 
   /**
-   * 
-   * @param {*} ev 
+   *
+   * @param {*} ev
    */
   handleSpeed(ev) {
     this.setState({ speed: parseFloat(ev.target.value) })
   }
 
   /**
-   * 
+   *
    */
   render() {
     const { session, map, nodeMap, level, logger, muted, speed } = this.state;

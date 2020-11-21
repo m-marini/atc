@@ -767,7 +767,7 @@ class Flight {
     processTimeLanding() {
         const { dt, map, landingHdgRange, flightTempl, goAroundAlt, mm } = this.props;
         const flight = this.flight;
-        const { speed, rwy, type, alt } = flight;
+        const { speed, rwy, type, alt, hdg } = flight;
         const runwayNode = map.nodes[rwy];
         const { from, d, angle } = mapDao.route(flight, runwayNode);
         const ds = speed * dt / SECS_PER_HOUR;
@@ -783,8 +783,9 @@ class Flight {
                 .fireEvent(EVENT_TYPES.GO_AROUND_RUNWAY);
         }
         if (ds > d) {
-            // touching
-            if (Math.abs(angle) > landingHdgRange) {
+            // flying distance > runway distance: touching
+            if (Math.abs(mapDao.normAngle(hdg - runwayNode.hdg)) > landingHdgRange) {
+                // difference between flight heading and runway heading > landing range
                 // Go around due to missing runway cause land alignment
                 console.error('Missing runway land alignment', this.flight);
                 return this.apply(
