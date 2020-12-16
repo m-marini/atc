@@ -305,10 +305,10 @@ export function concat(ctx: Context): Context {
  *  Concatenate last 2 results if any
  * @param ctx
  */
-function log(ctx: Context): Context {
-    console.log(ctx);
-    return ctx;
-}
+// function log(ctx: Context): Context {
+//     console.log(ctx);
+//     return ctx;
+// }
 
 /**
  * 

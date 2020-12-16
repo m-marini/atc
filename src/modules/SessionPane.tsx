@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { sessionDao } from './SessionDao';
 import { CommandPane } from './CommandPane';
