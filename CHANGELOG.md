@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.9.3] - 2020-11-21
+## [0.9.4] - 2020-12-16
 
 ### Added
 
@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Issue #83: Display collision area round flight
 - Issue #84: Convert to typescript
 - Issue #85: json schema validator
+
+## [0.9.3] - 2020-11-21
 
 ### Fixed
 
