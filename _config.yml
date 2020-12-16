@@ -1,8 +1,0 @@
-title: Atc
-description: ATC - Air Traffic Control
-google_analytics: ATC Air Traffic Control Java Game Web
-show_downloads: true
-theme: jekyll-theme-slate
-
-gems:
-  - jekyll-mentions

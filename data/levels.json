@@ -1,0 +1,34 @@
+{
+    "levels": [
+        {
+            "id": "training",
+            "name": "Training",
+            "maxPlane": 1,
+            "flightFreq": 7.2
+        },
+        {
+            "id": "easy",
+            "name": "Easy",
+            "maxPlane": 3,
+            "flightFreq": 7.2
+        },
+        {
+            "id": "medium",
+            "name": "Medium",
+            "maxPlane": 5,
+            "flightFreq": 14.4
+        },
+        {
+            "id": "difficult",
+            "name": "Difficult",
+            "maxPlane": 7,
+            "flightFreq": 28
+        },
+        {
+            "id": "hard",
+            "name": "Hard",
+            "maxPlane": 10,
+            "flightFreq": 38
+        }
+    ]
+}
