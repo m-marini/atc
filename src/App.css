@@ -2,38 +2,26 @@
   background-color:black;
 }
 
-.atc {
+.term-atc {
   color: #00ff00;
   font-size: 12px;
   margin-bottom: 0px;
 }
 
-.john {
-  color: #00ff00;
-  font-size: 12px;
-  margin-bottom: 0px;
-}
-
-.flight {
+.term-flight {
   color: #d0d000;
   font-size: 12px;
   margin-bottom: 0px;
 }
   
-.george {
-  color: #d0d0d0;
-  font-size: 12px;
-  margin-bottom: 0px;
-}
-  
-.readback {
+.term-readback {
   color: #a0a0a0;
   font-size: 12px;
   margin-bottom: 0px;
 }
   
-.emergency {
-  color: #ff8000;
+.term-error {
+  color: #ff0000;
   font-size: 12px;
   margin-bottom: 0px;
 }
@@ -97,6 +85,15 @@
   stroke: #aead97;
   color: black;
   background: #aead97;
+}
+
+circle.collision-dots {
+  fill: none;
+  stroke-dasharray: 3 5
+}
+
+circle.collision-solid {
+  fill: none;
 }
 
 circle.runway {

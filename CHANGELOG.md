@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.9.3] - 2020-11-21
 
+### Added
+
+- Issue #81: Speech commands
+- Issue #83: Display collision area round flight
+- Issue #84: Convert to typescript
+- Issue #85: json schema validator
+
 ### Fixed
 
 - Issue #80: Fix frequently missing runway
