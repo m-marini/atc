@@ -12,6 +12,7 @@ import { LevelList } from './Level';
 import { Session } from './Session';
 import { ATCNavBar } from './ATCNavbar';
 import { synthVoices } from './Audio';
+import { homepage } from '../../package.json';
 
 interface HomeState {
   readonly map?: string;
@@ -71,7 +72,7 @@ class Home extends Component<{}, HomeState> {
           ? Math.floor(Math.random() * voices.length).toString()
           : undefined;
         const session = sessionDao.create(level, map1, atcVoice);
-        window.location.href = process.env.REACT_APP_BASENAME + '#/sessions/' + session.id;
+        window.location.href = `/${homepage}#/sessions/${session.id}`;
       })
     ).subscribe();
   }
@@ -79,7 +80,7 @@ class Home extends Component<{}, HomeState> {
   handleLoad() {
     const { sessions } = this.state;
     if (sessions) {
-      window.location.href = process.env.REACT_APP_BASENAME + '#/sessions/' + sessions[0].id;
+      window.location.href = `/${homepage}#/sessions/${sessions[0].id}`
     }
   }
 

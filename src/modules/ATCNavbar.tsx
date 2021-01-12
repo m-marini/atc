@@ -2,13 +2,14 @@ import React from 'react';
 import { Badge, Col, Container, Nav, Navbar } from 'react-bootstrap';
 import { sprintf } from 'sprintf-js';
 import { Session } from './Session';
+import { version, homepage } from '../../package.json';
 
 /**
  * 
  * @param param0 
  */
 export const ATCNavBar: React.FC<{ session?: Session }> = ({ session }) => {
-  const home = process.env.REACT_APP_BASENAME;
+  const home = `/${homepage}`;
   var serviceStatus = undefined;
   if (!session) {
     serviceStatus = (
@@ -74,7 +75,7 @@ export const ATCNavBar: React.FC<{ session?: Session }> = ({ session }) => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href={home}>ATC {process.env.REACT_APP_VERSION}</Nav.Link>
+          <Nav.Link href={home}>ATC {version}</Nav.Link>
         </Nav>
         <Navbar.Text>
         </Navbar.Text >

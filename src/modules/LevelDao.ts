@@ -4,8 +4,9 @@ import { ajax } from 'rxjs/ajax';
 import { map, tap } from 'rxjs/operators';
 import _ from 'lodash';
 import { Level, LevelList } from './Level';
+import { homepage } from '../../package.json';
 
-const url = process.env.REACT_APP_BASENAME + '/data/levels.json';
+const url = `/${homepage}/data/levels.json`;
 
 class LevelDao {
     private _subj: AsyncSubject<LevelList>;

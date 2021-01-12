@@ -4,8 +4,9 @@ import { filter, flatMap, map, tap } from 'rxjs/operators';
 import _ from 'lodash';
 import { AsyncSubject, from, Observable } from 'rxjs';
 import { AreaMap, AreaMapSet, GeoLocation, MapNode, validateAreaMapSet } from './Map';
+import { homepage } from '../../package.json';
 
-const url = process.env.REACT_APP_BASENAME + '/data/maps.json';
+const url = `/${homepage}/data/maps.json`;
 const NMS_PER_DEG = 60;
 const RADS_PER_DEG = Math.PI / 180;
 const DEGS_PER_RAD = 180 / Math.PI;
