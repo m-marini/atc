@@ -9,6 +9,7 @@ import { faSearch, faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-s
 import { Flight, FlightStatus } from './Flight';
 import { AreaMap, FlightMap, MapRoute, RadarNode } from './Map';
 import { Session } from './Session';
+import { homepage } from '../../package.json';
 
 const ZOOM_TICK = 57;
 const ZOOM_SCALE = Math.log(10) / 4 / ZOOM_TICK;
@@ -139,7 +140,7 @@ const FlightGraph: FunctionComponent<{
         const fl = flightLevel(flight.alt);
         const trans = translate(pt[0] - ImageConf.width / 2, pt[1] - ImageConf.height / 2)
             + rotate(flight.hdg, ImageConf.width / 2, ImageConf.height / 2);
-        const url = `${process.env.REACT_APP_BASENAME}/images/${flight.type === 'J' ? 'jet' : 'plane'
+        const url = `/${homepage}/images/${flight.type === 'J' ? 'jet' : 'plane'
             }-${fl}.png`;
         const txt1 = sprintf("%s-%s", flight.id, flight.type);
         const txt2 = sprintf('%03d', Math.round(flight.alt / 100));
